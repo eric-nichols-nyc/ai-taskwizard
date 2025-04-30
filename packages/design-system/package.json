@@ -29,6 +29,7 @@
     "typescript": "^5.8.2"
   },
   "dependencies": {
+    "@radix-ui/react-slot": "^1.2.0",
     "@tailwindcss/cli": "^4.0.12",
     "@tailwindcss/postcss": "^4.0.12",
     "@turbo-with-tailwind-v4/utils": "workspace:*",
