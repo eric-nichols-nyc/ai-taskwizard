@@ -2,7 +2,7 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import { Button } from '@turbo-with-tailwind-v4/design-system/button'
-
+import { Calendar } from 'calendar/Calendar'
 function App() {
   const [count, setCount] = useState(0)
 
@@ -18,6 +18,7 @@ function App() {
       </div>
       <h1>Vite </h1>
       <div>
+        <Calendar />
         <Button variant='contained' color='primary' onClick={() => setCount((count) => count + 1)}>
           count is {count}
         </Button>

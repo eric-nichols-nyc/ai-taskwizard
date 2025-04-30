@@ -1,14 +1,15 @@
 import path from "path"
 import react from "@vitejs/plugin-react"
+import federation from "@originjs/vite-plugin-federation"
 import { defineConfig } from "vite"
-import federation from '@originjs/vite-plugin-federation';
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), federation({
-    name: "host",
-    remotes: {
-      calendar: "http://localhost:3001/assets/remoteEntry.js",
+    name: "calendar",
+    filename: 'remoteEntry.js',
+    exposes: {
+      "./Calendar": "./src/Calendar.tsx",
     },
     shared: ['react', 'react-dom']
   })],
@@ -28,7 +29,6 @@ export default defineConfig({
     target: 'esnext',
     minify: false,
     cssCodeSplit: false,
-    sourcemap: true,
     rollupOptions: {
       external: [
         "@turbo-with-tailwind-v4/design-system",
@@ -37,10 +37,6 @@ export default defineConfig({
     }
   },
   server: {
-    port: 3000,
-    cors: true,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-    }
+    port: 3001,
   },
 })

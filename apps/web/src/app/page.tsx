@@ -1,5 +1,5 @@
 import { Colors } from "@turbo-with-tailwind-v4/ui/Colors"
-import { Button } from "@turbo-with-tailwind-v4/design-system/Button"
+import { Button } from "@turbo-with-tailwind-v4/design-system/button"
 import { FaGithub, FaMedium } from "react-icons/fa"
 
 export default function Page() {

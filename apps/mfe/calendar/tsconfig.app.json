@@ -20,12 +20,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true,
-
-    /* Module Federation */
-    "paths": {
-      "calendar/*": ["./src/types/*"]
-    }
+    "noUncheckedSideEffectImports": true
   },
-  "include": ["src", "src/types"]
+  "include": ["src"]
 }

@@ -1,14 +1,14 @@
 {
-  "name": "react-vite",
+  "name": "mfe",
   "private": true,
   "version": "1.0.0",
   "scripts": {
     "build": "pnpm --parallel --filter \"./**\" build",
     "serve": "pnpm --parallel --filter \"./**\" preview",
-    "build:remotes": "pnpm --parallel --filter \"./remote\" build",
-    "serve:remotes": "pnpm --parallel --filter \"./remote\" serve",
-    "dev": "pnpm --parallel --filter \"./**\" preview",
-    "stop": "kill-port --port 5000,5001"
+    "build:remotes": "pnpm --parallel --filter \"./calendar\" build",
+    "serve:remotes": "pnpm --parallel --filter \"./calendar\" serve",
+    "dev": "pnpm --parallel --filter \"./**\" dev",
+    "stop": "kill-port --port 3000,3001"
   },
   "devDependencies": {
     "kill-port": "^2.0.1",
