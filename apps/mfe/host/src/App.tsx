@@ -1,13 +1,13 @@
 import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
-import { Button } from '@turbo-with-tailwind-v4/design-system/Button'
+import { Button } from '@turbo-with-tailwind-v4/design-system/button'
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
-    <div className='flex flex-col items-center h-screen backgroundGradient'>
+    <div className='container mx-auto flex flex-col items-center h-screen backgroundGradient'>
       <div className='flex'>
         <a href="https://vite.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />
@@ -16,9 +16,9 @@ function App() {
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>
-      <h1>Vite + React</h1>
+      <h1>Vite </h1>
       <div>
-        <Button onClick={() => setCount((count) => count + 1)}>
+        <Button variant='contained' color='primary' onClick={() => setCount((count) => count + 1)}>
           count is {count}
         </Button>
         <p>

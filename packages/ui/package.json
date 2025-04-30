@@ -8,12 +8,19 @@
     "dist"
   ],
   "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
     "./styles.css": "./dist/styles.css",
-    "./Colors": "./src/Colors.tsx"
+    "./Colors": {
+      "import": "./dist/Colors.js",
+      "types": "./dist/Colors.d.ts"
+    }
   },
   "license": "MIT",
   "scripts": {
-    "build": "tailwindcss -i ./src/styles.css -o ./dist/styles.css",
+    "build": "tsc --declaration --emitDeclarationOnly false",
     "lint": "eslint src/",
     "dev": "tailwindcss -i ./src/styles.css -o ./dist/styles.css --watch",
     "type-check": "tsc --noEmit"

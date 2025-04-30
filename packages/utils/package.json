@@ -3,7 +3,13 @@
   "version": "1.0.0",
   "private": true,
   "exports": {
-    "./cn": "./src/cn.ts"
+    "./cn": {
+      "import": "./dist/cn.js",
+      "types": "./dist/cn.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc --declaration --emitDeclarationOnly false"
   },
   "dependencies": {
     "clsx": "^2.1.1",

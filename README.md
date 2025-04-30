@@ -82,3 +82,26 @@ Learn more about the power of Turborepo:
 - [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
 - [Configuration Options](https://turborepo.com/docs/reference/configuration)
 - [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
+
+# Turbo with Tailwind v4
+
+## Building Packages
+
+Before running the host application, you need to build the shared packages in the correct order:
+
+```bash
+# Build utils first
+pnpm build --filter @turbo-with-tailwind-v4/utils
+
+# Then build design-system (which depends on utils)
+pnpm build --filter @turbo-with-tailwind-v4/design-system
+
+# Finally run the host app
+pnpm dev --filter @turbo-with-tailwind-v4/host
+```
+
+This build order is important because:
+1. The design-system package depends on utils
+2. The host app needs the built CSS from design-system for Tailwind styles to work properly
+
+Note: If you make changes to any shared package, you'll need to rebuild it for the changes to reflect in the host app.

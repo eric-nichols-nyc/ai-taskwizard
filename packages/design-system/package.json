@@ -6,15 +6,23 @@
     "**/*.css"
   ],
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts"
+    },
     "./theme.css": "./src/theme.css",
     "./styles.css": "./dist/styles.css",
-    "./Button": "./src/Button.tsx"
+    "./button": {
+      "types": "./src/button.tsx",
+      "import": "./src/button.tsx"
+    }
   },
   "scripts": {
-    "build": "tailwindcss -i ./src/styles.css -o ./dist/styles.css",
+    "build": "tsc --declaration --emitDeclarationOnly false && tailwindcss -i ./src/styles.css -o ./dist/styles.css",
     "lint": "eslint src/",
     "dev": "tailwindcss -i ./src/styles.css -o ./dist/styles.css --watch",
     "type-check": "tsc --noEmit"
@@ -23,13 +31,13 @@
     "react": "^18.2.0"
   },
   "devDependencies": {
+    "@radix-ui/react-slot": "^1.2.0",
     "@turbo-with-tailwind-v4/eslint-config": "workspace:*",
     "@turbo-with-tailwind-v4/typescript-config": "workspace:*",
     "@types/react": "^19.0.10",
     "typescript": "^5.8.2"
   },
   "dependencies": {
-    "@radix-ui/react-slot": "^1.2.0",
     "@tailwindcss/cli": "^4.0.12",
     "@tailwindcss/postcss": "^4.0.12",
     "@turbo-with-tailwind-v4/utils": "workspace:*",
