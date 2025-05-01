@@ -16,6 +16,7 @@
     "@tailwindcss/vite": "^4.1.4",
     "@turbo-with-tailwind-v4/design-system": "workspace:*",
     "@turbo-with-tailwind-v4/ui": "workspace:*",
+    "lucide-react": "^0.503.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
