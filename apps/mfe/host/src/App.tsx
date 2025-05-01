@@ -1,43 +1,24 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import { Button } from '@turbo-with-tailwind-v4/design-system/button'
-import { Calendar } from 'calendar/Calendar'
 import { Dashboard } from 'dashboard/Dashboard'
-import { PageContainer } from './components/page-container'
-import { Sidebar } from './components/sidebar'
+import { Calendar } from 'calendar/Calendar'
+
 function App() {
   const [count, setCount] = useState(0)
 
   return (
-    <div className='flex items-center h-screen w-full backgroundGradient'>
-      <Sidebar />
-      <PageContainer>
-      <div className='flex flex-col items-center justify-center h-full'>
-        <div className='flex items-center justify-center'>
-          <a href="https://vite.dev" target="_blank">
-            <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite </h1>
-      <div>
-        <Calendar />
+    <div className='flex flex-col items-center justify-center h-screen w-full p-8 gap-8'>
+      <div className='border border-red-500 p-4 rounded-lg w-full'>
         <Dashboard />
-        <Button variant='contained' color='primary' onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </Button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
       </div>
-      <p className="read-the-docs">
-          Click on the Vite and React logos to learn more
-        </p>
-        </div>
-      </PageContainer>
+      
+      <div className='border border-blue-500 p-4 rounded-lg w-full'>
+        <Calendar />
+      </div>
+
+      <Button variant='contained' color='primary' onClick={() => setCount((count) => count + 1)}>
+        count is {count}
+      </Button>
     </div>
   )
 }

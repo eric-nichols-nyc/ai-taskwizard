@@ -19,7 +19,8 @@
     "@turbo-with-tailwind-v4/design-system": "workspace:*",
     "@turbo-with-tailwind-v4/ui": "workspace:*",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^7.5.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
