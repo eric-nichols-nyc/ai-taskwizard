@@ -8,6 +8,7 @@
   "scripts": {
     "build": "turbo run build",
     "build:main": "turbo run build --filter=web...",
+    "build:calendar": "turbo run build --filter=calendar...",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
