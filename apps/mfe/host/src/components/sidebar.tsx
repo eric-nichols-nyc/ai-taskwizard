@@ -1,4 +1,4 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useRouter } from '@tanstack/react-router';
 import { IconLayoutDashboard, IconFolders, IconNotes, IconCalendar, IconUsers, IconWorld, IconBrain, IconRobot, IconSettings, IconCrown } from '@tabler/icons-react';
 
 interface NavItemProps {
@@ -8,8 +8,8 @@ interface NavItemProps {
 }
 
 const NavItem = ({ icon, label, to }: NavItemProps) => {
-  const location = useLocation();
-  const isActive = location.pathname === to;
+  const router = useRouter();
+  const isActive = router.state.location.pathname === to;
 
   return (
     <Link
