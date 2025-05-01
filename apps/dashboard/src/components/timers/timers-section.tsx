@@ -1,6 +1,6 @@
 "use client"
 
-import { Button } from "./ui/button"
+import { Button } from "../ui/button"
 import { Timer, Play, RotateCcw, Edit, Trash2 } from "lucide-react"
 
 export function TimersSection() {

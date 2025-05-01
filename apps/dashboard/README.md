@@ -52,3 +52,48 @@ export default tseslint.config({
   },
 })
 ```
+
+## Testing Components with Vitest
+
+This project uses [Vitest](https://vitest.dev/) and [@testing-library/react](https://testing-library.com/docs/react-testing-library/intro/) for component testing. Jest DOM matchers are enabled via [@testing-library/jest-dom](https://testing-library.com/docs/ecosystem-jest-dom/).
+
+### Setup
+- All jest-dom matchers (like `toBeInTheDocument`) are available in tests because of the setup file: `src/setupTests.ts`.
+- The setup file is automatically loaded by Vitest (see `vitest.config.ts`).
+
+### How to Run Tests
+
+1. Install dependencies:
+   ```sh
+   pnpm install
+   ```
+2. Run all tests:
+   ```sh
+   pnpm test
+   ```
+   or
+   ```sh
+   pnpm vitest
+   ```
+3. (Optional) Run in interactive UI mode:
+   ```sh
+   pnpm vitest --ui
+   ```
+
+### Writing Tests
+- Place test files in a `__tests__` folder inside each component directory, or use the `.test.tsx` extension next to the component file.
+- Example test file: `src/components/pomodoro/__tests__/pomodoro-section.test.tsx`
+- Example setup file: `src/setupTests.ts`
+
+### Example Test
+```tsx
+import { render, screen } from '@testing-library/react';
+import { PomodoroSection } from '../pomodoro-section';
+
+describe('PomodoroSection', () => {
+  it('renders without crashing', () => {
+    render(<PomodoroSection />);
+    expect(screen.getByText(/pomodoro/i)).toBeInTheDocument();
+  });
+});
+```

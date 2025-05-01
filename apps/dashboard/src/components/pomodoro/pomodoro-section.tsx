@@ -1,7 +1,7 @@
 "use client"
 
 // import { useState } from "react"
-import { Button } from "./ui/button"
+import { Button } from "../ui/button"
 import { Timer, Plus } from "lucide-react"
 
 export function PomodoroSection() {

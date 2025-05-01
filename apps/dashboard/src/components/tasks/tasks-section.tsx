@@ -1,10 +1,10 @@
 "use client"
 
 import { useState } from "react"
-import { Button } from "./ui/button"
-import { Input } from "./ui/input"
+import { Button } from "../ui/button"
+import { Input } from "../ui/input"
 import { CheckCircle, Circle, FileText, Goal, LayoutGrid, ListTodo } from "lucide-react"
-import { cn } from "../lib/utils"
+import { cn } from "../../lib/utils"
 
 export function TasksSection() {
   const [activeTab, setActiveTab] = useState("tasks")

@@ -1,11 +1,11 @@
-import { Calendar } from "./components/calendar"
-import { ProductivitySection } from "./components/productivity-section"
-import { UpcomingSection } from "./components/upcoming-section"
-import { TasksSection } from "./components/tasks-section"
-import { WeatherSection } from "./components/weather-section"
-import { PomodoroSection } from "./components/pomodoro-section"
-import { TimersSection } from "./components/timers-section"
-import { SmartOverview } from "./components/smart-overview"
+import { Calendar } from "./components/calendar/calendar"
+import { ProductivitySection } from "./components/productivity/productivity-section"
+import { UpcomingSection } from "./components/upcoming/upcoming-section"
+import { TasksSection } from "./components/tasks/tasks-section"
+import { WeatherSection } from "./components/weather/weather-section"
+import { PomodoroSection } from "./components/pomodoro/pomodoro-section"
+import { TimersSection } from "./components/timers/timers-section"
+import { SmartOverview } from "./components/smart-overview/smart-overview"
 
 export function Dashboard() {
   return (
