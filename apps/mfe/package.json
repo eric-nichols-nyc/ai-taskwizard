@@ -1,17 +1,23 @@
 {
-  "name": "mfe",
+  "name": "mfe-root",
   "private": true,
   "version": "1.0.0",
+  "workspaces": [
+    "host",
+    "dashboard",
+    "calendar",
+    "shared/*"
+  ],
   "scripts": {
-    "build": "pnpm --parallel --filter \"./**\" build",
-    "serve": "pnpm --parallel --filter \"./**\" preview",
-    "build:remotes": "pnpm --parallel --filter \"./calendar\" build",
-    "serve:remotes": "pnpm --parallel --filter \"./calendar\" serve",
-    "dev": "pnpm --parallel --filter \"./**\" dev",
-    "stop": "kill-port --port 3000,3001"
+    "dev": "pnpm --parallel run dev",
+    "build": "pnpm --sequential run build",
+    "preview": "pnpm --parallel run preview"
   },
   "devDependencies": {
-    "kill-port": "^2.0.1",
-    "@originjs/vite-plugin-federation": "^1.2.3"
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "typescript": "^5.0.0",
+    "vite": "^5.0.0"
   }
 }

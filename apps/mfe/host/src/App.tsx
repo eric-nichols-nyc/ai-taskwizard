@@ -3,6 +3,7 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import { Button } from '@turbo-with-tailwind-v4/design-system/button'
 import { Calendar } from 'calendar/Calendar'
+import { Dashboard } from 'dashboard/Dashboard'
 function App() {
   const [count, setCount] = useState(0)
 
@@ -19,6 +20,7 @@ function App() {
       <h1>Vite </h1>
       <div>
         <Calendar />
+        <Dashboard />
         <Button variant='contained' color='primary' onClick={() => setCount((count) => count + 1)}>
           count is {count}
         </Button>

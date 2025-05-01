@@ -9,6 +9,7 @@ export default defineConfig({
     name: "host",
     remotes: {
       calendar: "http://localhost:3001/assets/remoteEntry.js",
+      dashboard: "http://localhost:3002/assets/remoteEntry.js",
     },
     shared: ['react', 'react-dom']
   })],

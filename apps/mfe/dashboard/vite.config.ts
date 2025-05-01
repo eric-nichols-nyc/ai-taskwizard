@@ -6,10 +6,10 @@ import { defineConfig } from "vite"
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), federation({
-    name: "calendar",
+    name: "dashboard",
     filename: 'remoteEntry.js',
     exposes: {
-      "./Calendar": "./src/Calendar.tsx",
+      "./Dashboard": "./src/Dashboard.tsx",
     },
     shared: ['react', 'react-dom']
   })],

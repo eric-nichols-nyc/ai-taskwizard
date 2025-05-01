@@ -1,9 +1,9 @@
-import { Calendar } from './Calendar'
+import { Dashboard } from './Dashboard'
 function App() {
 
   return (
     <div className='container mx-auto flex flex-col'>
-      <Calendar />
+      <Dashboard />
     </div>
   )
 }

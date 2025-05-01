@@ -2,6 +2,104 @@
 
 This Turborepo starter is maintained by the Turborepo core team.
 
+## Project Structure
+```
+├── apps/
+│   ├── mfe/                    # Micro-frontend applications
+│   │   ├── shell/             # Main shell application (Port 3000)
+│   │   │   ├── src/
+│   │   │   │   ├── App.tsx
+│   │   │   │   ├── components/
+│   │   │   │   └── providers/
+│   │   │   │       └── auth/  # Auth context provider
+│   │   │   └── vite.config.ts
+│   │   │
+│   │   ├── dashboard/         # Dashboard MFE (Port 3001)
+│   │   │   ├── src/
+│   │   │   │   ├── Dashboard.tsx
+│   │   │   │   ├── components/
+│   │   │   │   └── hooks/
+│   │   │   │       └── useAuth.ts
+│   │   │   └── vite.config.ts
+│   │   │
+│   │   ├── calendar/         # Calendar MFE (Port 3002)
+│   │   │   ├── src/
+│   │   │   │   ├── Calendar.tsx
+│   │   │   │   ├── components/
+│   │   │   │   └── hooks/
+│   │   │   │       └── useAuth.ts
+│   │   │   └── vite.config.ts
+│   │   │
+│   │   └── ai-assistant/     # AI Assistant MFE (Port 3003)
+│   │       ├── src/
+│   │       │   ├── Assistant.tsx
+│   │       │   ├── components/
+│   │       │   └── hooks/
+│   │       │       └── useAuth.ts
+│   │       └── vite.config.ts
+│   │
+│   ├── web/                  # Main marketing website
+│   └── docs/                 # Documentation site
+│
+├── packages/
+│   ├── design-system/        # Core design system
+│   │   ├── src/
+│   │   │   ├── components/   # Base components
+│   │   │   ├── tokens/       # Design tokens
+│   │   │   └── themes/       # Theme configurations
+│   │   └── package.json
+│   │
+│   ├── ui/                   # Shared UI components
+│   │   ├── src/
+│   │   │   ├── components/   # Higher-level components
+│   │   │   │   ├── auth/     # Auth-related components
+│   │   │   │   └── forms/    # Form components
+│   │   │   └── hooks/        # UI-related hooks
+│   │   └── package.json
+│   │
+│   ├── utils/               # Shared utilities
+│   │   ├── src/
+│   │   │   ├── supabase/    # Supabase client & hooks
+│   │   │   │   ├── client.ts      # Supabase client instance
+│   │   │   │   ├── types.ts       # Database types
+│   │   │   │   ├── queries/       # Database queries
+│   │   │   │   └── hooks/         # Supabase hooks
+│   │   │   ├── api/         # API utilities
+│   │   │   │   ├── tasks/        # Task-related API calls
+│   │   │   │   │   ├── index.ts   # Export all task APIs
+│   │   │   │   │   ├── create.ts  # Create task
+│   │   │   │   │   ├── update.ts  # Update task
+│   │   │   │   │   ├── delete.ts  # Delete task
+│   │   │   │   │   └── get.ts     # Get tasks
+│   │   │   │   ├── projects/     # Project-related API calls
+│   │   │   │   │   ├── index.ts
+│   │   │   │   │   ├── create.ts
+│   │   │   │   │   ├── update.ts
+│   │   │   │   │   └── get.ts
+│   │   │   │   ├── ai/          # AI-related API calls
+│   │   │   │   │   ├── index.ts
+│   │   │   │   │   ├── suggest.ts
+│   │   │   │   │   └── analyze.ts
+│   │   │   │   └── types/       # API types
+│   │   │   │       ├── tasks.ts
+│   │   │   │       ├── projects.ts
+│   │   │   │       └── responses.ts
+│   │   │   ├── auth/        # Authentication utilities
+│   │   │   │   ├── provider.tsx   # Auth context provider
+│   │   │   │   ├── hooks.ts       # Auth hooks
+│   │   │   │   ├── types.ts       # Auth types
+│   │   │   │   └── utils.ts       # Auth helper functions
+│   │   │   └── helpers/     # Common helper functions
+│   │   └── package.json
+│   │
+│   ├── eslint-config/       # Shared ESLint configuration
+│   └── typescript-config/   # Shared TypeScript configuration
+│
+├── turbo.json               # Turborepo configuration
+├── package.json             # Root package.json
+└── pnpm-workspace.yaml      # PNPM workspace configuration
+```
+
 ## Using this example
 
 Run the following command:
