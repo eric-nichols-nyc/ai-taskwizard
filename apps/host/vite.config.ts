@@ -10,8 +10,8 @@ export default defineConfig({
     federation({
       name: 'host',
       remotes: {
-        dashboard: 'http://localhost:3001/assets/remoteEntry.js',
-        calendar: 'http://localhost:3002/assets/remoteEntry.js'
+        dashboard: 'https://ai-taskmaster-dashboard.vercel.app/assets/remoteEntry.js',
+        calendar: 'https://ai-taskmaster-calendar-2.vercel.app/assets/remoteEntry.js'
       },
       shared: ['react', 'react-dom']
     })
