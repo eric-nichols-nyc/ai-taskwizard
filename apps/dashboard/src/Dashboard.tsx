@@ -3,9 +3,10 @@ import { ProductivitySection } from "./components/productivity/productivity-sect
 import { UpcomingSection } from "./components/upcoming/upcoming-section"
 import { TasksSection } from "./components/tasks/tasks-section"
 import { WeatherSection } from "./components/weather/weather-section"
-import { PomodoroSection } from "./components/pomodoro/pomodoro-section"
+//import { PomodoroSection } from "./components/pomodoro/pomodoro-section"
 import { TimersSection } from "./components/timers/timers-section"
 import { SmartOverview } from "./components/smart-overview/smart-overview"
+import PomodoroTimer  from "./components/features/pomodoro-section"
 
 export function Dashboard() {
   return (
@@ -34,7 +35,7 @@ export function Dashboard() {
           </div>
           <div className="space-y-6">
             <WeatherSection />
-            <PomodoroSection />
+              <PomodoroTimer />
             <TimersSection />
           </div>
         </div>
