@@ -3,6 +3,7 @@
 import { useState, useRef } from "react"
 import { Button } from "../ui/button"
 import { Timer, Plus } from "lucide-react"
+import { Timer as TimerType } from "../../types"
 
 function formatTime(seconds: number) {
   const m = Math.floor(seconds / 60)
@@ -10,7 +11,7 @@ function formatTime(seconds: number) {
   return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
 }
 
-export function PomodoroSection() {
+export function PomodoroTimer({ setTimer }: { setTimer: (timer: TimerType) => void }) {
   const initialTime = 25 * 60
   const [time, setTime] = useState(initialTime)
   const [isRunning, setIsRunning] = useState(false)
@@ -48,7 +49,14 @@ export function PomodoroSection() {
           <Timer className="size-5 text-white" />
           <h2 className="text-xl font-semibold text-white">Pomodoro</h2>
         </div>
-        <Button size="sm" className="bg-purple-600 hover:bg-purple-700 text-white rounded-full">
+        <Button size="sm" className="bg-purple-600 hover:bg-purple-700 text-white rounded-full" onClick={() => {
+          const newTimer: TimerType = {
+            id: Date.now(),
+            name: "New Timer",
+            time: formatTime(time)
+          };
+          setTimer(newTimer);
+        }}>
           <Plus className="size-4 mr-1" />
           New Timer
         </Button>

@@ -1,10 +1,11 @@
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import { describe, it, expect, vi } from "vitest";
-import { PomodoroSection } from '../pomodoro-section';
+import { PomodoroTimer } from '../pomodoro-timer';
 
 describe('PomodoroSection', () => {
+  const mockSetTimer = vi.fn();
   it('renders timer and controls', () => {
-    render(<PomodoroSection />);
+    render(<PomodoroTimer setTimer={mockSetTimer} />);
     expect(screen.getByText(/pomodoro/i)).toBeInTheDocument();
     expect(screen.getByTestId('timer-display')).toHaveTextContent('25:00');
     expect(screen.getByRole('button', { name: /start/i })).toBeInTheDocument();
@@ -14,7 +15,7 @@ describe('PomodoroSection', () => {
 
   it('starts, pauses, and resets the timer', () => {
     vi.useFakeTimers();
-    render(<PomodoroSection />);
+    render(<PomodoroTimer setTimer={mockSetTimer} />);
     const startButton = screen.getByRole('button', { name: /start/i });
     const pauseButton = screen.getByRole('button', { name: /pause/i });
     const resetButton = screen.getByRole('button', { name: /reset/i });

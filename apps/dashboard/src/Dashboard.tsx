@@ -1,12 +1,11 @@
 import { Calendar } from "./components/calendar/calendar"
-import { ProductivitySection } from "./components/productivity/productivity-section"
-import { UpcomingSection } from "./components/upcoming/upcoming-section"
-import { TasksSection } from "./components/tasks/tasks-section"
+// import { ProductivitySection } from "./components/productivity/productivity-section"
+// import { UpcomingSection } from "./components/upcoming/upcoming-section"
+// import { TasksSection } from "./components/tasks/tasks-section"
 import { WeatherSection } from "./components/weather/weather-section"
-//import { PomodoroSection } from "./components/pomodoro/pomodoro-section"
-import { TimersSection } from "./components/timers/timers-section"
+import { PomodoroSection } from "./components/features/pomodoro-section/pomodoro-app/pomodoro"
 import { SmartOverview } from "./components/smart-overview/smart-overview"
-import PomodoroTimer  from "./components/features/pomodoro-section"
+import PomodoroTimer  from "./components/features/pomodoro-prototype/pomodoro-section"
 
 export function Dashboard() {
   return (
@@ -29,14 +28,14 @@ export function Dashboard() {
         {/* Main content grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-6">
-            <ProductivitySection />
+            {/* <ProductivitySection />
             <UpcomingSection />
-            <TasksSection />
+            <TasksSection /> */}
+            <PomodoroTimer />
           </div>
           <div className="space-y-6">
             <WeatherSection />
-              <PomodoroTimer />
-            <TimersSection />
+            <PomodoroSection />
           </div>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Play, Pause, RotateCcw, Plus, Edit2, Trash2 } from 'lucide-react';
 
 interface Timer {

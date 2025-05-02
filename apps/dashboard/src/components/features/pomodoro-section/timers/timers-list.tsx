@@ -1,13 +1,17 @@
 "use client"
 
-import { Button } from "../ui/button"
+import { Button } from "../../../ui/button"
 import { Timer, Play, RotateCcw, Edit, Trash2 } from "lucide-react"
 
-export function TimersSection() {
-  const timers = [
-    { id: 1, name: "Focus Block", time: "01:00" },
-    { id: 2, name: "Focus Block", time: "25:00" },
-  ]
+
+type Timer = {
+  id: number
+  name: string
+  time: string
+}
+
+export function TimersList({ timers }: { timers: Timer[] }) {
+
 
   return (
     <div className="bg-[#1a2235] rounded-lg p-6">
