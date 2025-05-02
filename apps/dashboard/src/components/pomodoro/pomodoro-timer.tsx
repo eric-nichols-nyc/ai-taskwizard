@@ -1,18 +1,14 @@
 "use client"
 
-import { useState, useRef } from "react"
 import { Button } from "../ui/button"
 import { Timer, Plus } from "lucide-react"
 import { Timer as TimerType } from "../../types"
 import { useTimer } from "../../hooks/use-timer"
-function formatTime(seconds: number) {
-  const m = Math.floor(seconds / 60)
-  const s = seconds % 60
-  return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
-}
+import { formatTime } from "../../lib/utils"
+
 
 export function PomodoroTimer({ setTimer }: { setTimer: (timer: TimerType) => void }) {
-  
+
   const {
     startTimer,
     pauseTimer,
