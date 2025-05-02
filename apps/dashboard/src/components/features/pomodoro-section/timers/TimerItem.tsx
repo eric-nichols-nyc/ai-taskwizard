@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "../../../ui/button";
-import { Play, RotateCcw, Edit, Trash2, Pause } from "lucide-react";
+import { Play, RotateCcw, Pause } from "lucide-react";
 import { useTimer } from "../../../../hooks/use-timer";
 import { formatTime } from "../../../../lib/utils";
 
@@ -46,7 +46,7 @@ export function TimerItem({ timer }: { timer: Timer }) {
         >
           <RotateCcw className="size-4" />
         </Button>
-        <Button
+        {/* <Button
           size="icon"
           variant="ghost"
           className="size-8 rounded-full text-gray-400"
@@ -59,7 +59,7 @@ export function TimerItem({ timer }: { timer: Timer }) {
           className="size-8 rounded-full text-gray-400"
         >
           <Trash2 className="size-4" />
-        </Button>
+        </Button> */}
       </div>
     </div>
   );
