@@ -51,7 +51,7 @@ export function WeatherSection() {
   const [weather, setWeather] = useState<WeatherstackResponse | null>(null);
 
   useEffect(() => {
-    const apiKey = "a4c8aff3570d490ab3d49adc0dfeba7b";
+    const apiKey = import.meta.env.VITE_IP_GEOLOCATION_API_KEY;
     fetch(`https://api.ipgeolocation.io/ipgeo?apiKey=${apiKey}`)
       .then(res => res.json())
       .then(data => {
