@@ -59,7 +59,7 @@ export function WeatherSection() {
         if (data.city) {
           // Fetch weather for the detected city
           const weatherstackKey = import.meta.env.VITE_WEATHERSTACK_API_KEY;
-          fetch(`http://api.weatherstack.com/current?access_key=${weatherstackKey}&query=${encodeURIComponent(data.city)}&units=f`)
+          fetch(`https://api.weatherstack.com/current?access_key=${weatherstackKey}&query=${encodeURIComponent(data.city)}&units=f`)
             .then(res => res.json())
             .then((weatherData: WeatherstackResponse) => {
               console.log('Weatherstack API response:', weatherData);
