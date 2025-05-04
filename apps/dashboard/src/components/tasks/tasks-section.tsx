@@ -3,24 +3,19 @@
 import { useState } from "react"
 import { Button } from "../ui/button"
 import { Input } from "../ui/input"
-import { CheckCircle, Circle, FileText, Goal, LayoutGrid, ListTodo } from "lucide-react"
+import { CheckCircle, Circle, FileText } from "lucide-react"
 import { cn } from "../../lib/utils"
 
 export function TasksSection() {
   const [activeTab, setActiveTab] = useState("tasks")
+  const [tasks, setTasks] = useState([
+    { id: 1, text: "move in", completed: true, priority: "Medium", date: "May 28" },
+  ])
 
   const tabs = [
     { id: "tasks", label: "Tasks", icon: <FileText className="size-4" /> },
-    { id: "goals", label: "Goals", icon: <Goal className="size-4" /> },
-    { id: "projects", label: "Projects", icon: <LayoutGrid className="size-4" /> },
-    { id: "plans", label: "Plans", icon: <ListTodo className="size-4" /> },
   ]
 
-  const tasks = [
-    { id: 1, text: "move in", completed: true, priority: "Medium", date: "May 28" },
-    { id: 2, text: "eat seafood", completed: false, priority: "Medium", date: "" },
-    { id: 3, text: "go to the gym", completed: false, priority: "Medium", date: "" },
-  ]
 
   return (
     <div className="bg-[#1a2235] rounded-lg p-4">
@@ -45,8 +40,22 @@ export function TasksSection() {
         <Input
           placeholder="Add a new task..."
           className="bg-[#232b3d] border-none text-gray-300 placeholder:text-gray-500"
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && e.currentTarget.value.trim()) {
+              setTasks([
+                ...tasks,
+                {
+                  id: Date.now(),
+                  text: e.currentTarget.value.trim(),
+                  completed: false,
+                  priority: "Medium",
+                  date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+                }
+              ]);
+              e.currentTarget.value = '';
+            }
+          }}
         />
-        <Input type="date" className="bg-[#232b3d] border-none text-gray-300 w-36" />
         <Button variant="outline" className="bg-[#232b3d] border-none text-gray-300">
           Medium
         </Button>

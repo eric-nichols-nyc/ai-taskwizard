@@ -1,13 +1,11 @@
 //import { Calendar } from "./components/calendar/calendar"
 import { ProductivitySection } from "./components/productivity/productivity-section"
-import { UpcomingSection } from "./components/upcoming/upcoming-section"
-import { TasksSection } from "./components/tasks/tasks-section"
 import { WeatherSection } from "./components/weather/weather-section"
 import { PomodoroSection } from "./components/features/pomodoro-section/pomodoro-app/pomodoro"
-import { SmartOverview } from "./components/smart-overview/smart-overview"
+// import { SmartOverview } from "./components/smart-overview/smart-overview"
 import Greeting from "./components/greeting/greeting"
 import { DateTimeDisplay } from "./components/date-and-time"
-// import PomodoroTimer  from "./components/features/pomodoro-prototype/pomodoro-section"
+import TodoList from "./components/tasks-prototype"
 
 export function Dashboard() {
   return (
@@ -20,14 +18,12 @@ export function Dashboard() {
         </div>
 
         {/* Smart Overview */}
-        <SmartOverview />
+        {/* <SmartOverview /> */}
 
         {/* Main content grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-6">
-            <ProductivitySection />
-            <UpcomingSection />
-            <TasksSection />
+            <TodoList />
           </div>
           <div className="space-y-6">
             <WeatherSection />
