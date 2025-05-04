@@ -1,4 +1,5 @@
 import * as React from "react"
+import { Card } from "@turbo-with-tailwind-v4/design-system/card"
 import quotes from "./quotes.json"
 import weather from "../../assets/weather.json"
 
@@ -39,17 +40,17 @@ const Greeting = () => {
   const timeOfDay = getTimeOfDay(localtime, sunrise, sunset)
 
   return (
-    <div>
+    <Card className="flex flex-col bg-[#1a2235] text-white border-none p-2">
       <div className="flex items-center mb-2">
         <img src={weatherIcon} alt="Weather" className="w-8 h-8 mr-2" />
         <h1 className="text-3xl font-bold text-white">
-          Good {timeOfDay}, Eric.
+          Welcome, Good {timeOfDay}.
         </h1>
       </div>
       <p className="text-gray-400 mt-1 italic text-sm">
         "{randomQuote.quote}" <span className="text-blue-400">- {randomQuote.author}</span>
       </p>
-    </div>
+    </Card>
   )
 }
 

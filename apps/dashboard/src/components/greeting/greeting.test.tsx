@@ -6,7 +6,7 @@ describe('Greeting', () => {
     render(<Greeting />)
     // Match any time of day greeting
     expect(
-      screen.getByText(/Good (morning|afternoon|evening|night), Eric\./i)
+      screen.getByText(/Good (morning|afternoon|evening|night)\./i)
     ).toBeInTheDocument()
     // Optionally check for the weather icon
     expect(screen.getByRole('img', { name: /weather/i })).toBeInTheDocument()

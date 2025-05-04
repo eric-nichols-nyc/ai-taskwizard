@@ -13,7 +13,7 @@ export function Dashboard() {
     <div className="min-h-screen bg-[#0f1420] text-white p-4 md:p-6 w-full">
       <div className="mx-auto space-y-6">
         {/* Header with greeting and calendar */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div className="flex md:flex-row justify-between items-start md:items-center gap-4">
           <Greeting />
           <Calendar />
         </div>
