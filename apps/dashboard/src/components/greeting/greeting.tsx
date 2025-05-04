@@ -1,28 +1,17 @@
 import * as React from "react"
 import { Card } from "@turbo-with-tailwind-v4/design-system/card"
 import quotes from "./quotes.json"
-import weather from "../../assets/weather.json"
+import { useWeatherStore } from "../../stores/weatherStore"
+import { Sun, Cloud } from "lucide-react"
 
-function toMinutes(timeStr: string) {
-  // Handles "hh:mm AM/PM"
-  const [time, modifier] = timeStr.split(' ')
-  const [h, minutes] = time.split(':').map(Number)
-  let hours = h
-  if (modifier === 'PM' && hours !== 12) hours += 12
-  if (modifier === 'AM' && hours === 12) hours = 0
-  return hours * 60 + minutes
-}
-
-function getTimeOfDay(localtime: string, sunrise: string, sunset: string) {
+function getTimeOfDay(localtime?: string | null) {
+  if (!localtime) return "day"
   const [, time] = localtime.split(' ')
   const [h, minutes] = time.split(':').map(Number)
   const localMinutes = h * 60 + minutes
-  const sunriseMinutes = toMinutes(sunrise)
-  const sunsetMinutes = toMinutes(sunset)
-
-  if (localMinutes < sunriseMinutes) return "night"
+  if (localMinutes < 6 * 60) return "night"
   if (localMinutes < 12 * 60) return "morning"
-  if (localMinutes < sunsetMinutes) return "afternoon"
+  if (localMinutes < 18 * 60) return "afternoon"
   return "evening"
 }
 
@@ -33,16 +22,19 @@ const Greeting = () => {
     return arr[idx]
   }, [])
 
-  // Get weather data
-  const { localtime } = weather.location
-  const { sunrise, sunset } = weather.current.astro
-  const weatherIcon = weather.current.weather_icons[0]
-  const timeOfDay = getTimeOfDay(localtime, sunrise, sunset)
+  const { weather, localtime } = useWeatherStore()
+  const timeOfDay = getTimeOfDay(localtime)
+  let weatherIcon: React.ReactNode = <Sun className="w-8 h-8 mr-2 text-yellow-400" />
+  if (weather?.weather_icons?.[0]) {
+    weatherIcon = <img src={weather.weather_icons[0]} alt="Weather" className="w-8 h-8 mr-2" />
+  } else if (weather?.weather_descriptions?.[0]?.toLowerCase().includes('cloud')) {
+    weatherIcon = <Cloud className="w-8 h-8 mr-2 text-gray-400" />
+  }
 
   return (
     <Card className="flex flex-col bg-[#1a2235] text-white border-none p-2">
       <div className="flex items-center mb-2">
-        <img src={weatherIcon} alt="Weather" className="w-8 h-8 mr-2" />
+        {weatherIcon}
         <h1 className="text-3xl font-bold text-white">
           Welcome, Good {timeOfDay}.
         </h1>
