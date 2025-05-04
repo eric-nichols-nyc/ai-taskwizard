@@ -64,3 +64,4 @@ export const RainIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
     <path d="M12 16v6" />
   </svg>
 );
+

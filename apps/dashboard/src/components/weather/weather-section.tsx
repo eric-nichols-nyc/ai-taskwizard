@@ -1,6 +1,7 @@
 import { Sun, Cloud } from "lucide-react"
 import { useEffect } from "react";
 import { useWeatherStore } from "../../stores/weatherStore";
+import { WeatherIcon } from "../weather-icon";
 
 export function WeatherSection() {
   const { city, weather, loading, error, fetchCityAndWeather } = useWeatherStore();
@@ -24,18 +25,11 @@ export function WeatherSection() {
 
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          {weather?.weather_descriptions?.[0]?.toLowerCase().includes('sunny') ? (
-            <Sun className="size-10 text-yellow-400" />
-          ) : weather?.weather_descriptions?.[0]?.toLowerCase().includes('cloud') ? (
-            <Cloud className="size-10 text-gray-400" />
-          ) : weather?.weather_icons?.[0] ? (
-            <img src={weather.weather_icons[0]} alt="Weather" className="w-10 h-10" />
-          ) : (
-            <Sun className="size-10 text-yellow-400" />
-          )}
+        {typeof weather?.weather_descriptions?.[0] === 'string' ? WeatherIcon(weather.weather_descriptions[0]) : <Cloud />}
+
           <div>
             <div className="flex items-end">
-              <span className="text-4xl font-bold">
+              <span className="text-2xl font-bold">
                 {weather?.temperature ? `${weather.temperature}°F` : loading ? "Loading..." : "N/A"}
               </span>
               <span className="text-gray-400 ml-2">

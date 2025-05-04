@@ -1,4 +1,4 @@
-import { Calendar } from "./components/calendar/calendar"
+//import { Calendar } from "./components/calendar/calendar"
 import { ProductivitySection } from "./components/productivity/productivity-section"
 import { UpcomingSection } from "./components/upcoming/upcoming-section"
 import { TasksSection } from "./components/tasks/tasks-section"
@@ -6,6 +6,7 @@ import { WeatherSection } from "./components/weather/weather-section"
 import { PomodoroSection } from "./components/features/pomodoro-section/pomodoro-app/pomodoro"
 import { SmartOverview } from "./components/smart-overview/smart-overview"
 import Greeting from "./components/greeting/greeting"
+import { DateTimeDisplay } from "./components/date-and-time"
 // import PomodoroTimer  from "./components/features/pomodoro-prototype/pomodoro-section"
 
 export function Dashboard() {
@@ -13,9 +14,9 @@ export function Dashboard() {
     <div className="min-h-screen bg-[#0f1420] text-white p-4 md:p-6 w-full">
       <div className="mx-auto space-y-6">
         {/* Header with greeting and calendar */}
-        <div className="flex md:flex-row justify-between items-start md:items-center gap-4">
+        <div className="flex md:flex-row justify-between items-start gap-4">
           <Greeting />
-          <Calendar />
+          <DateTimeDisplay />
         </div>
 
         {/* Smart Overview */}

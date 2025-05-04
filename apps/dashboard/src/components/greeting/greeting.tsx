@@ -2,8 +2,8 @@ import * as React from "react"
 import { Card } from "@turbo-with-tailwind-v4/design-system/card"
 import quotes from "./quotes.json"
 import { useWeatherStore } from "../../stores/weatherStore"
-import { Sun, Cloud } from "lucide-react"
-
+import { Cloud } from "lucide-react"
+import { WeatherIcon } from "../weather-icon"
 function getTimeOfDay(localtime?: string | null) {
   if (!localtime) return "day"
   const [, time] = localtime.split(' ')
@@ -24,17 +24,11 @@ const Greeting = () => {
 
   const { weather, localtime } = useWeatherStore()
   const timeOfDay = getTimeOfDay(localtime)
-  let weatherIcon: React.ReactNode = <Sun className="w-8 h-8 mr-2 text-yellow-400" />
-  if (weather?.weather_icons?.[0]) {
-    weatherIcon = <img src={weather.weather_icons[0]} alt="Weather" className="w-8 h-8 mr-2" />
-  } else if (weather?.weather_descriptions?.[0]?.toLowerCase().includes('cloud')) {
-    weatherIcon = <Cloud className="w-8 h-8 mr-2 text-gray-400" />
-  }
 
   return (
-    <Card className="flex flex-col bg-[#1a2235] text-white border-none p-2">
-      <div className="flex items-center mb-2">
-        {weatherIcon}
+    <Card className="flex flex-col flex-grow bg-[#1a2235] text-white border-none p-2">
+      <div className="flex items-center mb-2 gap-2">
+        {typeof weather?.weather_descriptions?.[0] === 'string' ? WeatherIcon(weather.weather_descriptions[0]) : <Cloud />}
         <h1 className="text-3xl font-bold text-white">
           Welcome, Good {timeOfDay}.
         </h1>
