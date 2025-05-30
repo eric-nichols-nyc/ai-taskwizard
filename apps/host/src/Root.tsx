@@ -7,6 +7,8 @@ export const Root = () => {
   const router = useRouter();
   const currentPath = router.state.location.pathname;
 
+  console.log('Root component rendered', { user, isLoaded });
+
   useEffect(() => {
     if (!isLoaded) return; // loading
     if (!user && currentPath !== '/login') {
