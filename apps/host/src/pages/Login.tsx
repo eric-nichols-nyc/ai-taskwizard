@@ -1,12 +1,11 @@
-//import { SignIn } from '@clerk/clerk-react'
+import { SignIn } from '@clerk/clerk-react'
 import { AuthLayout } from '../layouts/auth-layout';
 
 export const Login = () => {
 
   return (
     <AuthLayout>
-      {/* <SignIn /> */}
-      <p>login page</p>
+      <SignIn />
     </AuthLayout>
   );
 };
