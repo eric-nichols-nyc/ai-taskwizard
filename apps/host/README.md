@@ -52,3 +52,35 @@ export default tseslint.config({
   },
 })
 ```
+
+## Host Application Overview
+
+The Host application serves as the main entry point for TaskMaster AI, providing a unified interface for productivity, collaboration, and AI-powered assistance. It is built with React, TypeScript, Vite, TanStack Router, Clerk for authentication, and Tailwind CSS for styling. The app is designed to be modular, with several core pages and remote components.
+
+### Main Features & Pages
+- **Dashboard**: The landing page, aggregating key widgets and productivity insights. (Uses a remote Dashboard component)
+- **Notes**: A dedicated space for note-taking and organization.
+- **Calendar**: View and manage your schedule. (Uses a remote Calendar component)
+- **Friends**: Manage your social connections and collaborate.
+- **Community**: Engage with the broader TaskMaster AI community.
+- **Focus Mode**: Tools and environment for distraction-free productivity.
+- **AI Assistant**: Access AI-powered features and assistance.
+- **Settings**: Configure your preferences and account settings.
+- **Login**: Secure authentication via Clerk.
+
+### Navigation & Layout
+- The sidebar provides quick access to all main pages, as well as a premium upgrade button and user profile summary.
+- Most pages use a consistent dashboard layout, with the sidebar on the left and main content on the right.
+
+### Authentication
+- User authentication is handled by Clerk. Unauthenticated users are redirected to the login page.
+- The `ClerkProviderWrapper` ensures authentication context is available throughout the app.
+
+### Architecture
+- **React + Vite**: Fast development and HMR.
+- **TanStack Router**: Type-safe, declarative routing.
+- **Clerk**: Authentication and user management.
+- **Tailwind CSS**: Utility-first styling.
+- **Remote Components**: Some features (e.g., Dashboard, Calendar) are loaded as remote components for modularity and scalability.
+
+---

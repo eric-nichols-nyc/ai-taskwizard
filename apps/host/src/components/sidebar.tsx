@@ -1,5 +1,5 @@
 import { Link, useRouter } from '@tanstack/react-router';
-import { IconLayoutDashboard, IconFolders, IconNotes, IconCalendar, IconUsers, IconWorld, IconBrain, IconRobot, IconSettings, IconCrown } from '@tabler/icons-react';
+import { IconLayoutDashboard, IconFolders, IconNotes, IconCalendar, IconUsers, IconWorld, IconBrain, IconRobot, IconSettings } from '@tabler/icons-react';
 
 interface NavItemProps {
   icon: React.ReactNode;
@@ -48,14 +48,6 @@ export const Sidebar = () => {
 
       {/* Spacer */}
       <div className="flex-grow" />
-
-      {/* Premium Button */}
-      <div className="px-4 mb-4">
-        <button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-lg flex items-center justify-center gap-2">
-          <IconCrown size={20} />
-          <span>Upgrade to Premium</span>
-        </button>
-      </div>
 
       {/* User Profile */}
       <div className="px-4 py-2 flex items-center gap-3">
