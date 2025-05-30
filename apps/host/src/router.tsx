@@ -8,6 +8,7 @@ import { Community } from './pages/Community';
 import { FocusMode } from './pages/FocusMode';
 import { AIAssistant } from './pages/AIAssistant';
 import { Settings } from './pages/Settings';
+import { Login } from './pages/Login';
 
 // Define routes
 const rootRoute = createRootRoute({
@@ -18,6 +19,12 @@ const dashboardRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
   component: Dashboard,
+});
+
+const loginRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/login',
+  component: Login,
 });
 
 const notesRoute = createRoute({
@@ -72,6 +79,7 @@ export const routeTree = rootRoute.addChildren([
   focusModeRoute,
   aiAssistantRoute,
   settingsRoute,
+  loginRoute,
 ]);
 
 export const router = createRouter({ routeTree });

@@ -23,7 +23,7 @@ export default function TodoList() {
   ])
 
   const [newTaskText, setNewTaskText] = useState("")
-  const [newTaskPriority, setNewTaskPriority] = useState<"Low" | "Medium" | "High">("Medium")
+  const [newTaskPriority] = useState<"Low" | "Medium" | "High">("Medium")
 
   const completedTasks = tasks.filter((task) => task.completed).length
   const totalTasks = tasks.length
@@ -75,7 +75,7 @@ export default function TodoList() {
                 {completedTasks}/{totalTasks} ({completionPercentage}%)
               </span>
             </div>
-            <Progress value={completionPercentage} className="h-2 bg-[#1a1d29]" indicatorClassName="bg-green-500" />
+            <Progress value={completionPercentage} className="h-2 bg-[#1a1d29]"  />
           </div>
         </div>
 

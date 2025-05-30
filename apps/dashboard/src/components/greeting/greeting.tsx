@@ -30,7 +30,7 @@ const Greeting = () => {
       <div className="flex items-center mb-2 gap-2">
         {typeof weather?.weather_descriptions?.[0] === 'string' ? WeatherIcon(weather.weather_descriptions[0]) : <Cloud />}
         <h1 className="text-3xl font-bold text-white">
-          Welcome, Good {timeOfDay}.
+          Welcome Poopy Face, Good {timeOfDay}.
         </h1>
       </div>
       <p className="text-gray-400 mt-1 italic text-sm">

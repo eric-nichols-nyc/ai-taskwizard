@@ -1,5 +1,5 @@
 //import { Calendar } from "./components/calendar/calendar"
-import { ProductivitySection } from "./components/productivity/productivity-section"
+// import { ProductivitySection } from "./components/productivity/productivity-section"
 import { WeatherSection } from "./components/weather/weather-section"
 import { PomodoroSection } from "./components/features/pomodoro-section/pomodoro-app/pomodoro"
 // import { SmartOverview } from "./components/smart-overview/smart-overview"
