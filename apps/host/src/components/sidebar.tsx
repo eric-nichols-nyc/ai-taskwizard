@@ -44,6 +44,7 @@ export const Sidebar = () => {
         <NavItem icon={<IconBrain size={20} />} label="Focus Mode" to="/focus" />
         <NavItem icon={<IconRobot size={20} />} label="AI Assistant" to="/ai-assistant" />
         <NavItem icon={<IconSettings size={20} />} label="Settings" to="/settings" />
+        <NavItem icon={<IconSettings size={20} />} label="Login" to="/login" />
       </div>
 
       {/* Spacer */}
