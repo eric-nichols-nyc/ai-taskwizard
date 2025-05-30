@@ -1,5 +1,5 @@
 import { Link, useRouter } from '@tanstack/react-router';
-import { IconLayoutDashboard, IconFolders, IconNotes, IconCalendar, IconUsers, IconWorld, IconBrain, IconRobot, IconSettings } from '@tabler/icons-react';
+import { IconLayoutDashboard, IconNotes, IconCalendar, IconBrain, IconRobot, IconSettings } from '@tabler/icons-react';
 
 interface NavItemProps {
   icon: React.ReactNode;
@@ -36,15 +36,11 @@ export const Sidebar = () => {
       {/* Navigation Items */}
       <div className="flex flex-col gap-1">
         <NavItem icon={<IconLayoutDashboard size={20} />} label="Dashboard" to="/" />
-        <NavItem icon={<IconFolders size={20} />} label="Folders" to="/folders" />
         <NavItem icon={<IconNotes size={20} />} label="Notes" to="/notes" />
         <NavItem icon={<IconCalendar size={20} />} label="Calendar" to="/calendar" />
-        <NavItem icon={<IconUsers size={20} />} label="Friends" to="/friends" />
-        <NavItem icon={<IconWorld size={20} />} label="Community" to="/community" />
         <NavItem icon={<IconBrain size={20} />} label="Focus Mode" to="/focus" />
         <NavItem icon={<IconRobot size={20} />} label="AI Assistant" to="/ai-assistant" />
         <NavItem icon={<IconSettings size={20} />} label="Settings" to="/settings" />
-        <NavItem icon={<IconSettings size={20} />} label="Login" to="/login" />
       </div>
 
       {/* Spacer */}
