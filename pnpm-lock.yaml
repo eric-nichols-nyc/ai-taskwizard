@@ -229,6 +229,9 @@ importers:
 
   apps/host:
     dependencies:
+      '@clerk/clerk-react':
+        specifier: ^5.31.8
+        version: 5.31.8(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@originjs/vite-plugin-federation':
         specifier: ^1.3.6
         version: 1.4.1
@@ -256,6 +259,9 @@ importers:
       '@turbo-with-tailwind-v4/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      clsx:
+        specifier: ^2.1.1
+        version: 2.1.1
       react:
         specifier: ^19.0.0
         version: 19.1.0
@@ -265,6 +271,9 @@ importers:
       react-router-dom:
         specifier: ^7.5.3
         version: 7.5.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      tailwind-merge:
+        specifier: ^3.0.2
+        version: 3.2.0
     devDependencies:
       '@eslint/js':
         specifier: ^9.22.0
