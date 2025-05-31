@@ -180,7 +180,7 @@ export const CalendarApp: React.FC = () => {
         <div className="flex items-center space-x-4">
           <Calendar className="w-6 h-6 text-blue-600" />
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-2xl font-bold text-gray-900 calendar-month-title">
               {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
             </h1>
             <p className="text-sm text-gray-600">
@@ -218,13 +218,13 @@ export const CalendarApp: React.FC = () => {
       </div>
 
       {/* Calendar Body Component */}
-      <div className="bg-white rounded-lg shadow">
+      <div className="bg-card rounded-lg shadow">
         {/* Day headers */}
-        <div className="grid grid-cols-7 gap-px bg-gray-200">
+        <div className="grid grid-cols-7 gap-px calendar-grid-gap calendar-header">
           {dayNames.map((day: string) => (
             <div
               key={day}
-              className="bg-gray-50 px-3 py-2 text-center text-sm font-medium text-gray-700"
+              className="px-3 py-2 text-center text-sm font-medium calendar-header-day"
             >
               {day}
             </div>
@@ -232,7 +232,7 @@ export const CalendarApp: React.FC = () => {
         </div>
 
         {/* Calendar days */}
-        <div className="grid grid-cols-7 gap-px bg-gray-200">
+        <div className="grid grid-cols-7 gap-px calendar-grid-gap">
           {getDaysInMonth().map((date: Date | null, index: number) => {
             const dayEvents: Event[] = date ? getEventsForDate(date) : [];
             const isToday: boolean = !!date && date.toDateString() === new Date().toDateString();
@@ -242,15 +242,15 @@ export const CalendarApp: React.FC = () => {
                 key={index}
                 className={`min-h-[140px] p-2 cursor-pointer transition-colors ${
                   isToday 
-                    ? 'bg-blue-50 border-2 border-blue-200 hover:bg-blue-100' 
-                    : 'bg-white hover:bg-gray-50'
+                    ? 'calendar-today'
+                    : 'calendar-day'
                 }`}
                 onClick={() => date && openEventPopover(date)}
               >
                 {date && (
                   <>
                     <div className={`text-sm font-medium mb-1 ${
-                      isToday ? 'text-blue-600 font-bold' : 'text-gray-900'
+                      isToday ? '' : ''
                     }`}>
                       {date.getDate()}
                     </div>
@@ -258,8 +258,8 @@ export const CalendarApp: React.FC = () => {
                       {dayEvents.slice(0, 3).map((event: Event, eventIndex: number) => (
                         <div
                           key={eventIndex}
-                          className="text-xs px-2 py-1 rounded text-white truncate"
-                          style={{ backgroundColor: event.color }}
+                          className="calendar-event"
+                          style={event.color ? { backgroundColor: event.color, color: '#fff' } : {}}
                         >
                           {event.title}
                         </div>

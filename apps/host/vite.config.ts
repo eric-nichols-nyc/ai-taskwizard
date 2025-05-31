@@ -10,13 +10,14 @@ export default defineConfig(({ mode }) => {
   // Explicitly load the env file for the current mode
   const env = loadEnv(mode, process.cwd(), '');
 
-  console.log('Loaded env:', env);
+  // console.log('Loaded env:', env);
 
-  if (!env.VITE_DASHBOARD_REMOTE || !env.VITE_CALENDAR_REMOTE) {
+  if (!env.VITE_DASHBOARD_REMOTE || !env.VITE_CALENDAR_REMOTE || !env.VITE_NOTES_REMOTE) {
     throw new Error('Missing required remoteEntry.js URLs in environment variables!');
   }
   const dashboardRemote = env.VITE_DASHBOARD_REMOTE;
   const calendarRemote = env.VITE_CALENDAR_REMOTE;
+  const notesRemote = env.VITE_NOTES_REMOTE;
 
   console.log('Vite mode:', mode);
   return {
@@ -26,7 +27,8 @@ export default defineConfig(({ mode }) => {
         name: 'host',
         remotes: {
           dashboard: dashboardRemote,
-          calendar: calendarRemote
+          calendar: calendarRemote,
+          notes: notesRemote
         },
         shared: ['react', 'react-dom']
       })

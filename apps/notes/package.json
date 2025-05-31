@@ -7,7 +7,7 @@
     "dev": "vite --port 3003",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview --port 3002"
+    "preview": "vite preview --port 3003"
   },
   "dependencies": {
     "@originjs/vite-plugin-federation": "^1.2.3",

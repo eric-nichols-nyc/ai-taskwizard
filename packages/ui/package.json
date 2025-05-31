@@ -40,7 +40,6 @@
     "@tailwindcss/cli": "^4.0.12",
     "@tailwindcss/postcss": "^4.0.12",
     "@turbo-with-tailwind-v4/design-system": "workspace:*",
-    "@turbo-with-tailwind-v4/ui": "workspace:*",
     "@turbo-with-tailwind-v4/utils": "workspace:*",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

@@ -1,10 +1,10 @@
-import { Calendar as RemoteCalendar } from 'calendar/Calendar';
+import { CalendarApp } from 'calendar/CalendarApp';
 import { DashboardLayout } from '../layouts/dashboard-layout';
 export const Calendar = () => {
   return (
     <DashboardLayout>
       <div className="h-full">
-        <RemoteCalendar />
+        <CalendarApp />
       </div>
     </DashboardLayout>
   );
