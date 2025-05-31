@@ -10,6 +10,7 @@ export default defineConfig({
     filename: 'remoteEntry.js',
     exposes: {
       "./Calendar": "./src/Calendar.tsx",
+      "./CalendarApp": "./src/CalendarApp.tsx"
     },
     shared: ['react', 'react-dom']
   })],

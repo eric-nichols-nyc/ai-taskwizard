@@ -8,6 +8,7 @@
     "dist"
   ],
   "exports": {
+    "./*": "./src/*.tsx",
     ".": {
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
@@ -35,11 +36,16 @@
     "typescript": "^5.8.2"
   },
   "dependencies": {
+    "@radix-ui/react-slot": "^1.2.0",
     "@tailwindcss/cli": "^4.0.12",
     "@tailwindcss/postcss": "^4.0.12",
     "@turbo-with-tailwind-v4/design-system": "workspace:*",
+    "@turbo-with-tailwind-v4/ui": "workspace:*",
     "@turbo-with-tailwind-v4/utils": "workspace:*",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "postcss": "^8.5.3",
+    "tailwind-merge": "^3.0.2",
     "tailwindcss": "^4.0.12"
   }
 }

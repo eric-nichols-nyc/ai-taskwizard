@@ -9,7 +9,7 @@ import TodoList from "./components/tasks-prototype"
 
 export function Dashboard() {
   return (
-    <div className="min-h-screen bg-[#0f1420] text-white p-4 md:p-6 w-full">
+    <div className="min-h-screen p-4 md:p-6 w-full">
       <div className="mx-auto space-y-6">
         {/* Header with greeting and calendar */}
         <div className="flex md:flex-row justify-between items-start gap-4">

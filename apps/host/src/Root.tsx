@@ -1,21 +1,15 @@
-import { Outlet, useRouter } from '@tanstack/react-router';
-import { useCurrentUser } from '@turbo-with-tailwind-v4/auth';
+import { Outlet, } from '@tanstack/react-router';
+import { AuthProvider, useAuth } from '@turbo-with-tailwind-v4/supabase';
+import { supabase } from './supabaseClient';
 
 export const Root = () => {
-  const { user, isLoaded } = useCurrentUser();
-  const router = useRouter();
-
-  console.log('Root component rendered', { user, isLoaded });
-  if (isLoaded && !user) {
-    router.navigate({ to: '/login', replace: true });
-  }else{
-    console.log('user is logged in', user);
-  }
-
-
+  const { user, signIn, signOut } = useAuth()
+  console.log('user', user)
   return (
     <div className="flex h-screen bg-[#0A0A0B]">
-        <Outlet />
+      <AuthProvider isHost={true} supabase={supabase}>
+          <Outlet />
+      </AuthProvider>
     </div>
   );
 }; 

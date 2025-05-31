@@ -16,9 +16,12 @@
     "@tailwindcss/vite": "^4.1.4",
     "@turbo-with-tailwind-v4/design-system": "workspace:*",
     "@turbo-with-tailwind-v4/ui": "workspace:*",
+    "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
     "lucide-react": "^0.503.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "tailwind-merge": "^3.0.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
