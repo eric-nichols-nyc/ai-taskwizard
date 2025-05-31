@@ -2,6 +2,7 @@ import { Sun, Cloud } from "lucide-react"
 import { useEffect } from "react";
 import { useWeatherStore } from "../../stores/weatherStore";
 import { WeatherIcon } from "../weather-icon";
+import { Card, CardContent } from "@turbo-with-tailwind-v4/ui/card";
 
 export function WeatherSection() {
   const { city, weather, loading, error, fetchCityAndWeather } = useWeatherStore();
@@ -14,7 +15,8 @@ export function WeatherSection() {
   }, []);
 
   return (
-    <div className="rounded-lg p-6">
+    <Card>
+      <CardContent>
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Sun className="size-5 text-yellow-400" />
@@ -55,7 +57,8 @@ export function WeatherSection() {
         </div>
       </div>
       {error && <div className="text-red-400 mt-2">{error}</div>}
-    </div>
+      </CardContent>
+    </Card>
   )
 }
 

@@ -1,9 +1,11 @@
 import { LineChart } from "lucide-react";
 import { TasksSection } from "../tasks/tasks-section";
+import { Card, CardContent } from "@turbo-with-tailwind-v4/ui/card";
 
 export function ProductivitySection() {
   return (
-    <div>
+    <Card>
+      <CardContent>
       <div className="rounded-lg p-6">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
@@ -23,12 +25,13 @@ export function ProductivitySection() {
               className="h-full bg-green-400 rounded-full"
               style={{ width: "33%" }}
             ></div>
+            </div>
           </div>
         </div>
-      </div>
+      </CardContent>
       <div className="mt-4">
         <TasksSection />
       </div>
-    </div>
+    </Card>
   );
 }

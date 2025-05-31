@@ -1,5 +1,5 @@
 import * as React from "react"
-import { Card } from "@turbo-with-tailwind-v4/design-system/card"
+import { Card } from "@turbo-with-tailwind-v4/ui/card"
 import quotes from "./quotes.json"
 import { useWeatherStore } from "../../stores/weatherStore"
 import { Cloud } from "lucide-react"
@@ -26,7 +26,7 @@ const Greeting = () => {
   const timeOfDay = getTimeOfDay(localtime)
 
   return (
-    <Card className="flex flex-col flex-grow border-none p-2">
+    <Card className="flex flex-col flex-grow p-2">
       <div className="flex items-center mb-2 gap-2">
         {typeof weather?.weather_descriptions?.[0] === 'string' ? WeatherIcon(weather.weather_descriptions[0]) : <Cloud />}
         <h1 className="text-3xl font-bold ">

@@ -6,6 +6,7 @@ import { Button } from "../ui/button"
 import { Input } from "../ui/input"
 import { Progress } from "../ui/progress"
 import { cn } from "../../lib/utils"
+import { Card } from "@turbo-with-tailwind-v4/ui/card"
 
 interface Task {
   id: string
@@ -58,7 +59,7 @@ export default function TodoList() {
   }
 
   return (
-    <div className="p-6">
+    <Card className="p-6">
       <div className="max-w-md mx-auto">
         <div className="mb-8">
           <div className="flex items-center mb-4">
@@ -142,6 +143,6 @@ export default function TodoList() {
           </div>
         </div>
       </div>
-    </div>
+    </Card>
   )
 }

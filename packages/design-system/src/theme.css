@@ -144,3 +144,9 @@
   --shadow-xl: var(--shadow-xl);
   --shadow-2xl: var(--shadow-2xl);
 }
+
+.bg-card{
+  background-color: var(--card);
+  border-radius: var(--radius);
+  border-color: var(--border);
+}

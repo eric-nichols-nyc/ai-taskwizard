@@ -5,6 +5,7 @@ import { Button } from "../ui/button"
 import { Input } from "../ui/input"
 import { CheckCircle, Circle, FileText } from "lucide-react"
 import { cn } from "../../lib/utils"
+import { Card } from "@turbo-with-tailwind-v4/ui/card"
 
 export function TasksSection() {
   const [activeTab, setActiveTab] = useState("tasks")
@@ -18,7 +19,7 @@ export function TasksSection() {
 
 
   return (
-    <div className="rounded-lg p-4">
+    <Card className="rounded-lg p-4">
       <div className="flex space-x-1 mb-4 overflow-x-auto">
         {tabs.map((tab) => (
           <Button
@@ -77,6 +78,6 @@ export function TasksSection() {
           </div>
         ))}
       </div>
-    </div>
+    </Card>
   )
 }
