@@ -2,7 +2,7 @@ import { Sparkles } from "lucide-react"
 
 export function SmartOverview() {
   return (
-    <div className="bg-[#1a2235] rounded-lg p-6">
+    <div className="rounded-lg p-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Sparkles className="size-5 text-yellow-400" />

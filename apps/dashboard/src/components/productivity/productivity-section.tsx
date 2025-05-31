@@ -4,7 +4,7 @@ import { TasksSection } from "../tasks/tasks-section";
 export function ProductivitySection() {
   return (
     <div>
-      <div className="bg-[#1a2235] rounded-lg p-6">
+      <div className="rounded-lg p-6">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <LineChart className="size-5 text-purple-400" />
@@ -18,7 +18,7 @@ export function ProductivitySection() {
             <span className="text-sm">Tasks</span>
             <span className="text-xs text-green-400 ml-auto">1/3 (33%)</span>
           </div>
-          <div className="w-full h-2 bg-[#232b3d] rounded-full overflow-hidden">
+          <div className="w-full h-2 rounded-full overflow-hidden">
             <div
               className="h-full bg-green-400 rounded-full"
               style={{ width: "33%" }}

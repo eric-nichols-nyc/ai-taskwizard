@@ -241,7 +241,7 @@ const PomodoroTimer = () => {
   }, [timers]);
   
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white p-4">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900  p-4">
      
       
       {/* Header with new timer button */}
@@ -249,7 +249,7 @@ const PomodoroTimer = () => {
         <h1 className="text-2xl font-bold">Pomodoro Timer</h1>
         <button 
           onClick={addNewTimer}
-          className="bg-purple-700 hover:bg-purple-600 text-white rounded-full p-2 transition-colors"
+          className="bg-purple-700 hover:bg-purple-600  rounded-full p-2 transition-colors"
         >
           <Plus size={18} />
         </button>
@@ -268,7 +268,7 @@ const PomodoroTimer = () => {
             {!isMainActive ? (
               <button 
                 onClick={startMainTimer}
-                className="bg-green-600 hover:bg-green-500 text-white rounded-lg px-6 py-3 flex items-center gap-2 transition-colors"
+                className="bg-green-600 hover:bg-green-500  rounded-lg px-6 py-3 flex items-center gap-2 transition-colors"
               >
                 <Play size={18} />
                 Start
@@ -276,7 +276,7 @@ const PomodoroTimer = () => {
             ) : (
               <button 
                 onClick={pauseMainTimer}
-                className="bg-gray-600 hover:bg-gray-500 text-white rounded-lg px-6 py-3 flex items-center gap-2 transition-colors"
+                className="bg-gray-600 hover:bg-gray-500  rounded-lg px-6 py-3 flex items-center gap-2 transition-colors"
               >
                 <Pause size={18} />
                 Pause
@@ -285,7 +285,7 @@ const PomodoroTimer = () => {
             
             <button 
               onClick={resetMainTimer}
-              className="bg-red-600 hover:bg-red-500 text-white rounded-lg px-6 py-3 flex items-center gap-2 transition-colors"
+              className="bg-red-600 hover:bg-red-500  rounded-lg px-6 py-3 flex items-center gap-2 transition-colors"
             >
               <RotateCcw size={18} />
               Reset

@@ -19,13 +19,13 @@ export function PomodoroTimer({ setTimer }: { setTimer: (timer: TimerType) => vo
 
 
   return (
-    <div className="bg-[#1a2235] rounded-lg p-6">
+    <div className="rounded-lg p-6">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <Timer className="size-5 text-white" />
-          <h2 className="text-xl font-semibold text-white">Pomodoro</h2>
+          <Timer className="size-5 " />
+          <h2 className="text-xl font-semibold ">Pomodoro</h2>
         </div>
-        <Button size="sm" className="bg-purple-600 hover:bg-purple-700 text-white rounded-full" onClick={() => {
+        <Button size="sm" className="bg-purple-600 hover:bg-purple-700  rounded-full" onClick={() => {
           const newTimer: TimerType = {
             id: Date.now(),
             name: "New Timer",
@@ -42,9 +42,9 @@ export function PomodoroTimer({ setTimer }: { setTimer: (timer: TimerType) => vo
         <div className="text-6xl font-bold text-purple-400 my-4" data-testid="timer-display">{formatTime(time)}</div>
 
         <div className="flex gap-2">
-          <Button className="bg-green-500 hover:bg-green-600 text-white rounded-full px-6" onClick={startTimer} disabled={isRunning || time === 0}>Start</Button>
-          <Button variant="outline" className="bg-gray-600 hover:bg-gray-700 text-white border-none rounded-full px-6" onClick={pauseTimer} disabled={!isRunning}>Pause</Button>
-          <Button variant="outline" className="bg-red-500 hover:bg-red-600 text-white border-none rounded-full px-6" onClick={resetTimer}>Reset</Button>
+          <Button className="bg-green-500 hover:bg-green-600  rounded-full px-6" onClick={startTimer} disabled={isRunning || time === 0}>Start</Button>
+          <Button variant="outline" className="bg-gray-600 hover:bg-gray-700  border-none rounded-full px-6" onClick={pauseTimer} disabled={!isRunning}>Pause</Button>
+          <Button variant="outline" className="bg-red-500 hover:bg-red-600  border-none rounded-full px-6" onClick={resetTimer}>Reset</Button>
         </div>
       </div>
     </div>

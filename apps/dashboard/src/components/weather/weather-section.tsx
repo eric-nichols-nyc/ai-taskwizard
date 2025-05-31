@@ -14,11 +14,11 @@ export function WeatherSection() {
   }, []);
 
   return (
-    <div className="bg-[#1a2235] rounded-lg p-6">
+    <div className="rounded-lg p-6">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Sun className="size-5 text-yellow-400" />
-          <h2 className="text-xl font-semibold text-white">Weather</h2>
+          <h2 className="text-xl font-semibold ">Weather</h2>
           <span className="text-gray-400">/ {city || "..."}</span>
         </div>
       </div>

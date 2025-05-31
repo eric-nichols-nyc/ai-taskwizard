@@ -6,7 +6,7 @@ function App() {
   console.log('dashboard app', user, isLoaded);
 
   return (
-    <div className='w-full'>
+    <div className='w-full dark'>
       <Dashboard />
     </div>
   )

@@ -18,7 +18,7 @@ export function TasksSection() {
 
 
   return (
-    <div className="bg-[#1a2235] rounded-lg p-4">
+    <div className="rounded-lg p-4">
       <div className="flex space-x-1 mb-4 overflow-x-auto">
         {tabs.map((tab) => (
           <Button
@@ -39,7 +39,7 @@ export function TasksSection() {
       <div className="flex gap-2 mb-4">
         <Input
           placeholder="Add a new task..."
-          className="bg-[#232b3d] border-none text-gray-300 placeholder:text-gray-500"
+          className="border-none placeholder:text-gray-500"
           onKeyDown={(e) => {
             if (e.key === 'Enter' && e.currentTarget.value.trim()) {
               setTasks([

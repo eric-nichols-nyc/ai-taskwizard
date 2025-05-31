@@ -16,7 +16,7 @@ export function TimerItem({ timer }: { timer: Timer }) {
   const { startTimer, pauseTimer, resetTimer, time, isRunning } = useTimer();
 
   return (
-    <div className="flex items-center justify-between bg-[#232b3d] rounded-lg p-3">
+    <div className="flex items-center justify-between rounded-lg p-3">
       <div>
         <div className="text-sm text-gray-400">{timer.name}</div>
         <div className="text-xl font-bold text-purple-400">{formatTime(time)}</div>

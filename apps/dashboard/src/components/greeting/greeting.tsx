@@ -26,14 +26,14 @@ const Greeting = () => {
   const timeOfDay = getTimeOfDay(localtime)
 
   return (
-    <Card className="flex flex-col flex-grow bg-[#1a2235] text-white border-none p-2">
+    <Card className="flex flex-col flex-grow border-none p-2">
       <div className="flex items-center mb-2 gap-2">
         {typeof weather?.weather_descriptions?.[0] === 'string' ? WeatherIcon(weather.weather_descriptions[0]) : <Cloud />}
-        <h1 className="text-3xl font-bold text-white">
+        <h1 className="text-3xl font-bold ">
           Welcome Poopy Face, Good {timeOfDay}.
         </h1>
       </div>
-      <p className="text-gray-400 mt-1 italic text-sm">
+      <p className="mt-1 italic text-sm">
         "{randomQuote.quote}" <span className="text-blue-400">- {randomQuote.author}</span>
       </p>
     </Card>

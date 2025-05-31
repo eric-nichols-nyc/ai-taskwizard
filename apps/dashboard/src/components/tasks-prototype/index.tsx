@@ -58,7 +58,7 @@ export default function TodoList() {
   }
 
   return (
-    <div className="bg-[#0f1117] text-white p-6">
+    <div className="p-6">
       <div className="max-w-md mx-auto">
         <div className="mb-8">
           <div className="flex items-center mb-4">
@@ -75,11 +75,11 @@ export default function TodoList() {
                 {completedTasks}/{totalTasks} ({completionPercentage}%)
               </span>
             </div>
-            <Progress value={completionPercentage} className="h-2 bg-[#1a1d29]"  />
+            <Progress value={completionPercentage} className="h-2 "  />
           </div>
         </div>
 
-        <div className="bg-[#1a1d29] rounded-lg p-4">
+        <div className=" rounded-lg p-4">
           <div className="flex items-center mb-4 gap-2">
             <Button size="sm" variant="secondary" className="bg-purple-600 hover:bg-purple-700 text-white rounded-full">
               <ListTodo className="h-4 w-4 mr-2" />
@@ -93,13 +93,13 @@ export default function TodoList() {
               value={newTaskText}
               onChange={(e) => setNewTaskText(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && addTask()}
-              className="flex-1 bg-[#0f1117] border-none text-sm"
+              className="flex-1 border-none text-sm"
             />
             <div className="ml-2">
               <Button
                 variant="outline"
                 size="sm"
-                className="bg-[#0f1117] border-[#2a2d3a] text-white hover:bg-[#1a1d29]"
+                className="border-[#2a2d3a]  hover:bg-[#1a1d29]"
                 onClick={() => addTask()}
               >
                 {newTaskPriority}
