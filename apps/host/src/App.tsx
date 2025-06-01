@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { Button } from '@turbo-with-tailwind-v4/design-system/button'
 import { Dashboard } from 'dashboard/Dashboard'
-import { Calendar } from 'calendar/Calendar'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -11,11 +10,6 @@ function App() {
       <div className='border border-red-500 p-4 rounded-lg w-full'>
         <Dashboard />
       </div>
-      
-      <div className='border border-blue-500 p-4 rounded-lg w-full'>
-        <Calendar />
-      </div>
-
       <Button variant='contained' color='primary' onClick={() => setCount((count) => count + 1)}>
         count is {count}
       </Button>

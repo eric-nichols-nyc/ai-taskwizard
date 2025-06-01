@@ -1,5 +1,5 @@
 import { Link, useRouter } from '@tanstack/react-router';
-import { IconLayoutDashboard, IconNotes, IconCalendar, IconBrain, IconRobot, IconSettings } from '@tabler/icons-react';
+import { IconLayoutDashboard, IconNotes, IconCalendar, IconBrain, IconSettings } from '@tabler/icons-react';
 
 interface NavItemProps {
   icon: React.ReactNode;
@@ -39,7 +39,6 @@ export const Sidebar = () => {
         <NavItem icon={<IconNotes size={20} />} label="Notes" to="/notes" />
         <NavItem icon={<IconCalendar size={20} />} label="Calendar" to="/calendar" />
         <NavItem icon={<IconBrain size={20} />} label="Focus Mode" to="/focus" />
-        <NavItem icon={<IconRobot size={20} />} label="AI Assistant" to="/ai-assistant" />
         <NavItem icon={<IconSettings size={20} />} label="Settings" to="/settings" />
       </div>
 

@@ -1,8 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Github, Twitter, Instagram, Mail } from "lucide-react"
-
 export function Notes() {
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
@@ -37,7 +35,7 @@ export function Notes() {
   }, [])
 
   return (
-    <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden p-4 text-white">
+    <main className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden p-4 text-white">
       {/* Animated gradient background */}
       <div className="absolute inset-0 z-[-1] bg-gradient-animated" />
 
@@ -65,24 +63,6 @@ export function Notes() {
           </div>
         </div>
         {/* Social links */}
-        <div className="flex justify-center space-x-4">
-          <a href="#" className="rounded-full bg-white/10 p-2 transition-colors hover:bg-white/20">
-            <Twitter size={20} />
-            <span className="sr-only">Twitter</span>
-          </a>
-          <a href="#" className="rounded-full bg-white/10 p-2 transition-colors hover:bg-white/20">
-            <Instagram size={20} />
-            <span className="sr-only">Instagram</span>
-          </a>
-          <a href="#" className="rounded-full bg-white/10 p-2 transition-colors hover:bg-white/20">
-            <Github size={20} />
-            <span className="sr-only">GitHub</span>
-          </a>
-          <a href="#" className="rounded-full bg-white/10 p-2 transition-colors hover:bg-white/20">
-            <Mail size={20} />
-            <span className="sr-only">Email</span>
-          </a>
-        </div>
       </div>
     </main>
   )
