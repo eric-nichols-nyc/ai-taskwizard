@@ -11,6 +11,8 @@
     "build:dashboard": "turbo run build --filter=dashboard...",
     "build:host": "turbo run build --filter=host...",
     "build:calendar": "turbo run build --filter=calendar...",
+    "build:notes": "turbo run build --filter=notes...",
+    "build:focus": "turbo run build --filter=focus...",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
