@@ -9,15 +9,22 @@ import { FocusMode } from './pages/FocusMode';
 import { AIAssistant } from './pages/AIAssistant';
 import { Settings } from './pages/Settings';
 import { Login } from './pages/Login';
+import { Landing } from './pages/Landing';
 
 // Define routes
 const rootRoute = createRootRoute({
   component: Root,
 });
 
-const dashboardRoute = createRoute({
+const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
+  component: Landing,
+});
+
+const dashboardRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/dashboard',
   component: Dashboard,
 });
 
@@ -71,6 +78,7 @@ const settingsRoute = createRoute({
 
 // Create and export the router
 export const routeTree = rootRoute.addChildren([
+  indexRoute,
   dashboardRoute,
   notesRoute,
   calendarRoute,
