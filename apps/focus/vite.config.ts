@@ -6,7 +6,7 @@ import { defineConfig } from "vite"
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), federation({
-    name: "calendar",
+    name: "focus",
     filename: 'remoteEntry.js',
     exposes: {
       "./FocusApp": "./src/FocusApp.tsx"

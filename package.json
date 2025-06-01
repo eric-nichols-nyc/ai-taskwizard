@@ -7,6 +7,8 @@
   ],
   "scripts": {
     "build": "turbo run build",
+    "preview": "turbo run preview",
+    "build:settings": "turbo run build --filter=settings...",
     "build:main": "turbo run build --filter=web...",
     "build:dashboard": "turbo run build --filter=dashboard...",
     "build:host": "turbo run build --filter=host...",

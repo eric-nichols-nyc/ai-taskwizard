@@ -1,5 +1,5 @@
 import "./App.css";
-import Settings from "./Settings";
+import { Settings } from "./Settings";
 
 function App() {
 
