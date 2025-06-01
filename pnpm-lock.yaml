@@ -236,6 +236,97 @@ importers:
         specifier: ^1.4.0
         version: 1.6.1(@types/node@22.15.3)(@vitest/ui@1.6.1)(jsdom@26.1.0)(lightningcss@1.29.2)
 
+  apps/focus:
+    dependencies:
+      '@originjs/vite-plugin-federation':
+        specifier: ^1.2.3
+        version: 1.4.1
+      '@tailwindcss/cli':
+        specifier: ^4.1.5
+        version: 4.1.5
+      '@tailwindcss/postcss':
+        specifier: ^4.1.5
+        version: 4.1.5
+      '@tailwindcss/vite':
+        specifier: ^4.1.4
+        version: 4.1.5(vite@6.3.4(@types/node@22.15.3)(jiti@2.4.2)(lightningcss@1.29.2))
+      '@turbo-with-tailwind-v4/design-system':
+        specifier: workspace:*
+        version: link:../../packages/design-system
+      '@turbo-with-tailwind-v4/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
+      clsx:
+        specifier: ^2.1.1
+        version: 2.1.1
+      date-fns:
+        specifier: ^4.1.0
+        version: 4.1.0
+      lucide-react:
+        specifier: ^0.503.0
+        version: 0.503.0(react@19.1.0)
+      react:
+        specifier: ^19.0.0
+        version: 19.1.0
+      react-dom:
+        specifier: ^19.0.0
+        version: 19.1.0(react@19.1.0)
+      tailwind-merge:
+        specifier: ^3.0.2
+        version: 3.2.0
+    devDependencies:
+      '@eslint/js':
+        specifier: ^9.22.0
+        version: 9.25.1
+      '@turbo-with-tailwind-v4/typescript-config':
+        specifier: workspace:*
+        version: link:../../packages/typescript-config
+      '@types/node':
+        specifier: ^22.15.3
+        version: 22.15.3
+      '@types/react':
+        specifier: ^19.0.10
+        version: 19.1.0
+      '@types/react-dom':
+        specifier: ^19.0.4
+        version: 19.1.1(@types/react@19.1.0)
+      '@vitejs/plugin-react':
+        specifier: ^4.3.4
+        version: 4.4.1(vite@6.3.4(@types/node@22.15.3)(jiti@2.4.2)(lightningcss@1.29.2))
+      autoprefixer:
+        specifier: ^10.4.21
+        version: 10.4.21(postcss@8.5.3)
+      eslint:
+        specifier: ^9.22.0
+        version: 9.25.1(jiti@2.4.2)
+      eslint-plugin-react-hooks:
+        specifier: ^5.2.0
+        version: 5.2.0(eslint@9.25.1(jiti@2.4.2))
+      eslint-plugin-react-refresh:
+        specifier: ^0.4.19
+        version: 0.4.20(eslint@9.25.1(jiti@2.4.2))
+      globals:
+        specifier: ^16.0.0
+        version: 16.0.0
+      postcss:
+        specifier: ^8.5.3
+        version: 8.5.3
+      tailwindcss:
+        specifier: ^4.1.5
+        version: 4.1.5
+      turbo:
+        specifier: ^2.5.2
+        version: 2.5.2
+      typescript:
+        specifier: ~5.7.2
+        version: 5.7.3
+      typescript-eslint:
+        specifier: ^8.26.1
+        version: 8.31.1(eslint@9.25.1(jiti@2.4.2))(typescript@5.7.3)
+      vite:
+        specifier: ^6.3.1
+        version: 6.3.4(@types/node@22.15.3)(jiti@2.4.2)(lightningcss@1.29.2)
+
   apps/host:
     dependencies:
       '@clerk/clerk-react':
@@ -637,9 +728,6 @@ importers:
       '@turbo-with-tailwind-v4/design-system':
         specifier: workspace:*
         version: link:../design-system
-      '@turbo-with-tailwind-v4/ui':
-        specifier: workspace:*
-        version: 'link:'
       '@turbo-with-tailwind-v4/utils':
         specifier: workspace:*
         version: link:../utils
