@@ -11,6 +11,8 @@
   ],
   "exports": {
     "./components/*": "./src/components/*.tsx",
+    "./hooks/*": "./src/hooks/*.ts",
+    "./lib/*": "./src/lib/*.ts",
     ".": {
       "types": "./src/index.ts",
       "import": "./src/index.ts"
