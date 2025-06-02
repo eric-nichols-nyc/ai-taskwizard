@@ -28,7 +28,7 @@ export function Landing() {
           <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg flex items-center justify-center">
             <Zap className="w-5 h-5 text-white" />
           </div>
-          <span className="text-xl font-bold">TaskMaster AI</span>
+          <span className="text-xl font-bold">TaskWizard AI</span>
         </div>
 
         <nav className="hidden md:flex items-center space-x-8">
@@ -122,7 +122,7 @@ export function Landing() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6 }}
         >
-          Upload any document, audio, or video and let <span className="text-purple-400 font-semibold">TaskMaster</span>{" "}
+          Upload any document, audio, or video and let <span className="text-purple-400 font-semibold">TaskWizard</span>{" "}
           organize, summarize, and transform them into useful insights.
         </motion.p>
 

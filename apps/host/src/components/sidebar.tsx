@@ -1,5 +1,6 @@
 import { Link, useRouter } from '@tanstack/react-router';
 import { IconLayoutDashboard, IconNotes, IconCalendar, IconBrain, IconSettings } from '@tabler/icons-react';
+import { useAuth } from '@turbo-with-tailwind-v4/supabase';
 
 interface NavItemProps {
   icon: React.ReactNode;
@@ -25,12 +26,14 @@ const NavItem = ({ icon, label, to }: NavItemProps) => {
 };
 
 export const Sidebar = () => {
+  const { user } = useAuth();
+
   return (
     <div className="bg-[#0A0A0B] h-full w-[230px] p-4 flex flex-col">
       {/* Logo */}
       <div className="flex items-center gap-2 px-4 mb-6">
         <div className="text-indigo-500 text-xl">⚡</div>
-        <span className="text-indigo-500 font-semibold">TaskMaster AI</span>
+        <span className="text-indigo-500 font-semibold">TaskWizard AI</span>
       </div>
 
       {/* Navigation Items */}
@@ -47,12 +50,11 @@ export const Sidebar = () => {
 
       {/* User Profile */}
       <div className="px-4 py-2 flex items-center gap-3">
-        <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white">
-          E
+        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white text-base leading-none">
+          {user?.email?.charAt(0).toUpperCase()}
         </div>
         <div className="flex flex-col">
-          <span className="text-gray-300 text-sm">Eric Nichols</span>
-          <span className="text-gray-500 text-xs">Basic</span>
+          <span className="text-gray-300 text-sm truncate max-w-[140px]">{user?.email}</span>
         </div>
       </div>
     </div>
