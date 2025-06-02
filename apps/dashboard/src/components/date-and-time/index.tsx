@@ -33,7 +33,7 @@ export function DateTimeDisplay() {
     })
   
     return (
-      <Card className="w-full max-w-md mx-auto p-2">
+      <Card className="w-full mx-auto p-2">
         <CardContent>
           <div className="grid gap-0">
            <div className="flex items-center gap-2">

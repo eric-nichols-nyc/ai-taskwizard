@@ -19,3 +19,15 @@ export function formatDate(date: Date): string {
     day: "numeric",
   }).format(date);
 }
+
+// Get time of day from a localtime string (format: 'YYYY-MM-DD HH:mm')
+export function getTimeOfDay(localtime?: string | null): string {
+  if (!localtime) return "day";
+  const [, time] = localtime.split(' ');
+  const [h, minutes] = time.split(':').map(Number);
+  const localMinutes = h * 60 + minutes;
+  if (localMinutes < 6 * 60) return "night";
+  if (localMinutes < 12 * 60) return "morning";
+  if (localMinutes < 18 * 60) return "afternoon";
+  return "evening";
+}

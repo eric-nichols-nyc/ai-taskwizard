@@ -4,16 +4,7 @@ import quotes from "./quotes.json"
 import { useWeatherStore } from "../../stores/weatherStore"
 import { Cloud } from "lucide-react"
 import { WeatherIcon } from "../weather-icon"
-function getTimeOfDay(localtime?: string | null) {
-  if (!localtime) return "day"
-  const [, time] = localtime.split(' ')
-  const [h, minutes] = time.split(':').map(Number)
-  const localMinutes = h * 60 + minutes
-  if (localMinutes < 6 * 60) return "night"
-  if (localMinutes < 12 * 60) return "morning"
-  if (localMinutes < 18 * 60) return "afternoon"
-  return "evening"
-}
+import { getTimeOfDay } from "../../lib/utils"
 
 const Greeting = () => {
   const randomQuote = React.useMemo(() => {
@@ -22,15 +13,21 @@ const Greeting = () => {
     return arr[idx]
   }, [])
 
-  const { weather, localtime } = useWeatherStore()
+  const { weather } = useWeatherStore()
+
+  // Get user's current local time in the same format as weather API
+  const now = new Date();
+  const localDate = now.toISOString().slice(0, 10); // "YYYY-MM-DD"
+  const localTime = now.toTimeString().slice(0, 5); // "HH:mm"
+  const localtime = `${localDate} ${localTime}`;
   const timeOfDay = getTimeOfDay(localtime)
 
   return (
-    <Card className="flex flex-col flex-grow p-2">
+    <Card className="flex flex-col p-4">
       <div className="flex items-center mb-2 gap-2">
         {typeof weather?.weather_descriptions?.[0] === 'string' ? WeatherIcon(weather.weather_descriptions[0]) : <Cloud />}
-        <h1 className="text-3xl font-bold ">
-          Welcome Poopy Face, Good {timeOfDay}.
+        <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold">
+          Welcome, Good {timeOfDay}.
         </h1>
       </div>
       <p className="mt-1 italic text-sm">

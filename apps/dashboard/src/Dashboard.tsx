@@ -10,25 +10,17 @@ import TodoList from "./components/tasks-prototype"
 export function Dashboard() {
   return (
     <div className="min-h-screen p-4 md:p-6 w-full">
-      <div className="mx-auto space-y-6">
-        {/* Header with greeting and calendar */}
-        <div className="flex md:flex-row justify-between items-start gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mx-auto">
+        {/* Column 1: Greeting and Todo List */}
+        <div className="flex flex-col space-y-6">
           <Greeting />
-          <DateTimeDisplay />
+          <TodoList />
         </div>
-
-        {/* Smart Overview */}
-        {/* <SmartOverview /> */}
-
-        {/* Main content grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="space-y-6">
-            <TodoList />
-          </div>
-          <div className="space-y-6">
-            <WeatherSection />
-            <PomodoroSection />
-          </div>
+        {/* Column 2: Date/Time, Weather, Pomodoro */}
+        <div className="flex flex-col space-y-6">
+          <DateTimeDisplay />
+          <WeatherSection />
+          <PomodoroSection />
         </div>
       </div>
     </div>

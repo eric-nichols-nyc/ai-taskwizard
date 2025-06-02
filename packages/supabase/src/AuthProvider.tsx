@@ -1,6 +1,6 @@
 'use client'
 import * as React from 'react'
-import { createContext, useEffect, useState } from 'react'
+import { createContext, useEffect, useState, useMemo } from 'react'
 import { User, Session, AuthError, SupabaseClient } from '@supabase/supabase-js'
 import { AuthContextType } from './types'
 
@@ -72,7 +72,7 @@ export function AuthProvider({
     }
 
     return () => subscription.unsubscribe()
-  }, [isHost, user, session])
+  }, [isHost])
 
     // Helper function to broadcast auth state
     const broadcastAuthState = (user: User | null, session: Session | null, event?: string) => {
@@ -196,7 +196,7 @@ export function AuthProvider({
     }
   }
 
-  const value: AuthContextType = {
+  const value: AuthContextType = useMemo(() => ({
     user,
     session,
     loading,
@@ -206,7 +206,7 @@ export function AuthProvider({
     signInWithProvider,
     resetPassword,
     updateProfile,
-  }
+  }), [user, session, loading]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }

@@ -4,12 +4,16 @@ import { Button } from '@turbo-with-tailwind-v4/ui/button';
 import { useAuth } from '@turbo-with-tailwind-v4/supabase'
 import { motion } from "motion/react"
 import { Zap } from "lucide-react"
+import { useEffect } from "react"
 
 export function Landing() {
 
   const { user } = useAuth();
   const router = useRouter();
-  console.log('landing app', user);
+
+  useEffect(() => {
+    console.log('User changed:', user);
+  }, [user]);
 
   const handleLogin = () => {
     router.navigate({ to: '/login' });
@@ -44,7 +48,7 @@ export function Landing() {
             ) : (
               <Button
                 className="cursor-pointer bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-full"
-                onClick={() => router.navigate({ to: '/signup' })}
+                onClick={() => router.navigate({ to: '/login' })}
               >
                 Sign Up Now
               </Button>
@@ -55,35 +59,6 @@ export function Landing() {
 
       {/* Hero Section */}
       <div className="flex flex-col items-center justify-center min-h-[80vh] px-6 text-center relative">
-        {/* Background decoration */}
-        <div className="absolute inset-0 overflow-hidden">
-          <motion.div
-            className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl"
-            animate={{
-              scale: [1, 1.2, 1],
-              opacity: [0.3, 0.5, 0.3],
-            }}
-            transition={{
-              duration: 8,
-              repeat: Number.POSITIVE_INFINITY,
-              ease: "easeInOut",
-            }}
-          />
-          <motion.div
-            className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"
-            animate={{
-              scale: [1.2, 1, 1.2],
-              opacity: [0.5, 0.3, 0.5],
-            }}
-            transition={{
-              duration: 8,
-              repeat: Number.POSITIVE_INFINITY,
-              ease: "easeInOut",
-              delay: 4,
-            }}
-          />
-        </div>
-
         {/* Badge */}
         <motion.div
           className="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 mb-8"
