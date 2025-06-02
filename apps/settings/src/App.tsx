@@ -1,4 +1,3 @@
-import "./App.css";
 import { Settings } from "./Settings";
 
 function App() {
