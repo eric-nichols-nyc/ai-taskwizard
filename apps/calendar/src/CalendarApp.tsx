@@ -220,7 +220,7 @@ export const CalendarApp: React.FC = () => {
       {/* Calendar Body Component */}
       <div className="bg-card rounded-lg shadow">
         {/* Day headers */}
-        <div className="grid grid-cols-7 gap-px calendar-grid-gap calendar-header">
+        <div className="hidden sm:grid grid-cols-1 sm:grid-cols-7 gap-px calendar-grid-gap calendar-header">
           {dayNames.map((day: string) => (
             <div
               key={day}
@@ -232,7 +232,7 @@ export const CalendarApp: React.FC = () => {
         </div>
 
         {/* Calendar days */}
-        <div className="grid grid-cols-7 gap-px calendar-grid-gap">
+        <div className="grid grid-cols-1 sm:grid-cols-7 gap-px calendar-grid-gap">
           {getDaysInMonth().map((date: Date | null, index: number) => {
             const dayEvents: Event[] = date ? getEventsForDate(date) : [];
             const isToday: boolean = !!date && date.toDateString() === new Date().toDateString();
@@ -240,7 +240,7 @@ export const CalendarApp: React.FC = () => {
             return (
               <div
                 key={index}
-                className={`min-h-[140px] p-2 cursor-pointer transition-colors ${
+                className={`min-h-[60px] sm:min-h-[100px] md:min-h-[140px] p-1 sm:p-2 cursor-pointer transition-colors ${
                   isToday 
                     ? 'calendar-today'
                     : 'calendar-day'
@@ -249,7 +249,7 @@ export const CalendarApp: React.FC = () => {
               >
                 {date && (
                   <>
-                    <div className={`text-sm font-medium mb-1 ${
+                    <div className={`text-xs sm:text-sm font-medium mb-1 ${
                       isToday ? '' : ''
                     }`}>
                       {date.getDate()}
