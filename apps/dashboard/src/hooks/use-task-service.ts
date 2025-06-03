@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { taskService } from "../service/mock-supabase-service";
 import { CreateTaskData, TaskFields, UpdateTaskData } from "../types";
+import { useTaskContext } from "./use-task-context";
 
 export const useTaskService = () => {
   const [tasks, setTasks] = useState<TaskFields[]>([]);
+  const { selectedDate, setSelectedDate } = useTaskContext();
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     const unsubscribe = taskService.subscribe(setTasks);
@@ -18,6 +20,7 @@ export const useTaskService = () => {
     setTasks(taskService.getAllTasks());
     return unsubscribe;
   }, []);
+
   const createTask = async (taskData: CreateTaskData) => {
     setLoading(true);
     try {
@@ -45,12 +48,21 @@ export const useTaskService = () => {
     }
   };
 
+  // function triggered when user clicks on a day in the calendar
+  const handleCalendarDayClick = (date: Date) => {
+    console.log(date);
+    setSelectedDate(date);
+  };
+
   return {
     tasks,
     loading,
+    selectedDate,
+    setSelectedDate,
     createTask,
     updateTask,
     deleteTask,
+    handleCalendarDayClick,
     getTasksForDate: taskService.getTasksForDate.bind(taskService),
     getTasksByPriority: taskService.getTasksByPriority.bind(taskService),
     getCompletedTasks: taskService.getCompletedTasks.bind(taskService),

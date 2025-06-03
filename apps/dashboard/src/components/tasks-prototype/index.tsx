@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Check, TrendingUp, ListTodo, Plus } from "lucide-react"
 import { Button } from "../ui/button"
 import { Input } from "../ui/input"
@@ -11,15 +11,20 @@ import { useTaskService } from "../../hooks/use-task-service"
 import { CreateTaskData } from "../../types"
 
 export default function TodoList() {
-  const { tasks, createTask, updateTask, deleteTask } = useTaskService()
+  const { tasks, createTask,  updateTask, deleteTask,handleCalendarDayClick,selectedDate } = useTaskService()
 
 
   const [newTaskText, setNewTaskText] = useState("")
   const [newTaskPriority] = useState<"Low" | "Medium" | "High">("Medium")
 
+  useEffect(() => {
+    console.log('selectedDate -. highlight', selectedDate)
+  }, [selectedDate])
+
   const completedTasks = tasks.filter((task) => task.completed).length
   const totalTasks = tasks.length
   const completionPercentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0
+
 
   const toggleTaskCompletion = (id: string) => {
     //setTasks(tasks.map((task) => (task.id === id ? { ...task, completed: !task.completed } : task)))

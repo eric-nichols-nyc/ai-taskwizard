@@ -6,7 +6,7 @@ import { useTaskService } from "../../hooks/use-task-service"
 
 export function Calendar() {
 
-  const {tasks}=useTaskService()
+  const {tasks,handleCalendarDayClick,setSelectedDate,selectedDate}=useTaskService()
 
   useEffect(() => {
     console.log('tasks', tasks)
@@ -18,7 +18,6 @@ export function Calendar() {
   // State for current month and year
   const [currentMonth, setCurrentMonth] = useState(today.getMonth()) // 0-indexed
   const [currentYear, setCurrentYear] = useState(today.getFullYear())
-  const [selectedDate, setSelectedDate] = useState(today.getDate())
 
   // Month and days
   const monthNames = [
@@ -68,6 +67,14 @@ export function Calendar() {
     })
   }
 
+  // function triggered when user clicks on a day in the calendar
+  const handleDayClick = (day: number) => {
+    const clickedDate = new Date(currentYear, currentMonth, day, 12, 0, 0, 0);
+    console.log('clickedDate', clickedDate)
+    setSelectedDate(clickedDate);
+    handleCalendarDayClick(clickedDate);
+  };
+
   return (
     <div className="flex items-center justify-center bg-card min-h-[600px]">
       <div className="w-full rounded-lg p-6 shadow-xl">
@@ -98,14 +105,14 @@ export function Calendar() {
               return <div key={"empty-" + idx} />
             }
             const hasEvent = date in events
-            const isSelected = date === selectedDate
+            const isSelected = date === selectedDate?.getDate()
 
             return (
               <div
                 key={date}
-                onClick={() => setSelectedDate(date)}
+                onClick={() => handleDayClick(date)}
                 className={`
-                bg-gray-800 text-gray-300 border border-gray-700/60 shadow-lg shadow-black/20 p-1.5 text-xs sm:text-sm flex flex-col items-start justify-start min-h-[4rem] sm:min-h-[5rem] rounded-md transition-all duration-150 hover:shadow-md cursor-pointer hover:bg-gray-700
+                relative bg-gray-800 text-gray-300 border border-gray-700/60 shadow-lg shadow-black/20 p-1.5 text-xs sm:text-sm flex flex-col items-start justify-start min-h-[4rem] sm:min-h-[5rem] rounded-md transition-all duration-150 hover:shadow-md cursor-pointer hover:bg-gray-700
                   ${isSelected ? "ring-2 ring-blue-400 bg-blue-800/90 border-blue-400" : ""}
                   transition-colors duration-150
                 `}
