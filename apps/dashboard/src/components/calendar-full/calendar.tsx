@@ -14,15 +14,15 @@ export function Calendar() {
   const dates = Array.from({ length: 30 }, (_, i) => i + 1)
 
   // Events data
-  const events = {
+  const events: Record<number, { count: number; color: string }> = {
     3: { count: 2, color: "bg-amber-400" },
     11: { count: 1, color: "bg-amber-400" },
     18: { count: 1, color: "bg-amber-400" },
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-900">
-      <div className="w-full max-w-md rounded-lg bg-[#1a2235] p-6 shadow-xl">
+    <div className="flex items-center justify-center bg-card min-h-[600px]">
+      <div className="w-full rounded-lg p-6 shadow-xl">
         {/* Calendar header */}
         <div className="flex items-center justify-between mb-6">
           <button className="text-gray-400 hover:text-white">
@@ -54,9 +54,12 @@ export function Calendar() {
                 key={date}
                 onClick={() => setSelectedDate(date)}
                 className={`
-                  relative h-16 p-1 rounded-md cursor-pointer
-                  ${isSelected ? "border border-blue-500" : "border border-transparent"}
-                  bg-[#1e2738] hover:bg-[#252e40]
+                  relative min-h-[4rem] sm:min-h-[5rem]
+                  p-1 rounded-md cursor-pointer
+                  bg-blue-900/40 hover:bg-blue-900/90
+                  border border-blue-800
+                  ${isSelected ? "ring-2 ring-blue-400 bg-blue-800/90 border-blue-400" : ""}
+                  transition-colors duration-150
                 `}
               >
                 <span className="text-white text-sm">{date}</span>
