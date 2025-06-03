@@ -7,17 +7,12 @@ import { Input } from "../ui/input"
 import { Progress } from "../ui/progress"
 import { cn } from "../../lib/utils"
 import { Card } from "@turbo-with-tailwind-v4/ui/card"
-
-interface Task {
-  id: string
-  text: string
-  completed: boolean
-  priority: "Low" | "Medium" | "High"
-  dueDate: string
-}
+import { useTaskService } from "../../hooks/use-task-service"
+import { CreateTaskData } from "../../types"
 
 export default function TodoList() {
-  const [tasks, setTasks] = useState<Task[]>([])
+  const { tasks, createTask, updateTask, deleteTask } = useTaskService()
+
 
   const [newTaskText, setNewTaskText] = useState("")
   const [newTaskPriority] = useState<"Low" | "Medium" | "High">("Medium")
@@ -27,7 +22,7 @@ export default function TodoList() {
   const completionPercentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0
 
   const toggleTaskCompletion = (id: string) => {
-    setTasks(tasks.map((task) => (task.id === id ? { ...task, completed: !task.completed } : task)))
+    //setTasks(tasks.map((task) => (task.id === id ? { ...task, completed: !task.completed } : task)))
   }
 
   const addTask = () => {
@@ -42,15 +37,13 @@ export default function TodoList() {
       Math.floor(Math.random() * 12)
     ]
 
-    const newTask: Task = {
-      id: Date.now().toString(),
-      text: newTaskText,
-      completed: false,
-      priority: newTaskPriority,
+    const newTask: CreateTaskData = {
+      task: newTaskText,
+      priority: newTaskPriority as "low" | "medium" | "high",
       dueDate: `${month} ${day}`,
     }
 
-    setTasks([...tasks, newTask])
+    createTask(newTask)
     setNewTaskText("")
   }
 
@@ -77,7 +70,7 @@ export default function TodoList() {
         </div>
 
         <div className=" rounded-lg p-4">
-          <div className="hidden flex items-center mb-4 gap-2">
+          <div className="hidden items-center mb-4 gap-2">
             <Button size="sm" variant="secondary" className="bg-purple-600 hover:bg-purple-700 text-white rounded-full">
               <ListTodo className="h-4 w-4 mr-2" />
               Tasks
@@ -117,18 +110,18 @@ export default function TodoList() {
               <div className="text-center text-gray-400 italic py-4">No tasks yet, add one now.</div>
             ) : (
               tasks.map((task) => (
-                <div key={task.id} className="flex items-center justify-between bg-white/10 p-3 rounded-lg">
+                <div key={task.taskId} className="flex items-center justify-between bg-white/10 p-3 rounded-lg">
                   <div className="flex items-center">
                     <button
                       className={cn(
                         "w-5 h-5 rounded-full border mr-3 flex items-center justify-center",
                         task.completed ? "bg-green-500 border-green-500" : "border-gray-500 hover:border-white",
                       )}
-                      onClick={() => toggleTaskCompletion(task.id)}
+                      onClick={() => toggleTaskCompletion(task.taskId)}
                     >
                       {task.completed && <Check className="h-3 w-3 text-white" />}
                     </button>
-                    <span className={cn("text-sm", task.completed && "line-through text-gray-500")}>{task.text}</span>
+                    <span className={cn("text-sm", task.completed && "line-through text-gray-500")}>{task.task}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span

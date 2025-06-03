@@ -1,9 +1,17 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
+import { useTaskService } from "../../hooks/use-task-service"
 
 export function Calendar() {
+
+  const {tasks}=useTaskService()
+
+  useEffect(() => {
+    console.log('tasks', tasks)
+  }, [tasks])
+
   // Get today's date
   const today = new Date()
 
@@ -97,10 +105,7 @@ export function Calendar() {
                 key={date}
                 onClick={() => setSelectedDate(date)}
                 className={`
-                  relative min-h-[4rem] sm:min-h-[5rem]
-                  p-1 rounded-md cursor-pointer
-                  bg-blue-900/40 hover:bg-blue-900/90
-                  border border-blue-800
+                bg-gray-800 text-gray-300 border border-gray-700/60 shadow-lg shadow-black/20 p-1.5 text-xs sm:text-sm flex flex-col items-start justify-start min-h-[4rem] sm:min-h-[5rem] rounded-md transition-all duration-150 hover:shadow-md cursor-pointer hover:bg-gray-700
                   ${isSelected ? "ring-2 ring-blue-400 bg-blue-800/90 border-blue-400" : ""}
                   transition-colors duration-150
                 `}
