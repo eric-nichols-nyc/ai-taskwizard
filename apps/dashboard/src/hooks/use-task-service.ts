@@ -54,6 +54,22 @@ export const useTaskService = () => {
     setSelectedDate(date);
   };
 
+  const getTasksForDate = (date: Date) => {
+    const targetYear = date.getFullYear();
+    const targetMonth = date.getMonth();
+    const targetDay = date.getDate();
+
+    return tasks.filter((task) => {
+      if (!task.dueDate) return false;
+      const taskDate = new Date(task.dueDate);
+      return (
+        taskDate.getFullYear() === targetYear &&
+        taskDate.getMonth() === targetMonth &&
+        taskDate.getDate() === targetDay
+      );
+    });
+  };
+
   return {
     tasks,
     loading,
@@ -63,7 +79,7 @@ export const useTaskService = () => {
     updateTask,
     deleteTask,
     handleCalendarDayClick,
-    getTasksForDate: taskService.getTasksForDate.bind(taskService),
+    getTasksForDate,
     getTasksByPriority: taskService.getTasksByPriority.bind(taskService),
     getCompletedTasks: taskService.getCompletedTasks.bind(taskService),
     getPendingTasks: taskService.getPendingTasks.bind(taskService),

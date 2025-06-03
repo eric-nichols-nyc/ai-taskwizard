@@ -11,15 +11,23 @@ import { useTaskService } from "../../hooks/use-task-service"
 import { CreateTaskData } from "../../types"
 
 export default function TodoList() {
-  const { tasks, createTask,  updateTask, deleteTask,handleCalendarDayClick,selectedDate } = useTaskService()
+  const { tasks, createTask,  updateTask, deleteTask,selectedDate,setSelectedDate } = useTaskService()
 
 
   const [newTaskText, setNewTaskText] = useState("")
-  const [newTaskPriority] = useState<"Low" | "Medium" | "High">("Medium")
+  const [newTaskPriority] = useState<"low" | "medium" | "high">("medium")
+  const [newTaskDate, setNewTaskDate] = useState("");
 
+  // Set default date and update when selectedDate changes
   useEffect(() => {
-    console.log('selectedDate -. highlight', selectedDate)
-  }, [selectedDate])
+    if (selectedDate) {
+      const dateStr = selectedDate.toISOString().split('T')[0];
+      setNewTaskDate(dateStr);
+    } else {
+      const today = new Date().toISOString().split('T')[0];
+      setNewTaskDate(today);
+    }
+  }, [selectedDate]);
 
   const completedTasks = tasks.filter((task) => task.completed).length
   const totalTasks = tasks.length
@@ -30,27 +38,45 @@ export default function TodoList() {
     //setTasks(tasks.map((task) => (task.id === id ? { ...task, completed: !task.completed } : task)))
   }
 
-  const addTask = () => {
-    if (newTaskText.trim() === "") return
+  // const addTask = () => {
+  //   if (newTaskText.trim() === "") return
 
-    const today = new Date()
-    const nextMonth = new Date(today)
-    nextMonth.setDate(today.getDate() + 30)
+  //   const today = new Date()
+  //   const nextMonth = new Date(today)
+  //   nextMonth.setDate(today.getDate() + 30)
 
-    const day = Math.floor(Math.random() * 30) + 1
-    const month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][
-      Math.floor(Math.random() * 12)
-    ]
+  //   const day = Math.floor(Math.random() * 30) + 1
+  //   const month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][
+  //     Math.floor(Math.random() * 12)
+  //   ]
 
-    const newTask: CreateTaskData = {
-      task: newTaskText,
-      priority: newTaskPriority as "low" | "medium" | "high",
-      dueDate: `${month} ${day}`,
-    }
+  //   const newTask: CreateTaskData = {
+  //     task: newTaskText,
+  //     priority: newTaskPriority as "low" | "medium" | "high",
+  //     dueDate: `${month} ${day}`,
+  //   }
 
-    createTask(newTask)
-    setNewTaskText("")
-  }
+  //   createTask(newTask)
+  //   setNewTaskText("")
+  //}
+  const handleCreateTask = async () => {
+    if (newTaskText.trim() === "" || !newTaskDate) return;
+
+    // Create date in local timezone to avoid UTC conversion issues
+    const [year, month, day] = newTaskDate.split('-').map(Number);
+    const dueDateTime = new Date(year, month - 1, day, 12, 0, 0, 0);
+
+    const taskData = {
+      task: newTaskText.trim(),
+      dueDate: dueDateTime.toISOString(),
+      priority: newTaskPriority
+    };
+
+    await createTask(taskData);
+    setNewTaskText("");
+    setSelectedDate(null); // Clear selected date after adding task
+  };
+
 
   return (
     <Card className="p-6">
@@ -91,18 +117,18 @@ export default function TodoList() {
               className="flex-1 border-none text-sm bg-transparent"
             />
             <div className="ml-2 flex items-center gap-2">
-              <Button
+              {/* <Button
                 variant="outline"
                 size="sm"
                 className="border-[#2a2d3a] hover:bg-[#1a1d29]"
-                onClick={() => addTask()}
+                onClick={() => handleCreateTask()}
               >
                 {newTaskPriority}
-              </Button>
+              </Button> */}
               <Button
                 size="icon"
                 className="bg-purple-600 hover:bg-purple-700 text-white rounded-full ml-1"
-                onClick={addTask}
+                onClick={handleCreateTask}
                 aria-label="Add Task"
               >
                 <Plus className="h-4 w-4" />
