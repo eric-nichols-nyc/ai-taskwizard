@@ -1,7 +1,6 @@
-//import { Calendar } from "./components/calendar/calendar"
+import { Calendar } from "./components/calendar-full/calendar"
 // import { ProductivitySection } from "./components/productivity/productivity-section"
 import { WeatherSection } from "./components/weather/weather-section"
-import { PomodoroSection } from "./components/features/pomodoro-section/pomodoro-app/pomodoro"
 // import { SmartOverview } from "./components/smart-overview/smart-overview"
 import Greeting from "./components/greeting/greeting"
 import { DateTimeDisplay } from "./components/date-and-time"
@@ -14,13 +13,13 @@ export function Dashboard() {
         {/* Column 1: Greeting and Todo List */}
         <div className="flex flex-col space-y-6">
           <Greeting />
+          <WeatherSection />
           <TodoList />
         </div>
         {/* Column 2: Date/Time, Weather, Pomodoro */}
         <div className="flex flex-col space-y-6">
           <DateTimeDisplay />
-          <WeatherSection />
-          <PomodoroSection />
+          <Calendar />
         </div>
       </div>
     </div>
