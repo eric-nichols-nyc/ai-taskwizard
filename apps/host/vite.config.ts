@@ -3,14 +3,13 @@ import react from "@vitejs/plugin-react"
 import federation from "@originjs/vite-plugin-federation"
 import { defineConfig, loadEnv } from "vite"
 
-console.log('Loaded env:', process.env);
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
   // Explicitly load the env file for the current mode
   const env = loadEnv(mode, process.cwd(), '');
 
-  // console.log('Loaded env:', env);
+  console.log('Loaded env:', env);
 
   if (!env.VITE_DASHBOARD_REMOTE || !env.VITE_CALENDAR_REMOTE || !env.VITE_NOTES_REMOTE) {
     throw new Error('Missing required remoteEntry.js URLs in environment variables!');

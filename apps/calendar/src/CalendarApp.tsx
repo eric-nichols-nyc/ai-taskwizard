@@ -254,12 +254,16 @@ export const CalendarApp: React.FC = () => {
                     }`}>
                       {date.getDate()}
                     </div>
-                    <div className="space-y-1">
-                      {dayEvents.slice(0, 3).map((event: Event, eventIndex: number) => (
+                    <div className="flex flex-col gap-1">
+                      {[...new Map(dayEvents.slice(0, 3).map(event => [event.id || event.title + event.startDate, event])).values()].map((event: Event) => (
                         <div
-                          key={eventIndex}
-                          className="calendar-event"
-                          style={event.color ? { backgroundColor: event.color, color: '#fff' } : {}}
+                          key={event.id || event.title + event.startDate}
+                          className="calendar-event w-full block rounded-md border-l-4 px-3 py-1 text-xs font-medium mb-1 text-white"
+                          style={{
+                            borderLeftColor: event.color && event.color.toLowerCase() !== '#000000' && event.color.toLowerCase() !== 'black' ? event.color : '#3B82F6',
+                            backgroundColor: 'rgba(19,19,22,0.7)',
+                            color: '#fff'
+                          }}
                         >
                           {event.title}
                         </div>
