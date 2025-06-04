@@ -27,7 +27,7 @@
     "type-check": "tsc --noEmit"
   },
   "peerDependencies": {
-    "react": "^18.2.0"
+    "react": "^19.1.0"
   },
   "devDependencies": {
     "@turbo-with-tailwind-v4/eslint-config": "workspace:*",

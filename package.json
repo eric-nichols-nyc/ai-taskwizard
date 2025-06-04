@@ -31,5 +31,9 @@
   "engines": {
     "node": "20.x",
     "pnpm": "9.4.0"
+  },
+  "dependencies": {
+    "react": "^19.1.0",
+    "react-dom": "^19.0.0"
   }
 }

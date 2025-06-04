@@ -1,0 +1,18 @@
+{
+    "extends": "@turbo-with-tailwind-v4/typescript-config/react-library.json",
+    "include": ["src"],
+    "exclude": ["dist", "build", "node_modules"],
+    "compilerOptions": {
+      "outDir": "./dist",
+      "declaration": true,
+      "emitDeclarationOnly": false,
+      "module": "ESNext",
+      "target": "ESNext",
+      "jsx": "react-jsx",
+      "esModuleInterop": true,
+      "moduleResolution": "bundler",
+      "allowSyntheticDefaultImports": true,
+      "skipLibCheck": true,
+      "strict": true
+    }
+  }

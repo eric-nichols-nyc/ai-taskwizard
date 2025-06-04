@@ -39,7 +39,7 @@
     "type-check": "tsc --noEmit"
   },
   "peerDependencies": {
-    "react": "^18.2.0"
+   "react": "^19.0.0"
   },
   "devDependencies": {
     "@radix-ui/react-slot": "^1.2.0",

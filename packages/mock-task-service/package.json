@@ -1,0 +1,25 @@
+{
+  "name": "@turbo-with-tailwind-v4/mock-task-service",
+  "version": "1.0.0",
+  "private": true,
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc --declaration --emitDeclarationOnly false",
+    "dev": "tsc --watch",
+    "type-check": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "react": "^19.1.0"
+  },
+  "devDependencies": {
+    "@turbo-with-tailwind-v4/eslint-config": "workspace:*",
+    "@turbo-with-tailwind-v4/typescript-config": "workspace:*",
+    "@types/react": "^19.0.10",
+    "typescript": "^5.8.2"
+  }
+}
