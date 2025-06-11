@@ -109,10 +109,10 @@ export function Landing() {
         >
           <Button
             size="lg"
-            onClick={() => router.navigate({ to: '/dashboard' })}
+            onClick={() => router.navigate({ to: user ? '/dashboard' : '/login' })}
             className="cursor-pointer bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-4 rounded-full text-lg font-semibold shadow-2xl hover:shadow-purple-500/25 transition-all duration-300 transform hover:scale-105"
           >
-            Go to Dashboard
+            {user ? 'Go to Dashboard' : 'Start Now'}
           </Button>
         </motion.div>
 

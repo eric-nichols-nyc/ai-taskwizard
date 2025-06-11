@@ -1,11 +1,29 @@
 // server.js
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
+const { createClient } = require('@supabase/supabase-js');
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8000;
+// Initialize Supabase with service role key (server-side)
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY; // Service role for server-side operations
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY; // For client auth verification
+
+if (!supabaseUrl || !supabaseServiceKey || !supabaseAnonKey) {
+  throw new Error('Missing required Supabase environment variables');
+}
+
+// Server-side client with service role (bypasses RLS for admin operations)
+const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
+
+// Client for auth verification (respects RLS)
+const supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
+
+// Middleware
 
 // Middleware
 app.use(helmet());
@@ -20,6 +38,24 @@ let items = [
   { id: 2, name: 'Sample Item 2', description: 'Another sample item', createdAt: new Date().toISOString() }
 ];
 let nextId = 3;
+
+// Middleware to authenticate user via Supabase JWT
+async function authenticateUser(req, res, next) {
+  const authHeader = req.headers['authorization'];
+  if (!authHeader) return res.status(401).json({ error: 'Missing Authorization header' });
+
+  const token = authHeader.split(' ')[1];
+  if (!token) return res.status(401).json({ error: 'Missing token' });
+
+  try {
+    const { data: { user }, error } = await supabaseClient.auth.getUser(token);
+    if (error || !user) return res.status(401).json({ error: 'Invalid token' });
+    req.user = user;
+    next();
+  } catch (err) {
+    return res.status(401).json({ error: 'Token verification failed' });
+  }
+}
 
 // Routes
 
@@ -200,8 +236,23 @@ app.delete('/api/items', (req, res) => {
   }
 });
 
+// Example protected route: /api/tasks
+app.get('/api/tasks', authenticateUser, (req, res) => {
+  // For now, just return some user info
+  res.json({
+    message: 'Authenticated! Here is your user info:',
+    user: {
+      id: req.user.id,
+      email: req.user.email,
+      aud: req.user.aud,
+      role: req.user.role,
+      // Add more fields as needed
+    }
+  });
+});
+
 // 404 handler
-app.use('*', (req, res) => {
+app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
 

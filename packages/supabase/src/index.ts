@@ -9,3 +9,5 @@ export interface AuthProviderProps {
   isHost?: boolean;
   supabase: SupabaseClient;
 }
+
+export { default as SignIn } from './SignIn';

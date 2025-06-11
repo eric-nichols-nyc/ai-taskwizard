@@ -1,11 +1,13 @@
-import { Dashboard } from './Dashboard'
+import { RouterProvider } from '@tanstack/react-router'
+import { AuthProvider } from '@turbo-with-tailwind-v4/supabase'
+import { supabase } from './supabaseClient'
+import { router } from './router'
 
 function App() {
-
   return (
-    <div className='w-full dark'>
-      <Dashboard />
-    </div>
+    <AuthProvider supabase={supabase}>
+      <RouterProvider router={router} />
+    </AuthProvider>
   )
 }
 

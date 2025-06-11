@@ -6,8 +6,22 @@ import Greeting from "./components/greeting/greeting"
 import { DateTimeDisplay } from "./components/date-and-time"
 import TodoList from "./components/tasks-prototype"
 import { TaskProvider } from "./providers/task-provider"
+import { useAuth } from '@turbo-with-tailwind-v4/supabase'
+import { useEffect } from 'react'
+import { router } from './router'
 
 export function Dashboard() {
+  const { user } = useAuth()
+  console.log('user', user)
+
+  useEffect(() => {
+    if (!user) {
+      router.navigate({ to: '/signin' })
+    }
+  }, [user])
+
+  if (!user) return null
+
   return (
     <TaskProvider>
       <div className="min-h-screen p-4 md:p-6 w-full">

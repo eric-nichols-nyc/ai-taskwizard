@@ -20,7 +20,9 @@
     "check-types": "turbo run check-types",
     "build:apps": "turbo run build --filter=apps/*",
     "preview:apps": "turbo run preview --filter=apps/*",
-    "build-and-preview:apps": "pnpm build:apps && pnpm preview:apps"
+    "build-and-preview:apps": "pnpm build:apps && pnpm preview:apps",
+    "dev:kanban": "turbo run dev --filter=kanban...",
+    "build:kanban": "turbo run build --filter=kanban..."
   },
   "devDependencies": {
     "prettier": "^3.5.3",
