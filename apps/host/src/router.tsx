@@ -10,10 +10,18 @@ import { AIAssistant } from './pages/AIAssistant';
 import { Settings } from './pages/Settings';
 import { Login } from './pages/Login';
 import { Landing } from './pages/Landing';
+import AuthCallback from './pages/auth/callback';
 
 // Define routes
 const rootRoute = createRootRoute({
   component: Root,
+});
+
+// create a route for the auth callback
+const authCallbackRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/auth/callback',
+  component: AuthCallback,
 });
 
 const indexRoute = createRoute({
@@ -88,6 +96,7 @@ export const routeTree = rootRoute.addChildren([
   aiAssistantRoute,
   settingsRoute,
   loginRoute,
+  authCallbackRoute,
 ]);
 
 export const router = createRouter({ routeTree });
