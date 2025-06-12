@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Card, CardContent } from "@turbo-with-tailwind-v4/design-system/card"
+import { Card, CardContent } from "@turbo-with-tailwind-v4/design-system/components/ui/card"
 import { Clock } from "lucide-react"
 
 export function DateTimeDisplay() {

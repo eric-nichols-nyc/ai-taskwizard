@@ -8,9 +8,9 @@ export function Calendar() {
   const { tasks, handleCalendarDayClick, setSelectedDate, getTasksForDate } =
     useTaskService();
 
-  useEffect(() => {
-    console.log("DEBUG: tasks in Calendar", tasks);
-  }, [tasks]);
+  // useEffect(() => {
+  //   // console.log("DEBUG: tasks in Calendar", tasks);
+  // }, [tasks]);
 
   // Get today's date
   const today = new Date();
@@ -54,7 +54,7 @@ export function Calendar() {
     if (!day) return { total: 0, completed: 0 };
     const date = new Date(currentYear, currentMonth, day, 12, 0, 0, 0);
     const dayTasks = getTasksForDate(date);
-    console.log("DEBUG: getTaskStatsForDay", { date, dayTasks });
+    // // console.log("DEBUG: getTaskStatsForDay", { date, dayTasks });
     const total = dayTasks.length;
     const completed = dayTasks.filter((task) => task.completed).length;
     return { total, completed };
@@ -84,7 +84,7 @@ export function Calendar() {
   // function triggered when user clicks on a day in the calendar
   const handleDayClick = (day: number) => {
     const clickedDate = new Date(currentYear, currentMonth, day, 12, 0, 0, 0);
-    console.log("DEBUG: handleDayClick", clickedDate);
+    // // console.log("DEBUG: handleDayClick", clickedDate);
     setSelectedDate(clickedDate);
     setSelectedDay(day);
     handleCalendarDayClick(clickedDate);

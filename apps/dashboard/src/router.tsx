@@ -3,9 +3,11 @@ import {
   createRoute,
   createRootRoute,
   Outlet,
+  Route,
 } from '@tanstack/react-router'
 import { Dashboard } from './Dashboard'
-import { SignIn } from '@turbo-with-tailwind-v4/supabase'
+import { LoginPage } from './components/login-page/login-page'
+import AuthCallback from './pages/auth/callback'
 
 const rootRoute = createRootRoute({
   component: Outlet,
@@ -20,11 +22,17 @@ const dashboardRoute = createRoute({
 const signInRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/signin', // or '/login' if you prefer
-  component: SignIn,
+  component: LoginPage,
+})
+
+const authCallbackRoute = new Route({
+  getParentRoute: () => rootRoute,
+  path: '/auth/callback',
+  component: AuthCallback,
 })
 
 export const router = createRouter({
-  routeTree: rootRoute.addChildren([dashboardRoute, signInRoute]),
+  routeTree: rootRoute.addChildren([dashboardRoute, signInRoute, authCallbackRoute]),
 })
 
 // Declare types for type safety

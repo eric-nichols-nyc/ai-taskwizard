@@ -18,6 +18,8 @@ export function AuthProvider({
   const [user, setUser] = useState<User | null>(null)
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState<string | null>(null)
 
   useEffect(() => {
     // Get initial session
@@ -115,20 +117,32 @@ export function AuthProvider({
     }
   }
 
-  const signUp = async (email: string, password: string) => {
+  const signUp = async (email: string, password: string, metadata?: { firstName?: string; lastName?: string }) => {
     try {
       setLoading(true)
-      const { error } = await supabase.auth.signUp({
+      const { error, data } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+          data: metadata
+        }
       })
+      console.log('signUp result:', { error, data })
       
       if (error) {
+        if (error.message.toLowerCase().includes("user already registered")) {
+          setError("This email is already registered. Please sign in or check your email for a verification link.")
+        } else {
+          setError(error.message)
+        }
         return { error: error.message }
       }
       
+      setSuccess("Check your email to verify your account.")
       return {}
     } catch (error) {
+      console.log('signUp catch error:', error)
       return { error: 'An unexpected error occurred' }
     } finally {
       setLoading(false)
