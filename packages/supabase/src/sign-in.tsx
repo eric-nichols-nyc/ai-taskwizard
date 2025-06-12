@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Input } from '@turbo-with-tailwind-v4/design-system/components/ui/input';
 import { Button } from '@turbo-with-tailwind-v4/design-system/components/ui/button';
 import { Chrome } from 'lucide-react';
-import { useAuth } from '.';
+import { useAuth } from './useAuth';
 export const SignIn: React.FC = () => {
   const { signIn, signUp, signInWithProvider } = useAuth();
   const [isSignUp, setIsSignUp] = useState(true)

@@ -6,10 +6,6 @@
     ".": {
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
-    },
-    "./sign-in": {
-      "import": "./src/SignIn.tsx",
-      "types": "./src/SignIn.tsx"
     }
   },
   "scripts": {

@@ -40,6 +40,7 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "./src"),
+        "@turbo-with-tailwind-v4/supabase": path.resolve(__dirname, "../../packages/supabase/src"),
       },
     },
     optimizeDeps: {
