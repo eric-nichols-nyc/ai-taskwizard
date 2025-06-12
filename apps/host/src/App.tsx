@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Button } from '@turbo-with-tailwind-v4/design-system/button'
+import { Button } from '@turbo-with-tailwind-v4/design-system/components/ui/button'
 import { Dashboard } from 'dashboard/Dashboard'
 
 function App() {

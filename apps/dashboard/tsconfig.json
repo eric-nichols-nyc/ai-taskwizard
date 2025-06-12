@@ -8,7 +8,7 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "@turbo-with-tailwind-v4/design-system/*": ["../../packages/design-system/src/*/*"],
+      "@turbo-with-tailwind-v4/design-system/*": ["../../packages/design-system/src/*"],
       "@turbo-with-tailwind-v4/ui/*": ["../../packages/ui/src/*"],
       "@turbo-with-tailwind-v4/supabase/*": ["../../packages/supabase/src/*"]
     }

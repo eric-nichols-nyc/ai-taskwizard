@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useTaskService } from "../../hooks/use-task-service";
 
 export function Calendar() {
-  const { tasks, handleCalendarDayClick, setSelectedDate, getTasksForDate } =
+  const { handleCalendarDayClick, setSelectedDate, getTasksForDate } =
     useTaskService();
 
   // useEffect(() => {

@@ -5,7 +5,7 @@ export interface AuthContextType {
   session: Session | null
   loading: boolean
   signIn: (email: string, password: string) => Promise<{ error?: string }>
-  signUp: (email: string, password: string) => Promise<{ error?: string }>
+  signUp: (email: string, password: string, metadata?: { firstName?: string; lastName?: string }) => Promise<{ error?: string }>
   signOut: () => Promise<void>
   signInWithProvider: (provider: 'google' | 'github') => Promise<{ error?: string }>
   resetPassword: (email: string) => Promise<{ error?: string }>

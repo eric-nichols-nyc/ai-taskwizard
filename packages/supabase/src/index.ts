@@ -10,4 +10,4 @@ export interface AuthProviderProps {
   supabase: SupabaseClient;
 }
 
-export { default as SignIn } from './SignIn';
+//export { default as SignIn } from './SignIn';
