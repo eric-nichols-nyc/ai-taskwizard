@@ -17,3 +17,19 @@ export interface AuthGuardProps {
   fallback?: React.ReactNode
   redirectTo?: string
 }
+
+export interface Card {
+  id: string; // UUID
+  column_id: string; // UUID
+  title: string;
+  description?: string | null;
+  position: number;
+  priority?: 'Low' | 'Medium' | 'High' | null;
+  due_date?: string | null; // ISO date string
+  assignee_id?: string | null;
+  created_at: string; // ISO timestamp
+  updated_at: string; // ISO timestamp
+}
+
+// Card type inferred from Zod schema (see schemas.ts)
+// export type Card = z.infer<typeof CardSchema>;
