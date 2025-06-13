@@ -8,14 +8,38 @@ import { Progress } from "../ui/progress"
 import { cn } from "../../lib/utils"
 import { Card } from "@turbo-with-tailwind-v4/ui/card"
 import { useTaskService } from "../../hooks/use-task-service"
-
+import { useAuth } from '@turbo-with-tailwind-v4/supabase'
+// get user token from session
 export default function TodoList() {
+  const { session } = useAuth()
+  // get user token from session
+  const userToken = session?.access_token
   const { tasks, createTask, selectedDate,setSelectedDate } = useTaskService()
 
 
   const [newTaskText, setNewTaskText] = useState("")
   const [newTaskPriority] = useState<"low" | "medium" | "high">("medium")
   const [newTaskDate, setNewTaskDate] = useState("");
+
+  useEffect(() => {
+     // get tasks from api
+     console.log('userToken poop')
+  const getTasks = async () => {
+    console.log('getTasks called')
+    try {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/tasks`, {
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+      },
+    })
+      const data = await response.json()
+      console.log('tasks = ', data)
+    } catch (error) {
+      console.error('Error fetching tasks:', error)
+    }
+  }
+    getTasks()
+  }, [userToken])
 
   // Set default date and update when selectedDate changes
   useEffect(() => {
@@ -35,30 +59,9 @@ export default function TodoList() {
 
   const toggleTaskCompletion = (id: string) => {
     console.log('toggleTaskCompletion', id)
-    //setTasks(tasks.map((task) => (task.id === id ? { ...task, completed: !task.completed } : task)))
   }
 
-  // const addTask = () => {
-  //   if (newTaskText.trim() === "") return
 
-  //   const today = new Date()
-  //   const nextMonth = new Date(today)
-  //   nextMonth.setDate(today.getDate() + 30)
-
-  //   const day = Math.floor(Math.random() * 30) + 1
-  //   const month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][
-  //     Math.floor(Math.random() * 12)
-  //   ]
-
-  //   const newTask: CreateTaskData = {
-  //     task: newTaskText,
-  //     priority: newTaskPriority as "low" | "medium" | "high",
-  //     dueDate: `${month} ${day}`,
-  //   }
-
-  //   createTask(newTask)
-  //   setNewTaskText("")
-  //}
   const handleCreateTask = async () => {
     if (newTaskText.trim() === "" || !newTaskDate) return;
 

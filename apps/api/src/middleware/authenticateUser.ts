@@ -18,17 +18,21 @@ const supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
 // Middleware to authenticate user via Supabase JWT
 export async function authenticateUser(req: Request, res: Response, next: NextFunction) {
   const authHeader = req.headers['authorization'];
+  console.log('[Auth] Authorization header:', authHeader);
   if (!authHeader) return res.status(401).json({ error: 'Missing Authorization header' });
 
   const token = authHeader.split(' ')[1];
+  console.log('[Auth] Extracted token:', token);
   if (!token) return res.status(401).json({ error: 'Missing token' });
 
   try {
     const { data: { user }, error } = await supabaseClient.auth.getUser(token);
+    console.log('[Auth] Supabase user:', user, 'Error:', error);
     if (error || !user) return res.status(401).json({ error: 'Invalid token' });
     (req as any).user = user;
     next();
   } catch (err) {
+    console.error('[Auth] Token verification failed:', err);
     return res.status(401).json({ error: 'Token verification failed' });
   }
 } 

@@ -4,7 +4,6 @@ import { authenticateUser } from '../middleware/authenticateUser';
 import { z } from 'zod';
 import { createClient } from '@supabase/supabase-js';
 import dotenv from 'dotenv';
-import { CardSchema } from '@turbo-with-tailwind-v4/supabase';
 dotenv.config();
 
 const router: Router = Router();
@@ -50,7 +49,7 @@ router.post('/users', asyncHandler(async (req, res) => {
   }));
 
 // Protected route: /tasks
-router.get('/tasks', authenticateUser, (req, res) => {
+router.get('/user', authenticateUser, (req, res) => {
   const user = (req as any).user;
   res.json({
     message: 'Authenticated! Here is your user info:',
@@ -72,20 +71,38 @@ const CardSchema = z.object({
   position: z.number().int(),
   priority: z.enum(['Low', 'Medium', 'High']).nullable().optional(),
   due_date: z.string().nullable().optional(),
-  assignee_id: z.string().uuid().nullable().optional(),
+  user_id: z.string().uuid().nullable().optional(),
   created_at: z.string().optional(),
   updated_at: z.string().optional(),
 });
 
-router.get('/tasks',authenticateUser, asyncHandler(async (req, res) => {
+// Post a new task
+router.post('/tasks', authenticateUser, asyncHandler(async (req, res) => {
     const parsedReq = CardSchema.safeParse(req.body);
     if (!parsedReq.success) {
         return res.status(400).json({ error: 'Invalid request body' });
     }
     const { data } = parsedReq;
     const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
-    const cards = await supabase.from('cards').insert(data);
-  res.json(cards);
+    try {
+        const { data: inserted, error } = await supabase.from('tasks').insert(data).select().single();
+        if (error) {
+            return res.status(500).json({ error: error.message });
+        }
+        res.status(201).json(inserted);
+    } catch (err: any) {
+        res.status(500).json({ error: err.message || 'Internal server error' });
+    }
+}));
+
+// Get all tasks
+router.get('/tasks', authenticateUser, asyncHandler(async (req, res) => {
+    const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+    const { data, error } = await supabase.from('tasks').select('*');
+    if (error) {
+        return res.status(500).json({ error: error.message });
+    }
+    res.json(data);
 }));
 
 export default router
