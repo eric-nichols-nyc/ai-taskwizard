@@ -35,15 +35,19 @@ export default function TodoList() {
 
   // Filter for today's tasks with status 'todo'
   const todayString = (new Date()).toISOString().slice(0, 10);
-  const todaysTasks = tasks.filter(
+  const allTasks = tasks.filter(
     (task) =>
       task.due_date &&
-      (parseLocalDate(task.due_date)).toISOString().slice(0, 10) === todayString &&
-      task.status === 'todo'
+      (parseLocalDate(task.due_date)).toISOString().slice(0, 10) === todayString
   );
 
-  const completedTasks = todaysTasks.filter((task) => task.status === "done").length
-  const totalTasks = todaysTasks.length
+  const todaysTasks = allTasks.filter(
+    (task) =>
+       task.status === 'todo'
+  );
+
+  const completedTasks = allTasks.filter((task) => task.status === "done").length
+  const totalTasks = allTasks.length
   const completionPercentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0
 
 
