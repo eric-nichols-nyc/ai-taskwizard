@@ -12,35 +12,38 @@ interface Task {
   // ...other fields as needed
 }
 
+let supabaseClient: SupabaseClient | undefined;
+if (import.meta.env.DEV && !supabaseClient) {
+  supabaseClient = createSupabaseClient(import.meta.env.VITE_SUPABASE_URL!, import.meta.env.VITE_SUPABASE_ANON_KEY!);
+}
+
 export const CalendarApp: React.FC = () => {
-  let supabaseClient: SupabaseClient | undefined;
   const auth = useAuth();
   const user: User | null | undefined = auth?.user;
 
-  if (import.meta.env.DEV) {
-    supabaseClient = createSupabaseClient(import.meta.env.VITE_SUPABASE_URL!, import.meta.env.VITE_SUPABASE_ANON_KEY!);
-  }
-
   // Get userId based on environment
-  const userId = import.meta.env.DEV
-    ? '2eb232a5-31f7-4089-af33-0d2c29965c46'
-    : user?.id;
 
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const [tasks, setTasks] = useState<Task[]>([]);
+  const[userId, setUserId] = useState<string | undefined>(undefined);
+  useEffect(() => {
+    if (user) {
+      setUserId(user.id);
+    }
+  }, [user]);
 
   useEffect(() => {
     fetchTasksForMonth();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentDate]);
+  }, [currentDate, userId]);
 
   useEffect(() => {
     if (import.meta.env.DEV && supabaseClient) {
       async function maybeSignInWithGoogle() {
         const { data: { session } } = await supabaseClient!.auth.getSession();
         // get the user id from the session
-        const userId = session?.user?.id;
         console.log('user from session data', userId);
+        setUserId(session?.user?.id);
         if (!session) {
           const { error } = await supabaseClient!.auth.signInWithOAuth({
             provider: 'google',
@@ -57,6 +60,10 @@ export const CalendarApp: React.FC = () => {
 
   // Fetch all tasks for the current month
   const fetchTasksForMonth = async (): Promise<void> => {
+    if (!userId) {
+      console.log('No user id found');
+      return;
+    }
     if (!supabaseClient) return;
     const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
     const endOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
