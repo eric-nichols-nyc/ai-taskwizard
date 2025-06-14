@@ -13,7 +13,7 @@ import { useTaskService } from "../../hooks/use-task-service"
 //import { useAuth } from '@turbo-with-tailwind-v4/supabase'
 // get user token from session
 export default function TodoList() {
-  const { tasks, createTask } = useTaskService()
+  const { tasks, createTask, refreshTasks } = useTaskService()
   //const { session } = useAuth()
   const [newTaskText, setNewTaskText] = useState("")
  
@@ -36,6 +36,7 @@ export default function TodoList() {
     };
     try {
       await createTask(taskData);
+      await refreshTasks();
       console.log('task created', taskData)
       // setNewTaskText("");
       // setSelectedDate(null); // Clear selected date after adding task

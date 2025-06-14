@@ -37,6 +37,7 @@ export const useTaskService = () => {
     setLoading(true);
     try {
       await taskService.createTaskWithDefaults(taskData);
+      await refreshTasks();
     } finally {
       setLoading(false);
     }
@@ -46,6 +47,7 @@ export const useTaskService = () => {
     setLoading(true);
     try {
       await taskService.updateTask(taskId, updates);
+      await refreshTasks();
     } finally {
       setLoading(false);
     }
@@ -55,6 +57,20 @@ export const useTaskService = () => {
     setLoading(true);
     try {
       await taskService.deleteTask(taskId);
+      await refreshTasks();
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const refreshTasks = async () => {
+    setLoading(true);
+    try {
+      const tasks = await taskService.getTasks();
+      setTasks(tasks);
+    } catch (err) {
+      // Optionally handle error (e.g., show toast)
+      console.error('Failed to refresh tasks:', err);
     } finally {
       setLoading(false);
     }
@@ -91,6 +107,7 @@ export const useTaskService = () => {
     updateTask,
     deleteTask,
     handleCalendarDayClick,
-    getTasksForDate
+    getTasksForDate,
+    refreshTasks,
   };
 };
