@@ -3,18 +3,14 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useTaskService } from "../../hooks/use-task-service";
-
+import { useRealtimeTasks } from "../../hooks/use-realtime-tasks";
 function formatDateYYYYMMDD(date: Date): string {
   return date.toISOString().slice(0, 10); // "2025-06-13"
 }
 
 export function Calendar() {
-  const { handleCalendarDayClick, setSelectedDate, getTasksForDate } =
-    useTaskService();
-
-  // useEffect(() => {
-  //   // console.log("DEBUG: tasks in Calendar", tasks);
-  // }, [tasks]);
+  const { tasks } = useRealtimeTasks();
+  const { handleCalendarDayClick, setSelectedDate } = useTaskService();
 
   // Get today's date
   const today = new Date();
@@ -54,12 +50,13 @@ export function Calendar() {
     calendarDays.push(day);
   }
 
+  // Use realtime tasks to get stats for a given day
   const getTaskStatsForDay = (day: number) => {
     if (!day) return { total: 0, completed: 0 };
     const date = new Date(Date.UTC(currentYear, currentMonth, day)); // Use UTC!
     const dayString = formatDateYYYYMMDD(date);
 
-    const dayTasks = getTasksForDate(date).filter(
+    const dayTasks = tasks.filter(
       (task) =>
         task.due_date && formatDateYYYYMMDD(new Date(task.due_date)) === dayString
     );
@@ -93,7 +90,6 @@ export function Calendar() {
   // function triggered when user clicks on a day in the calendar
   const handleDayClick = (day: number) => {
     const clickedDate = new Date(currentYear, currentMonth, day, 12, 0, 0, 0);
-    // // console.log("DEBUG: handleDayClick", clickedDate);
     setSelectedDate(clickedDate);
     setSelectedDay(day);
     handleCalendarDayClick(clickedDate);

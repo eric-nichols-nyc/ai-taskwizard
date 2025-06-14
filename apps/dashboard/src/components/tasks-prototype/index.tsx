@@ -9,17 +9,29 @@ import { cn } from "../../lib/utils"
 import { Card } from "@turbo-with-tailwind-v4/ui/card"
 import { Task } from "@turbo-with-tailwind-v4/supabase/types"
 import { useTaskService } from "../../hooks/use-task-service"
-
+import { useRealtimeTasks } from "../../hooks/use-realtime-tasks"
 //import { useAuth } from '@turbo-with-tailwind-v4/supabase'
 // get user token from session
+
+function formatDateYYYYMMDD(date: Date): string {
+  return date.toISOString().slice(0, 10);
+}
+
 export default function TodoList() {
-  const { tasks, createTask, refreshTasks } = useTaskService()
+  const { tasks } = useRealtimeTasks()
+  const {  createTask, refreshTasks } = useTaskService()
   //const { session } = useAuth()
   const [newTaskText, setNewTaskText] = useState("")
  
 
-  const completedTasks = tasks.filter((task) => task.status === "done").length
-  const totalTasks = tasks.length
+  // Filter for today's tasks
+  const todayString = formatDateYYYYMMDD(new Date());
+  const todaysTasks = tasks.filter(
+    (task) => task.due_date && formatDateYYYYMMDD(new Date(task.due_date)) === todayString
+  );
+
+  const completedTasks = todaysTasks.filter((task) => task.status === "done").length
+  const totalTasks = todaysTasks.length
   const completionPercentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0
 
 
@@ -106,10 +118,10 @@ export default function TodoList() {
           </div>
 
           <div className="space-y-2">
-            {tasks.length === 0 ? (
+            {todaysTasks.length === 0 ? (
               <div className="text-center text-gray-400 italic py-4">No tasks yet, add one now.</div>
             ) : (
-              tasks.map((task: Task) => (
+              todaysTasks.map((task: Task) => (
                 <div key={task.id} className="flex items-center justify-between bg-white/10 p-3 rounded-lg">
                   <div className="flex items-center">
                     <button

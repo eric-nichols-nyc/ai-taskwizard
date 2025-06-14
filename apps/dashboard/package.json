@@ -19,6 +19,8 @@
     "@tailwindcss/cli": "^4.1.5",
     "@tailwindcss/postcss": "^4.1.5",
     "@tailwindcss/vite": "^4.1.4",
+    "@tanstack/react-query": "^5.80.7",
+    "@tanstack/react-query-devtools": "^5.80.7",
     "@tanstack/react-router": "^1.119.0",
     "@turbo-with-tailwind-v4/design-system": "workspace:*",
     "@turbo-with-tailwind-v4/supabase": "workspace:*",
