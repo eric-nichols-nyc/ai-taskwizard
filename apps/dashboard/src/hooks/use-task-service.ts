@@ -34,6 +34,7 @@ export const useTaskService = () => {
   }, []);
 
   const createTask = async (taskData: TaskInput) => {
+    console.log('service: createTask', taskData)
     setLoading(true);
     try {
       await taskService.createTaskWithDefaults(taskData);

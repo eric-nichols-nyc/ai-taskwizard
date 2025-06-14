@@ -9,8 +9,9 @@ import { cn } from "../../lib/utils"
 import { Card } from "@turbo-with-tailwind-v4/ui/card"
 import { Task } from "@turbo-with-tailwind-v4/supabase/types"
 import { useTaskService } from "../../hooks/use-task-service"
-import { useRealtimeTasks } from "../../hooks/use-realtime-tasks"
+import { useTasksQuery } from "../../hooks/use-tasks-query"
 import { Badge } from "@turbo-with-tailwind-v4/design-system"
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 //import { useAuth } from '@turbo-with-tailwind-v4/supabase'
 // get user token from session
 
@@ -24,7 +25,8 @@ function parseLocalDate(dateString: string): Date {
 }
 
 export default function TodoList() {
-  const { tasks } = useRealtimeTasks()
+  const { data: tasks = [], isLoading } = useTasksQuery()
+  const queryClient = useQueryClient()
   const {  createTask } = useTaskService()
   //const { session } = useAuth()
   const [newTaskText, setNewTaskText] = useState("")
@@ -48,23 +50,21 @@ export default function TodoList() {
     console.log('toggleTaskCompletion', id)
   }
 
+  const createTaskMutation = useMutation({
+    mutationFn: createTask,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['tasks'] })
+      queryClient.invalidateQueries({ queryKey: ['calendar'] }) // if needed
+    },
+  })
 
-  const handleCreateTask = async () => {
-    if (newTaskText.trim() === "") return;
-    console.log('handleCreateTask', newTaskText)
-    const taskData = {
-      title: newTaskText.trim()
-    };
-    try {
-      await createTask(taskData);
-      console.log('task created', taskData)
-      // setNewTaskText("");
-      // setSelectedDate(null); // Clear selected date after adding task
-    } catch (error) {
-      console.error('Failed to create task:', error);
-      // TODO: Show user-facing error feedback
-    }
-  };
+  const handleCreateTask = () => {
+    if (newTaskText.trim() === "") return
+    createTaskMutation.mutate({ title: newTaskText.trim() })
+    setNewTaskText("")
+  }
+
+  if (isLoading) return <div>Loading...</div>;
 
 
   return (
