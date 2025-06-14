@@ -6,7 +6,7 @@ import {
   Route,
 } from '@tanstack/react-router'
 import { Dashboard } from './Dashboard'
-import { LoginPage } from './components/login-page/login-page'
+import { LoginPage } from './pages/signin'
 import AuthCallback from './pages/auth/callback'
 
 const rootRoute = createRootRoute({

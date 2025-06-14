@@ -8,49 +8,39 @@ import { Progress } from "../ui/progress"
 import { cn } from "../../lib/utils"
 import { Card } from "@turbo-with-tailwind-v4/ui/card"
 import { useTaskService } from "../../hooks/use-task-service"
-import { useAuth } from '@turbo-with-tailwind-v4/supabase'
+import { supabase } from '../../supabaseClient'
+import { Task } from "@turbo-with-tailwind-v4/supabase/types"
+
+//import { useAuth } from '@turbo-with-tailwind-v4/supabase'
 // get user token from session
 export default function TodoList() {
-  const { session } = useAuth()
+  //const { session } = useAuth()
   // get user token from session
-  const userToken = session?.access_token
-  const { tasks, createTask, selectedDate,setSelectedDate } = useTaskService()
+  //const userToken = import.meta.env.VITE_USER_ACCESS_TOKEN
+  //const { tasks, createTask, selectedDate,setSelectedDate } = useTaskService()
 
-
+  const [tasks, setTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [newTaskText, setNewTaskText] = useState("")
   const [newTaskPriority] = useState<"low" | "medium" | "high">("medium")
   const [newTaskDate, setNewTaskDate] = useState("");
 
-  useEffect(() => {
-     // get tasks from api
-     console.log('userToken poop')
-  const getTasks = async () => {
-    console.log('getTasks called')
-    try {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/tasks`, {
-      headers: {
-        Authorization: `Bearer ${userToken}`,
-      },
-    })
-      const data = await response.json()
-      console.log('tasks = ', data)
-    } catch (error) {
-      console.error('Error fetching tasks:', error)
-    }
-  }
-    getTasks()
-  }, [userToken])
 
-  // Set default date and update when selectedDate changes
   useEffect(() => {
-    if (selectedDate) {
-      const dateStr = selectedDate.toISOString().split('T')[0];
-      setNewTaskDate(dateStr);
-    } else {
-      const today = new Date().toISOString().split('T')[0];
-      setNewTaskDate(today);
+    async function fetchTasks() {
+      setLoading(true);
+      setError(null);
+      const { data, error } = await supabase.from('tasks').select('*');
+      if (error) {
+        setError(error.message);
+      } else {
+        setTasks(data || []);
+      }
+      setLoading(false);
     }
-  }, [selectedDate]);
+    fetchTasks();
+  }, []);
 
   const completedTasks = tasks.filter((task) => task.completed).length
   const totalTasks = tasks.length
@@ -63,23 +53,35 @@ export default function TodoList() {
 
 
   const handleCreateTask = async () => {
-    if (newTaskText.trim() === "" || !newTaskDate) return;
+    // if (newTaskText.trim() === "" || !newTaskDate) return;
 
-    // Create date in local timezone to avoid UTC conversion issues
-    const [year, month, day] = newTaskDate.split('-').map(Number);
-    const dueDateTime = new Date(year, month - 1, day, 12, 0, 0, 0);
+    // // Create date in local timezone to avoid UTC conversion issues
+    // const [year, month, day] = newTaskDate.split('-').map(Number);
+    // const dueDateTime = new Date(year, month - 1, day, 12, 0, 0, 0);
 
-    const taskData = {
-      task: newTaskText.trim(),
-      dueDate: dueDateTime.toISOString(),
-      priority: newTaskPriority
-    };
+    // const taskData = {
+    //   task: newTaskText.trim(),
+    //   dueDate: dueDateTime.toISOString(),
+    //   priority: newTaskPriority
+    // };
 
-    await createTask(taskData);
-    setNewTaskText("");
-    setSelectedDate(null); // Clear selected date after adding task
+    // await createTask(taskData);
+    // setNewTaskText("");
+    // setSelectedDate(null); // Clear selected date after adding task
   };
 
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        const { data: { user }, error } = await supabase.auth.getUser();
+        console.log(user); // This is the current user object, or null if not signed in
+      } catch (error) {
+        console.error('Error getting user:', error);
+      }
+    };
+
+    getUser();
+  }, []);
 
   return (
     <Card className="p-6">
@@ -143,19 +145,19 @@ export default function TodoList() {
             {tasks.length === 0 ? (
               <div className="text-center text-gray-400 italic py-4">No tasks yet, add one now.</div>
             ) : (
-              tasks.map((task) => (
-                <div key={task.taskId} className="flex items-center justify-between bg-white/10 p-3 rounded-lg">
+              tasks.map((task: Task) => (
+                <div key={task.id} className="flex items-center justify-between bg-white/10 p-3 rounded-lg">
                   <div className="flex items-center">
                     <button
                       className={cn(
                         "w-5 h-5 rounded-full border mr-3 flex items-center justify-center",
-                        task.completed ? "bg-green-500 border-green-500" : "border-gray-500 hover:border-white",
+                        task.status === "done" ? "bg-green-500 border-green-500" : "border-gray-500 hover:border-white",
                       )}
-                      onClick={() => toggleTaskCompletion(task.taskId)}
+                      onClick={() => toggleTaskCompletion(task.id)}
                     >
-                      {task.completed && <Check className="h-3 w-3 text-white" />}
+                      {task.status === "done" && <Check className="h-3 w-3 text-white" />}
                     </button>
-                    <span className={cn("text-sm", task.completed && "line-through text-gray-500")}>{task.task}</span>
+                    <span className={cn("text-sm", task.status === "done" && "line-through text-gray-500")}>{task.title}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span

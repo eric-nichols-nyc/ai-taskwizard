@@ -7,10 +7,13 @@ import { CheckCircle, Circle, FileText } from "lucide-react"
 import { cn } from "../../lib/utils"
 import { Card } from "@turbo-with-tailwind-v4/ui/card"
 import { useAuth } from '@turbo-with-tailwind-v4/supabase'
-const API_URL = process.env.REACT_APP_API_URL; // Set this in your .env file
 
 export function TasksSection() {
   const { session } = useAuth()
+  const userToken = session?.access_token
+  console.log('userToken', userToken)
+  const API_URL = import.meta.env.VITE_API_URL; // Set this in your .env file
+
   const [activeTab, setActiveTab] = useState("tasks")
   const [tasks, setTasks] = useState([])
   const [loading, setLoading] = useState(true)
