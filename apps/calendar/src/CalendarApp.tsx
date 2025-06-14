@@ -23,7 +23,7 @@ export const CalendarApp: React.FC = () => {
 
   // Get userId based on environment
   const userId = import.meta.env.DEV
-    ? '2eb232a5-31f7-4089-af33-0d2c29965c46' // or get from supabaseClient.auth.getUser() if you want to be dynamic
+    ? '2eb232a5-31f7-4089-af33-0d2c29965c46'
     : user?.id;
 
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
@@ -38,6 +38,9 @@ export const CalendarApp: React.FC = () => {
     if (import.meta.env.DEV && supabaseClient) {
       async function maybeSignInWithGoogle() {
         const { data: { session } } = await supabaseClient!.auth.getSession();
+        // get the user id from the session
+        const userId = session?.user?.id;
+        console.log('user from session data', userId);
         if (!session) {
           const { error } = await supabaseClient!.auth.signInWithOAuth({
             provider: 'google',
