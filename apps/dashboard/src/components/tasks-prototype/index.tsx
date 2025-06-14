@@ -12,6 +12,7 @@ import { useTaskService } from "../../hooks/use-task-service"
 import { useTasksQuery } from "../../hooks/use-tasks-query"
 import { Badge } from "@turbo-with-tailwind-v4/design-system"
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useUpdateTaskMutation } from '../../hooks/use-update-task-mutation'
 //import { useAuth } from '@turbo-with-tailwind-v4/supabase'
 // get user token from session
 
@@ -30,7 +31,7 @@ export default function TodoList() {
   const {  createTask } = useTaskService()
   //const { session } = useAuth()
   const [newTaskText, setNewTaskText] = useState("")
- 
+  const updateTaskMutation = useUpdateTaskMutation()
 
   // Filter for today's tasks with status 'todo'
   const todayString = (new Date()).toISOString().slice(0, 10);
@@ -47,7 +48,12 @@ export default function TodoList() {
 
 
   const toggleTaskCompletion = (id: string) => {
-    console.log('toggleTaskCompletion', id)
+    const task = tasks.find((t) => t.id === id)
+    if (!task) return
+    updateTaskMutation.mutate({
+      id,
+      updates: { status: 'done' }
+    })
   }
 
   const createTaskMutation = useMutation({
