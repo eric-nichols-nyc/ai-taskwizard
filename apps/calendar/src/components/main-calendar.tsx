@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Plus } from 'lucide-react';
-import { createSupabaseClient, useAuth } from '@turbo-with-tailwind-v4/supabase';
-import type { SupabaseClient, User } from '@supabase/supabase-js';
+import type { SupabaseClient } from '@supabase/supabase-js';
 
-// Types
 interface Task {
   id: string;
   title: string;
@@ -12,49 +10,23 @@ interface Task {
   // ...other fields as needed
 }
 
-export const CalendarApp: React.FC = () => {
-  let supabaseClient: SupabaseClient | undefined;
-  const auth = useAuth();
-  const user: User | null | undefined = auth?.user;
+interface MainCalendarProps {
+  supabaseClient: SupabaseClient;
+  userId: string;
+}
 
-  if (import.meta.env.DEV) {
-    supabaseClient = createSupabaseClient(import.meta.env.VITE_SUPABASE_URL!, import.meta.env.VITE_SUPABASE_ANON_KEY!);
-  }
-
-  // Get userId based on environment
-  const userId = import.meta.env.DEV
-    ? '2eb232a5-31f7-4089-af33-0d2c29965c46' // or get from supabaseClient.auth.getUser() if you want to be dynamic
-    : user?.id;
-
+export const MainCalendar: React.FC<MainCalendarProps> = ({ supabaseClient, userId }) => {
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const [tasks, setTasks] = useState<Task[]>([]);
 
   useEffect(() => {
     fetchTasksForMonth();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentDate]);
-
-  useEffect(() => {
-    if (import.meta.env.DEV && supabaseClient) {
-      async function maybeSignInWithGoogle() {
-        const { data: { session } } = await supabaseClient!.auth.getSession();
-        if (!session) {
-          const { error } = await supabaseClient!.auth.signInWithOAuth({
-            provider: 'google',
-            options: { redirectTo: window.location.origin },
-          });
-          if (error) {
-            console.error('Google sign-in failed:', error.message);
-          }
-        }
-      }
-      maybeSignInWithGoogle();
-    }
-  }, [supabaseClient]);
+  }, [currentDate, userId]);
 
   // Fetch all tasks for the current month
   const fetchTasksForMonth = async (): Promise<void> => {
-    if (!supabaseClient) return;
+    if (!supabaseClient || !userId) return;
     const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
     const endOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
     const startDateStr = startOfMonth.toISOString().split('T')[0];
@@ -119,6 +91,17 @@ export const CalendarApp: React.FC = () => {
     });
   };
 
+  const openEventPopover = (): void => {
+    // Placeholder for event popover logic
+  };
+
+  const monthNames: string[] = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+
+  const dayNames: string[] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
   return (
     <div className="w-full mx-auto p-6">
       {/* Header Component */}
@@ -127,15 +110,14 @@ export const CalendarApp: React.FC = () => {
           <Calendar className="w-6 h-6 text-blue-600" />
           <div>
             <h1 className="text-2xl font-bold text-gray-900 calendar-month-title">
-              {['January', 'February', 'March', 'April', 'May', 'June',
-                'July', 'August', 'September', 'October', 'November', 'December'][currentDate.getMonth()]} {currentDate.getFullYear()}
+              {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
             </h1>
             <p className="text-sm text-gray-600">
-              Today is {new Date().toLocaleDateString('en-US', {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
+              Today is {new Date().toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
               })}
             </p>
           </div>
@@ -154,7 +136,7 @@ export const CalendarApp: React.FC = () => {
             →
           </button>
           <button
-            onClick={() => {}} // Placeholder for event popover
+            onClick={() => openEventPopover()}
             className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
             <Plus className="w-4 h-4" />
@@ -166,7 +148,7 @@ export const CalendarApp: React.FC = () => {
       <div className="bg-card rounded-lg shadow">
         {/* Day headers */}
         <div className="hidden sm:grid grid-cols-1 sm:grid-cols-7 gap-px calendar-grid-gap calendar-header">
-          {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day: string) => (
+          {dayNames.map((day: string) => (
             <div
               key={day}
               className="px-3 py-2 text-center text-sm font-medium calendar-header-day"
@@ -184,11 +166,11 @@ export const CalendarApp: React.FC = () => {
               <div
                 key={index}
                 className={`min-h-[60px] sm:min-h-[100px] md:min-h-[140px] p-1 sm:p-2 cursor-pointer transition-colors ${
-                  isToday
+                  isToday 
                     ? 'calendar-today'
                     : 'calendar-day'
                 }`}
-                onClick={() => {}} // Placeholder for event popover
+                onClick={() => date && openEventPopover()}
               >
                 {date && (
                   <>
@@ -224,6 +206,7 @@ export const CalendarApp: React.FC = () => {
           })}
         </div>
       </div>
+      {/* ...existing event popover code... */}
     </div>
   );
 };

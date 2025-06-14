@@ -43,7 +43,7 @@ function App() {
     import.meta.env.MODE === 'development' ? (
         <RouterProvider router={router} />
     ) : (
-      <AuthProvider isHost={true} supabase={supabase} >
+      <AuthProvider isHost={false} supabase={supabase} >
         <RouterProvider router={router} />
       </AuthProvider>
     )
