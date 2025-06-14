@@ -24,10 +24,10 @@ export interface Task {
   title: string;
   description?: string | null;
   position: number;
-  status: string;
+  status?: string | null;
   priority?: 'Low' | 'Medium' | 'High' | null;
   due_date?: string | null; // ISO date string
-  assignee_id?: string | null;
+  user_id?: string | null;
   created_at: string; // ISO timestamp
   updated_at: string; // ISO timestamp
 }

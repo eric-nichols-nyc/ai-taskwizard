@@ -13,7 +13,7 @@ import { useTaskService } from "../../hooks/use-task-service"
 //import { useAuth } from '@turbo-with-tailwind-v4/supabase'
 // get user token from session
 export default function TodoList() {
-  const { tasks } = useTaskService()
+  const { tasks, createTask } = useTaskService()
   //const { session } = useAuth()
   const [newTaskText, setNewTaskText] = useState("")
  
@@ -29,21 +29,20 @@ export default function TodoList() {
 
 
   const handleCreateTask = async () => {
-    // if (newTaskText.trim() === "" || !newTaskDate) return;
-
-    // // Create date in local timezone to avoid UTC conversion issues
-    // const [year, month, day] = newTaskDate.split('-').map(Number);
-    // const dueDateTime = new Date(year, month - 1, day, 12, 0, 0, 0);
-
-    // const taskData = {
-    //   task: newTaskText.trim(),
-    //   dueDate: dueDateTime.toISOString(),
-    //   priority: newTaskPriority
-    // };
-
-    // await createTask(taskData);
-    // setNewTaskText("");
-    // setSelectedDate(null); // Clear selected date after adding task
+    if (newTaskText.trim() === "") return;
+    console.log('handleCreateTask', newTaskText)
+    const taskData = {
+      title: newTaskText.trim()
+    };
+    try {
+      await createTask(taskData);
+      console.log('task created', taskData)
+      // setNewTaskText("");
+      // setSelectedDate(null); // Clear selected date after adding task
+    } catch (error) {
+      console.error('Failed to create task:', error);
+      // TODO: Show user-facing error feedback
+    }
   };
 
 

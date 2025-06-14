@@ -6,6 +6,14 @@ import { supabase } from '../supabaseClient'; // or wherever your client is
 
 const taskService = createTaskService(supabase);
 
+type TaskInput = {
+  title: string;
+  status?: string;
+  priority?: 'Low' | 'Medium' | 'High';
+  due_date?: string;
+  // Add other optional fields as needed
+};
+
 export const useTaskService = () => {
   const [tasks, setTasks] = useState<SupabaseTask[]>([]);
   const { selectedDate, setSelectedDate } = useTaskContext();
@@ -25,10 +33,10 @@ export const useTaskService = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  const createTask = async (taskData: SupabaseTask) => {
+  const createTask = async (taskData: TaskInput) => {
     setLoading(true);
     try {
-      await taskService.createTask(taskData);
+      await taskService.createTaskWithDefaults(taskData);
     } finally {
       setLoading(false);
     }

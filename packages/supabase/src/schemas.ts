@@ -16,5 +16,21 @@ export const CardSchema = z.object({
 // For input validation (e.g., create card), omit fields set by DB
 export const CardCreateSchema = CardSchema.omit({ id: true, created_at: true, updated_at: true });
 
+export const TaskSchema = z.object({
+  id: z.string().uuid(),
+  column_id: z.string().uuid(),
+  title: z.string().min(1),
+  description: z.string().nullable().optional(),
+  position: z.number().int(),
+  status: z.string(),
+  priority: z.enum(['Low', 'Medium', 'High']).nullable().optional(),
+  due_date: z.string().nullable().optional(),
+  user_id: z.string().uuid().nullable().optional(),
+  created_at: z.string(),
+  updated_at: z.string(),
+});
+
+export const TaskCreateSchema = TaskSchema.omit({ id: true, created_at: true, updated_at: true });
+
 // You can infer the Card type from the schema:
 // export type Card = z.infer<typeof CardSchema>;

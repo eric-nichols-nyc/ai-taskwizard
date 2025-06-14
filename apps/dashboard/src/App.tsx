@@ -3,16 +3,8 @@ import { RouterProvider } from '@tanstack/react-router'
 import { AuthProvider } from '@turbo-with-tailwind-v4/supabase'
 import { supabase } from './supabaseClient'
 import { router } from './router'
-import { createClient } from '@supabase/supabase-js'
-const supabaseDev = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY)
 
-// Only for development!
-if (import.meta.env.MODE === 'development') {
-  supabaseDev.auth.setSession({
-    access_token: import.meta.env.VITE_DEV_ACCESS_TOKEN, // Your dev token in .env
-    refresh_token: '', // Or real refresh token if you have it
-  })
-}
+
 
 // async function devSignIn() {
 //   if (import.meta.env.MODE === 'development') {
@@ -51,7 +43,7 @@ function App() {
     import.meta.env.MODE === 'development' ? (
         <RouterProvider router={router} />
     ) : (
-      <AuthProvider isHost={true} supabase={supabase} accessToken={import.meta.env.VITE_USER_ACCESS_TOKEN}>
+      <AuthProvider isHost={true} supabase={supabase} >
         <RouterProvider router={router} />
       </AuthProvider>
     )
