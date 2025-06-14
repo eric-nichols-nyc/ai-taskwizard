@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Check, TrendingUp, ListTodo, Plus } from "lucide-react"
+import { Check, TrendingUp, ListTodo, Plus, Calendar as CalendarIcon, Flag as FlagIcon } from "lucide-react"
 import { Button } from "../ui/button"
 import { Input } from "../ui/input"
 import { Progress } from "../ui/progress"
@@ -10,11 +10,17 @@ import { Card } from "@turbo-with-tailwind-v4/ui/card"
 import { Task } from "@turbo-with-tailwind-v4/supabase/types"
 import { useTaskService } from "../../hooks/use-task-service"
 import { useRealtimeTasks } from "../../hooks/use-realtime-tasks"
+import { Badge } from "@turbo-with-tailwind-v4/design-system"
 //import { useAuth } from '@turbo-with-tailwind-v4/supabase'
 // get user token from session
 
-function formatDateYYYYMMDD(date: Date): string {
-  return date.toISOString().slice(0, 10);
+function formatDateMMMdd(date: Date): string {
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }).toLowerCase();
+}
+
+function parseLocalDate(dateString: string): Date {
+  const [year, month, day] = dateString.split('-').map(Number);
+  return new Date(year, month - 1, day);
 }
 
 export default function TodoList() {
@@ -25,9 +31,9 @@ export default function TodoList() {
  
 
   // Filter for today's tasks
-  const todayString = formatDateYYYYMMDD(new Date());
+  const todayString = (new Date()).toISOString().slice(0, 10);
   const todaysTasks = tasks.filter(
-    (task) => task.due_date && formatDateYYYYMMDD(new Date(task.due_date)) === todayString
+    (task) => task.due_date && (new Date(task.due_date)).toISOString().slice(0, 10) === todayString
   );
 
   const completedTasks = todaysTasks.filter((task) => task.status === "done").length
@@ -138,7 +144,7 @@ export default function TodoList() {
                   <div className="flex items-center gap-2">
                     <span
                       className={cn(
-                        "text-xs px-2 py-1 rounded",
+                        "text-xs px-2 py-1 rounded flex items-center gap-1",
                         task.priority === "High"
                           ? "bg-red-900 text-red-300"
                           : task.priority === "Medium"
@@ -146,9 +152,16 @@ export default function TodoList() {
                             : "bg-blue-900 text-blue-300",
                       )}
                     >
+                      <FlagIcon className="h-3 w-3 mr-1" />
                       {task.priority}
                     </span>
-                    <span className="hidden text-xs text-gray-400">{task.due_date}</span>
+                    {/* Show due date badge */}
+                    {task.due_date && (
+                      <Badge variant="secondary" className="flex items-center gap-1 px-2 py-1">
+                        <CalendarIcon className="h-3 w-3 mr-1" />
+                        {formatDateMMMdd(parseLocalDate(task.due_date))}
+                      </Badge>
+                    )}
                   </div>
                 </div>
               ))
