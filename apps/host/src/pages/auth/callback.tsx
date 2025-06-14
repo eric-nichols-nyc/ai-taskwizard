@@ -9,7 +9,7 @@ export default function AuthCallback() {
   useEffect(() => {
     console.log('user:', user, 'loading:', loading)
     if (!loading && user) {
-      router.navigate({ to: "/" })
+      router.navigate({ to: `${import.meta.env.VITE_HOST_URL}/dashboard`, })
     }
   }, [user, loading, router])
 
