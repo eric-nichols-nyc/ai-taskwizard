@@ -12,14 +12,14 @@ interface Task {
   // ...other fields as needed
 }
 
-let supabaseClient: SupabaseClient | undefined;
-if (import.meta.env.DEV && !supabaseClient) {
-  supabaseClient = createSupabaseClient(import.meta.env.VITE_SUPABASE_URL!, import.meta.env.VITE_SUPABASE_ANON_KEY!);
-}
-
 export const CalendarApp: React.FC = () => {
+  let supabaseClient: SupabaseClient | undefined;
   const auth = useAuth();
   const user: User | null | undefined = auth?.user;
+
+  if (!window.location.href.includes('http://localhost:3002')) {
+    supabaseClient = createSupabaseClient(import.meta.env.VITE_SUPABASE_URL!, import.meta.env.VITE_SUPABASE_ANON_KEY!);
+  }
 
   // Get userId based on environment
 
@@ -38,7 +38,7 @@ export const CalendarApp: React.FC = () => {
   }, [currentDate, userId]);
 
   useEffect(() => {
-    if (import.meta.env.DEV && supabaseClient) {
+    if (!window.location.href.includes('http://localhost:3002') && supabaseClient) {
       async function maybeSignInWithGoogle() {
         const { data: { session } } = await supabaseClient!.auth.getSession();
         // get the user id from the session
