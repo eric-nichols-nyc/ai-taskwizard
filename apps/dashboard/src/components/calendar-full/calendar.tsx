@@ -58,7 +58,9 @@ export function Calendar() {
 
     const dayTasks = tasks.filter(
       (task) =>
-        task.due_date && formatDateYYYYMMDD(new Date(task.due_date)) === dayString
+        task.due_date &&
+        formatDateYYYYMMDD(new Date(task.due_date)) === dayString &&
+        task.status === 'todo'
     );
 
     const total = dayTasks.length;

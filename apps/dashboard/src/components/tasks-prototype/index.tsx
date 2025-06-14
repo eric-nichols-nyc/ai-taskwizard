@@ -25,15 +25,18 @@ function parseLocalDate(dateString: string): Date {
 
 export default function TodoList() {
   const { tasks } = useRealtimeTasks()
-  const {  createTask, refreshTasks } = useTaskService()
+  const {  createTask } = useTaskService()
   //const { session } = useAuth()
   const [newTaskText, setNewTaskText] = useState("")
  
 
-  // Filter for today's tasks
+  // Filter for today's tasks with status 'todo'
   const todayString = (new Date()).toISOString().slice(0, 10);
   const todaysTasks = tasks.filter(
-    (task) => task.due_date && (new Date(task.due_date)).toISOString().slice(0, 10) === todayString
+    (task) =>
+      task.due_date &&
+      (parseLocalDate(task.due_date)).toISOString().slice(0, 10) === todayString &&
+      task.status === 'todo'
   );
 
   const completedTasks = todaysTasks.filter((task) => task.status === "done").length
@@ -54,7 +57,6 @@ export default function TodoList() {
     };
     try {
       await createTask(taskData);
-      await refreshTasks();
       console.log('task created', taskData)
       // setNewTaskText("");
       // setSelectedDate(null); // Clear selected date after adding task
