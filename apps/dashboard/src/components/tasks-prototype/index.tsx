@@ -1,31 +1,21 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Check, TrendingUp, ListTodo, Plus } from "lucide-react"
 import { Button } from "../ui/button"
 import { Input } from "../ui/input"
 import { Progress } from "../ui/progress"
 import { cn } from "../../lib/utils"
 import { Card } from "@turbo-with-tailwind-v4/ui/card"
-import { supabase } from '../../supabaseClient'
 import { Task } from "@turbo-with-tailwind-v4/supabase/types"
 import { useTaskService } from "../../hooks/use-task-service"
 
 //import { useAuth } from '@turbo-with-tailwind-v4/supabase'
 // get user token from session
 export default function TodoList() {
-  const { tasks, createTask, selectedDate,setSelectedDate } = useTaskService()
+  const { tasks } = useTaskService()
   //const { session } = useAuth()
-  // get user token from session
-  //const userToken = import.meta.env.VITE_USER_ACCESS_TOKEN
-  //const { tasks, createTask, selectedDate,setSelectedDate } = useTaskService()
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [newTaskText, setNewTaskText] = useState("")
-  const [newTaskPriority] = useState<"low" | "medium" | "high">("medium")
-  const [newTaskDate, setNewTaskDate] = useState("");
-
-
  
 
   const completedTasks = tasks.filter((task) => task.status === "done").length
@@ -56,18 +46,6 @@ export default function TodoList() {
     // setSelectedDate(null); // Clear selected date after adding task
   };
 
-  useEffect(() => {
-    const getUser = async () => {
-      try {
-        const { data: { user }, error } = await supabase.auth.getUser();
-        console.log(user); // This is the current user object, or null if not signed in
-      } catch (error) {
-        console.error('Error getting user:', error);
-      }
-    };
-
-    getUser();
-  }, []);
 
   return (
     <Card className="p-6">
@@ -158,7 +136,7 @@ export default function TodoList() {
                     >
                       {task.priority}
                     </span>
-                    <span className="hidden text-xs text-gray-400">{task.dueDate}</span>
+                    <span className="hidden text-xs text-gray-400">{task.due_date}</span>
                   </div>
                 </div>
               ))

@@ -6,16 +6,17 @@ import { TaskProvider } from '../../../providers/task-provider';
 
 // Mock the useTaskService hook
 type Task = {
-  dueDate: string;
-  completed: boolean;
-  task: string;
-  taskId: string;
-  priority: string;
-  createdAt: string;
-  sectionId: null;
-  createTime: string;
-  updateTime: string;
-  userId: string;
+  id: string; // UUID
+  column_id: string; // UUID
+  title: string;
+  description?: string | null;
+  position: number;
+  status: string;
+  priority?: 'Low' | 'Medium' | 'High' | null;
+  due_date?: string | null; // ISO date string
+  assignee_id?: string | null;
+  created_at: string; // ISO timestamp
+  updated_at: string; // ISO timestamp
 };
 
 vi.mock('../../../hooks/use-task-service');
@@ -23,16 +24,16 @@ vi.mock('../../../hooks/use-task-service');
 const today = new Date();
 const mockTasks: Task[] = [
   {
-    dueDate: today.toISOString(),
-    completed: false,
-    task: 'Test Task',
-    taskId: '1',
-    priority: 'medium',
-    createdAt: today.toISOString(),
-    sectionId: null,
-    createTime: today.toISOString(),
-    updateTime: today.toISOString(),
-    userId: 'user1',
+    due_date: today.toISOString(),
+    status: 'pending',
+    title: 'Test Task',
+    id: '1',
+    priority: 'Medium',
+    created_at: today.toISOString(),
+    updated_at: today.toISOString(),
+    assignee_id: 'user1',
+    column_id: '1',
+    position: 1,
   },
 ];
 
@@ -48,9 +49,6 @@ describe('Calendar', () => {
       deleteTask: vi.fn(),
       handleCalendarDayClick: vi.fn(),
       getTasksForDate: () => mockTasks,
-      getTasksByPriority: vi.fn(),
-      getCompletedTasks: vi.fn(),
-      getPendingTasks: vi.fn(),
     });
 
     render(

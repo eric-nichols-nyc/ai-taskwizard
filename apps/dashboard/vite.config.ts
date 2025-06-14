@@ -31,11 +31,11 @@ export default defineConfig({
     minify: false,
     cssCodeSplit: false,
     rollupOptions: {
-      external: [
-        "@turbo-with-tailwind-v4/design-system",
-        "@turbo-with-tailwind-v4/ui",
-        "@turbo-with-tailwind-v4/supabase"
-      ]
+      // external: [
+      //   "@turbo-with-tailwind-v4/design-system",
+      //   "@turbo-with-tailwind-v4/ui",
+      //   "@turbo-with-tailwind-v4/supabase"
+      // ]
     }
   },
   server: {

@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { CreateTaskData, UpdateTaskData } from "../types";
 import { useTaskContext } from "./use-task-context";
 import { createTaskService } from "@turbo-with-tailwind-v4/supabase/task-service";
 import type { Task as SupabaseTask } from "@turbo-with-tailwind-v4/supabase/types";
@@ -26,7 +25,7 @@ export const useTaskService = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  const createTask = async (taskData: CreateTaskData) => {
+  const createTask = async (taskData: SupabaseTask) => {
     setLoading(true);
     try {
       await taskService.createTask(taskData);
@@ -35,7 +34,7 @@ export const useTaskService = () => {
     }
   };
 
-  const updateTask = async (taskId: string, updates: UpdateTaskData) => {
+  const updateTask = async (taskId: string, updates: Partial<SupabaseTask>) => {
     setLoading(true);
     try {
       await taskService.updateTask(taskId, updates);
