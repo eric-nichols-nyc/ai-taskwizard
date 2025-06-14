@@ -1,24 +1,29 @@
 import { useState, useEffect } from "react";
-import { taskService } from "../service/mock-supabase-service";
-import { CreateTaskData, TaskFields, UpdateTaskData } from "../types";
+import { CreateTaskData, UpdateTaskData } from "../types";
 import { useTaskContext } from "./use-task-context";
+import { createTaskService } from "@turbo-with-tailwind-v4/supabase/task-service";
+import type { Task as SupabaseTask } from "@turbo-with-tailwind-v4/supabase/types";
+import { supabase } from '../supabaseClient'; // or wherever your client is
+
+const taskService = createTaskService(supabase);
 
 export const useTaskService = () => {
-  const [tasks, setTasks] = useState<TaskFields[]>([]);
+  const [tasks, setTasks] = useState<SupabaseTask[]>([]);
   const { selectedDate, setSelectedDate } = useTaskContext();
   const [loading, setLoading] = useState(false);
-  useEffect(() => {
-    const unsubscribe = taskService.subscribe(setTasks);
-    return () => unsubscribe();
-  }, []);
 
   useEffect(() => {
-    const unsubscribe = taskService.subscribe((updatedTasks) => {
-      setTasks(updatedTasks);
-    });
-
-    setTasks(taskService.getAllTasks());
-    return unsubscribe;
+    setLoading(true);
+    taskService.getTasks()
+      .then((tasks) => {
+        console.log('Tasks:', tasks);
+        setTasks(tasks);
+      })
+      .catch((err) => {
+        // handle error (e.g., show toast)
+        console.error(err);
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   const createTask = async (taskData: CreateTaskData) => {
@@ -60,8 +65,8 @@ export const useTaskService = () => {
     const targetDay = date.getDate();
 
     return tasks.filter((task) => {
-      if (!task.dueDate) return false;
-      const taskDate = new Date(task.dueDate);
+      if (!task.due_date) return false;
+      const taskDate = new Date(task.due_date);
       return (
         taskDate.getFullYear() === targetYear &&
         taskDate.getMonth() === targetMonth &&
@@ -79,9 +84,6 @@ export const useTaskService = () => {
     updateTask,
     deleteTask,
     handleCalendarDayClick,
-    getTasksForDate,
-    getTasksByPriority: taskService.getTasksByPriority.bind(taskService),
-    getCompletedTasks: taskService.getCompletedTasks.bind(taskService),
-    getPendingTasks: taskService.getPendingTasks.bind(taskService),
+    getTasksForDate
   };
 };

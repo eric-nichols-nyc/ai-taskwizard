@@ -4,6 +4,10 @@ import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useTaskService } from "../../hooks/use-task-service";
 
+function formatDateYYYYMMDD(date: Date): string {
+  return date.toISOString().slice(0, 10); // "2025-06-13"
+}
+
 export function Calendar() {
   const { handleCalendarDayClick, setSelectedDate, getTasksForDate } =
     useTaskService();
@@ -52,11 +56,16 @@ export function Calendar() {
 
   const getTaskStatsForDay = (day: number) => {
     if (!day) return { total: 0, completed: 0 };
-    const date = new Date(currentYear, currentMonth, day, 12, 0, 0, 0);
-    const dayTasks = getTasksForDate(date);
-    // // console.log("DEBUG: getTaskStatsForDay", { date, dayTasks });
+    const date = new Date(Date.UTC(currentYear, currentMonth, day)); // Use UTC!
+    const dayString = formatDateYYYYMMDD(date);
+
+    const dayTasks = getTasksForDate(date).filter(
+      (task) =>
+        task.due_date && formatDateYYYYMMDD(new Date(task.due_date)) === dayString
+    );
+
     const total = dayTasks.length;
-    const completed = dayTasks.filter((task) => task.completed).length;
+    const completed = dayTasks.filter((task) => task.status === "done").length;
     return { total, completed };
   };
 

@@ -7,19 +7,18 @@ import { Input } from "../ui/input"
 import { Progress } from "../ui/progress"
 import { cn } from "../../lib/utils"
 import { Card } from "@turbo-with-tailwind-v4/ui/card"
-import { useTaskService } from "../../hooks/use-task-service"
 import { supabase } from '../../supabaseClient'
 import { Task } from "@turbo-with-tailwind-v4/supabase/types"
+import { useTaskService } from "../../hooks/use-task-service"
 
 //import { useAuth } from '@turbo-with-tailwind-v4/supabase'
 // get user token from session
 export default function TodoList() {
+  const { tasks, createTask, selectedDate,setSelectedDate } = useTaskService()
   //const { session } = useAuth()
   // get user token from session
   //const userToken = import.meta.env.VITE_USER_ACCESS_TOKEN
   //const { tasks, createTask, selectedDate,setSelectedDate } = useTaskService()
-
-  const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [newTaskText, setNewTaskText] = useState("")
@@ -27,22 +26,9 @@ export default function TodoList() {
   const [newTaskDate, setNewTaskDate] = useState("");
 
 
-  useEffect(() => {
-    async function fetchTasks() {
-      setLoading(true);
-      setError(null);
-      const { data, error } = await supabase.from('tasks').select('*');
-      if (error) {
-        setError(error.message);
-      } else {
-        setTasks(data || []);
-      }
-      setLoading(false);
-    }
-    fetchTasks();
-  }, []);
+ 
 
-  const completedTasks = tasks.filter((task) => task.completed).length
+  const completedTasks = tasks.filter((task) => task.status === "done").length
   const totalTasks = tasks.length
   const completionPercentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0
 

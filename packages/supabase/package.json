@@ -11,6 +11,10 @@
       "import": "./dist/types.js",
       "types": "./dist/types.d.ts"
     },
+    "./task-service": {
+      "import": "./dist/task-service.js",
+      "types": "./dist/task-service.d.ts"
+    },
     ".": {
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
