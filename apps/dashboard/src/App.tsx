@@ -5,6 +5,7 @@ import { supabase } from './supabaseClient'
 import { router } from './router'
 
 
+const IS_ISOLATED = window.location.href.includes(import.meta.env.VITE_ISOLATED_HOST);
 
 // async function devSignIn() {
 //   if (import.meta.env.MODE === 'development') {
@@ -21,7 +22,7 @@ import { router } from './router'
 function App() {
   useEffect(() => {
     async function maybeSignInWithGoogle() {
-      if (import.meta.env.MODE === 'development') {
+      if (IS_ISOLATED) {
         const { data: { session } } = await supabase.auth.getSession();
         if (!session) {
           const { error } = await supabase.auth.signInWithOAuth({
@@ -40,7 +41,7 @@ function App() {
   }, []);
 
   return (
-    import.meta.env.MODE === 'development' ? (
+   !IS_ISOLATED ? (
         <RouterProvider router={router} />
     ) : (
       <AuthProvider isHost={false} supabase={supabase} >

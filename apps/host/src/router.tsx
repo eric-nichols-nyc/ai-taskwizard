@@ -1,13 +1,13 @@
 import { createRouter, createRootRoute, createRoute } from '@tanstack/react-router';
 import { Root } from './Root';
 import { Dashboard } from './pages/Dashboard';
-import { Notes } from './pages/Notes';
+//import { Notes } from './pages/Notes';
 import { Calendar } from './pages/Calendar';
 import { Friends } from './pages/Friends';
-import { Community } from './pages/Community';
-import { FocusMode } from './pages/FocusMode';
-import { AIAssistant } from './pages/AIAssistant';
-import { Settings } from './pages/Settings';
+// import { Community } from './pages/Community';
+// import { FocusMode } from './pages/FocusMode';
+// import { AIAssistant } from './pages/AIAssistant';
+// import { Settings } from './pages/Settings';
 import { Login } from './pages/Login';
 import { Landing } from './pages/Landing';
 import AuthCallback from './pages/auth/callback';
@@ -42,11 +42,11 @@ const loginRoute = createRoute({
   component: Login,
 });
 
-const notesRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/notes',
-  component: Notes,
-});
+// const notesRoute = createRoute({
+//   getParentRoute: () => rootRoute,
+//   path: '/notes',
+//   component: Notes,
+// });
 
 const calendarRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -60,41 +60,41 @@ const friendsRoute = createRoute({
   component: Friends,
 });
 
-const communityRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/community',
-  component: Community,
-});
+// const communityRoute = createRoute({
+//   getParentRoute: () => rootRoute,
+//   path: '/community',
+//   component: Community,
+// });
 
-const focusModeRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/focus',
-  component: FocusMode,
-});
+// const focusModeRoute = createRoute({
+//   getParentRoute: () => rootRoute,
+//   path: '/focus',
+//   component: FocusMode,
+// });
 
-const aiAssistantRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/ai-assistant',
-  component: AIAssistant,
-});
+// const aiAssistantRoute = createRoute({
+//   getParentRoute: () => rootRoute,
+//   path: '/ai-assistant',
+//   component: AIAssistant,
+// });
 
-const settingsRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/settings',
-  component: Settings,
-});
+// const settingsRoute = createRoute({
+//   getParentRoute: () => rootRoute,
+//   path: '/settings',
+//   component: Settings,
+// });
 
 // Create and export the router
 export const routeTree = rootRoute.addChildren([
   indexRoute,
   dashboardRoute,
-  notesRoute,
+ // notesRoute,
   calendarRoute,
   friendsRoute,
-  communityRoute,
-  focusModeRoute,
-  aiAssistantRoute,
-  settingsRoute,
+  //communityRoute,
+  //focusModeRoute,
+  ///aiAssistantRoute,
+  //settingsRoute,
   loginRoute,
   authCallbackRoute,
 ]);

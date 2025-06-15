@@ -34,11 +34,9 @@ export default function TodoList() {
   const updateTaskMutation = useUpdateTaskMutation()
 
   // Filter for today's tasks with status 'todo'
-  const todayString = (new Date()).toISOString().slice(0, 10);
+  const todayString = new Date().toLocaleDateString('en-CA'); // 'YYYY-MM-DD'
   const allTasks = tasks.filter(
-    (task) =>
-      task.due_date &&
-      (parseLocalDate(task.due_date)).toISOString().slice(0, 10) === todayString
+    (task) => task.due_date === todayString
   );
 
   const todaysTasks = allTasks.filter(
