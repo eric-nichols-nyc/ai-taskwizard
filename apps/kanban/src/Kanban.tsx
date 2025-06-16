@@ -20,7 +20,8 @@ import {
 import {
   useSortable,
 } from '@dnd-kit/sortable';
-import { Plus, MoreHorizontal, X } from 'lucide-react';
+import { useDroppable } from '@dnd-kit/core';
+import { Plus, MoreHorizontal } from 'lucide-react';
 
 // Types
 interface Task {
@@ -181,7 +182,13 @@ const TaskCard: React.FC<{ task: Task }> = ({ task }) => {
     setNodeRef,
     transition,
     isDragging,
-  } = useSortable({ id: task.id });
+  } = useSortable({
+    id: task.id,
+    data: {
+      type: 'Task',
+      task,
+    },
+  });
 
   const style = {
     transition,
@@ -269,13 +276,23 @@ const ColumnComponent: React.FC<{ column: Column }> = ({ column }) => {
     .filter(task => task.column_id === column.id)
     .sort((a, b) => a.position - b.position);
 
+  // Make column a droppable area for tasks
+  const { setNodeRef: setDroppableNodeRef } = useDroppable({ id: column.id });
+
+  // Only useSortable for the column header (for column reordering)
   const {
     attributes,
     listeners,
-    setNodeRef,
+    setNodeRef: setSortableNodeRef,
     transition,
     isDragging,
-  } = useSortable({ id: column.id });
+  } = useSortable({
+    id: column.id,
+    data: {
+      type: 'Column',
+      column,
+    },
+  });
 
   const style = {
     transition,
@@ -283,11 +300,16 @@ const ColumnComponent: React.FC<{ column: Column }> = ({ column }) => {
 
   return (
     <div
-      ref={setNodeRef}
+      ref={setDroppableNodeRef}
       style={style}
       className={`bg-gray-100 rounded-lg p-4 min-w-80 max-w-80 ${isDragging ? 'opacity-50' : ''}`}
     >
-      <div className="flex items-center justify-between mb-4" {...attributes} {...listeners}>
+      <div
+        className="flex items-center justify-between mb-4 cursor-grab"
+        ref={setSortableNodeRef}
+        {...attributes}
+        {...listeners}
+      >
         <div className="cursor-grab">
           <h3 className="font-semibold text-gray-900">{column.title}</h3>
           <p className="text-sm text-gray-600">{column.description}</p>
@@ -325,69 +347,8 @@ const ColumnComponent: React.FC<{ column: Column }> = ({ column }) => {
   );
 };
 
-// Add Column Form
-const AddColumnForm: React.FC<{ boardId: string; onClose: () => void }> = ({ boardId, onClose }) => {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const addColumn = useKanbanStore(state => state.addColumn);
-
-  const handleSubmit = () => {
-    if (title.trim()) {
-      addColumn(boardId, title, description);
-      setTitle('');
-      setDescription('');
-      onClose();
-    }
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSubmit();
-    }
-  };
-
-  return (
-    <div className="bg-gray-100 rounded-lg p-4 min-w-80 max-w-80">
-      <div>
-        <input
-          type="text"
-          placeholder="Column title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          onKeyPress={handleKeyPress}
-          className="w-full p-2 mb-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-          autoFocus
-        />
-        <textarea
-          placeholder="Column description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          className="w-full p-2 mb-2 border border-gray-300 rounded resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-          rows={2}
-        />
-        <div className="flex gap-2">
-          <button
-            onClick={handleSubmit}
-            className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
-            Add Column
-          </button>
-          <button
-            onClick={onClose}
-            className="px-3 py-1 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
-          >
-            Cancel
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
-
 // Main Kanban Board Component
 export const Kanban: React.FC = () => {
-  const [showAddColumn, setShowAddColumn] = useState(false);
   const [activeId, setActiveId] = useState<string | null>(null);
   
   const { 
@@ -396,12 +357,18 @@ export const Kanban: React.FC = () => {
     activeBoard, 
     updateColumnPositions, 
     updateTaskPositions, 
-    moveTask 
   } = useKanbanStore();
+
+  // Debug: Log all column and task IDs
+  console.log('[Kanban Render] Column IDs:', columns.map(c => c.id));
+  console.log('[Kanban Render] Task IDs:', tasks.map(t => t.id));
 
   const activeColumns = columns
     .filter(col => col.board_id === activeBoard)
     .sort((a, b) => a.position - b.position);
+
+  // Debug: Log items passed to SortableContext for columns
+  console.log('[Kanban Render] SortableContext (columns) items:', activeColumns.map(c => c.id));
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -413,82 +380,148 @@ export const Kanban: React.FC = () => {
 
   const handleDragStart = (event: DragStartEvent) => {
     setActiveId(event.active.id as string);
+    console.log('[DragStart]', { activeId: event.active.id });
   };
 
   const handleDragOver = (event: DragOverEvent) => {
     const { active, over } = event;
     if (!over) return;
 
-    const activeId = active.id as string;
-    const overId = over.id as string;
+    const activeData = active.data.current;
+    const overData = over.data.current;
+    if (!activeData || !overData) return;
 
-    // Check if we're dragging a task over a column
-    const activeTask = tasks.find(t => t.id === activeId);
-    const overColumn = columns.find(c => c.id === overId);
-    const overTask = tasks.find(t => t.id === overId);
-
-    if (activeTask && overColumn && activeTask.column_id !== overColumn.id) {
-      // Move task to different column
-      const newTasks = tasks.map(task => {
-        if (task.id === activeId) {
-          return { ...task, column_id: overColumn.id };
+    // Dragging a task
+    if (activeData.type === 'Task') {
+      // Dropped over a task
+      if (overData.type === 'Task') {
+        const activeTask = activeData.task;
+        const overTask = overData.task;
+        if (activeTask.id === overTask.id) return;
+        // If moving to a different column
+        if (activeTask.column_id !== overTask.column_id) {
+          const newTasks = tasks.map(task => {
+            if (task.id === activeTask.id) {
+              return { ...task, column_id: overTask.column_id };
+            }
+            return task;
+          });
+          updateTaskPositions(newTasks);
         }
-        return task;
-      });
-      updateTaskPositions(newTasks);
+      }
+      // Dropped over a column
+      if (overData.type === 'Column') {
+        const activeTask = activeData.task;
+        const overColumn = overData.column;
+        if (activeTask.column_id !== overColumn.id) {
+          const newTasks = tasks.map(task => {
+            if (task.id === activeTask.id) {
+              return { ...task, column_id: overColumn.id };
+            }
+            return task;
+          });
+          updateTaskPositions(newTasks);
+        }
+      }
     }
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     setActiveId(null);
-
     if (!over) return;
 
-    const activeId = active.id as string;
-    const overId = over.id as string;
+    const activeData = active.data.current;
+    const overData = over.data.current;
+    if (!activeData || !overData) return;
 
-    // Handle column reordering
-    const activeColumn = columns.find(c => c.id === activeId);
-    const overColumn = columns.find(c => c.id === overId);
-
-    if (activeColumn && overColumn && activeId !== overId) {
-      const oldIndex = activeColumns.findIndex(c => c.id === activeId);
-      const newIndex = activeColumns.findIndex(c => c.id === overId);
-      
+    // Column reordering
+    if (activeData.type === 'Column' && overData.type === 'Column') {
+      if (active.id === over.id) return;
+      const oldIndex = activeColumns.findIndex(c => c.id === active.id);
+      const newIndex = activeColumns.findIndex(c => c.id === over.id);
       const newColumns = arrayMove(activeColumns, oldIndex, newIndex).map((col, index) => ({
         ...col,
         position: index,
       }));
-      
       const updatedColumns = columns.map(col => {
         const newCol = newColumns.find(nc => nc.id === col.id);
         return newCol || col;
       });
-      
       updateColumnPositions(updatedColumns);
+      return;
     }
 
-    // Handle task reordering within the same column
-    const activeTask = tasks.find(t => t.id === activeId);
-    const overTask = tasks.find(t => t.id === overId);
-
-    if (activeTask && overTask && activeTask.column_id === overTask.column_id) {
-      const columnTasks = tasks.filter(t => t.column_id === activeTask.column_id);
-      const oldIndex = columnTasks.findIndex(t => t.id === activeId);
-      const newIndex = columnTasks.findIndex(t => t.id === overId);
-      
-      const reorderedTasks = arrayMove(columnTasks, oldIndex, newIndex).map((task, index) => ({
-        ...task,
-        position: index,
-      }));
-      
-      const updatedTasks = [
-        ...tasks.filter(task => task.column_id !== activeTask.column_id),
-        ...reorderedTasks,
-      ];
-      
-      updateTaskPositions(updatedTasks);
+    // Task reordering or moving between columns
+    if (activeData.type === 'Task') {
+      const activeTask = activeData.task;
+      // Dropped on a task
+      if (overData.type === 'Task') {
+        const overTask = overData.task;
+        if (activeTask.id === overTask.id) return;
+        const columnTasks = tasks.filter(t => t.column_id === overTask.column_id);
+        const oldIndex = columnTasks.findIndex(t => t.id === activeTask.id);
+        const newIndex = columnTasks.findIndex(t => t.id === overTask.id);
+        let reorderedTasks = arrayMove(columnTasks, oldIndex, newIndex).map((task, index) => ({
+          ...task,
+          position: index,
+        }));
+        // If moving to a new column, update column_id
+        if (activeTask.column_id !== overTask.column_id) {
+          reorderedTasks = reorderedTasks.map(task =>
+            task.id === activeTask.id ? { ...task, column_id: overTask.column_id } : task
+          );
+        }
+        const updatedTasks = [
+          ...tasks.filter(task => task.column_id !== overTask.column_id),
+          ...reorderedTasks,
+        ];
+        updateTaskPositions(updatedTasks);
+        return;
+      }
+      // Dropped on a column
+      if (overData.type === 'Column') {
+        const overColumn = overData.column;
+        if (activeTask.column_id !== overColumn.id) {
+          const destColumnTasks = tasks
+            .filter(t => t.column_id === overColumn.id)
+            .sort((a, b) => a.position - b.position);
+          const updatedActiveTask = {
+            ...activeTask,
+            column_id: overColumn.id,
+            position: destColumnTasks.length,
+          };
+          const newTasks = tasks
+            .filter(t => t.id !== activeTask.id)
+            .concat(updatedActiveTask)
+            .map(task => {
+              // Re-index positions in both columns
+              if (task.column_id === activeTask.column_id && task.id !== activeTask.id) {
+                // Old column: re-index
+                return {
+                  ...task,
+                  position: tasks
+                    .filter(t => t.column_id === activeTask.column_id && t.id !== activeTask.id)
+                    .sort((a, b) => a.position - b.position)
+                    .findIndex(t => t.id === task.id),
+                };
+              }
+              if (task.column_id === overColumn.id && task.id !== activeTask.id) {
+                // New column: re-index
+                return {
+                  ...task,
+                  position: tasks
+                    .filter(t => t.column_id === overColumn.id && t.id !== activeTask.id)
+                    .sort((a, b) => a.position - b.position)
+                    .findIndex(t => t.id === task.id),
+                };
+              }
+              return task;
+            });
+          updateTaskPositions(newTasks);
+        }
+        return;
+      }
     }
   };
 
@@ -496,10 +529,10 @@ export const Kanban: React.FC = () => {
   const activeColumn = activeId ? columns.find(c => c.id === activeId) : null;
 
   return (
-    <div className="h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">My Project Board</h1>
-        <p className="text-gray-600">Manage your tasks with this Kanban board</p>
+    <div className="h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6 flex flex-col items-center">
+      <div className="mb-6 w-full max-w-screen-lg mx-auto">
+        <h1 className="text-3xl font-bold text-gray-900 mb-2 text-left">My Project Board</h1>
+        <p className="text-gray-600 text-left">Manage your tasks with this Kanban board</p>
       </div>
 
       <DndContext
@@ -509,27 +542,12 @@ export const Kanban: React.FC = () => {
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
       >
-        <div className="flex gap-6 overflow-x-auto pb-6">
+        <div className="flex gap-6 overflow-x-auto pb-6 justify-center items-start w-full">
           <SortableContext items={activeColumns.map(c => c.id)} strategy={horizontalListSortingStrategy}>
             {activeColumns.map(column => (
               <ColumnComponent key={column.id} column={column} />
             ))}
           </SortableContext>
-
-          {showAddColumn ? (
-            <AddColumnForm 
-              boardId={activeBoard!} 
-              onClose={() => setShowAddColumn(false)} 
-            />
-          ) : (
-            <button
-              onClick={() => setShowAddColumn(true)}
-              className="min-w-80 max-w-80 p-4 bg-gray-50 hover:bg-gray-100 rounded-lg border-2 border-dashed border-gray-300 hover:border-gray-400 transition-colors flex items-center justify-center gap-2 text-gray-600 hover:text-gray-900"
-            >
-              <Plus size={20} />
-              Add another list
-            </button>
-          )}
         </div>
 
         <DragOverlay>
