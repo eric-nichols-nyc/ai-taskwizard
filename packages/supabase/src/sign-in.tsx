@@ -24,7 +24,7 @@ export const SignIn: React.FC = () => {
       if (result.error) {
         setError(result.error)
       } else {
-        setSuccess("Check your email to verify your account.")
+        window.location.href = '/dashboard';
       }
       console.log('After signUp:', { error, success, loading })
     } else {
@@ -39,17 +39,6 @@ export const SignIn: React.FC = () => {
     }
     setLoading(false)
     console.log('After setLoading(false):', { error, success, loading })
-  }
-
-  const handleGoogleSignIn = async () => {
-    console.log("Sign in with Google")
-    const result = await signInWithProvider("google")
-    console.log('signInWithProvider result:', result)
-    if (result.error) {
-      setError(result.error)
-    } else {
-      console.log("Google sign in successful")
-    }
   }
 
   return (
@@ -151,26 +140,6 @@ export const SignIn: React.FC = () => {
         {success && (
           <div className="text-green-500 text-center mt-2">{success}</div>
         )}
-
-        {/* Divider */}
-        <div className="relative my-6">
-          <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t border-gray-600" />
-          </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-black px-2 text-gray-400">Or continue with</span>
-          </div>
-        </div>
-
-        {/* Google Sign In */}
-        <Button
-          variant="outline"
-          className="cursor-pointer w-full bg-transparent border-gray-600 text-white hover:bg-gray-800 hover:border-gray-500 hover:text-white font-medium h-12 text-base"
-          onClick={handleGoogleSignIn}
-        >
-          <Chrome className="mr-2 h-5 w-5" />
-          Sign in with Google
-        </Button>
       </div>
     </div>
   );

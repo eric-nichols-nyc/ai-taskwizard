@@ -529,7 +529,7 @@ export const KanbanBoard: React.FC = () => {
   const activeColumn = activeId ? columns.find(c => c.id === activeId) : null;
 
   return (
-    <div className="h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6 flex flex-col items-center">
+    <div className="h-screen bg-gradient-to-br p-6 flex flex-col items-center">
       <div className="mb-6 w-full max-w-screen-lg mx-auto">
         <h1 className="text-3xl font-bold text-gray-900 mb-2 text-left">My Project Board</h1>
         <p className="text-gray-600 text-left">Manage your tasks with this Kanban board</p>
