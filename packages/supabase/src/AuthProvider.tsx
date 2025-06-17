@@ -17,7 +17,7 @@ export function AuthProvider({
     supabase?: SupabaseClient
     accessToken?: string
   }) {
-  if (!supabase && isHost) {
+  if (!supabase) {
     throw new Error('Supabase client must be provided to AuthProvider');
   }
 
