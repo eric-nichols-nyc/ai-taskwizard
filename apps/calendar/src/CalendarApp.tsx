@@ -3,6 +3,10 @@ import { Calendar, Plus } from 'lucide-react';
 import { createSupabaseClient, useAuth } from '@turbo-with-tailwind-v4/supabase';
 import type { SupabaseClient, User } from '@supabase/supabase-js';
 
+// Debug: Log environment variables
+console.log('VITE_SUPABASE_URL:', import.meta.env.VITE_SUPABASE_URL);
+console.log('VITE_SUPABASE_ANON_KEY:', import.meta.env.VITE_SUPABASE_ANON_KEY);
+
 // Types
 interface Task {
   id: string;
@@ -12,14 +16,18 @@ interface Task {
   // ...other fields as needed
 }
 
+// Initialize Supabase client once, outside the component
+let supabaseClient: SupabaseClient | undefined = undefined;
+if (typeof window !== 'undefined' && window.location.href.includes('http://localhost:3002')) {
+  supabaseClient = createSupabaseClient(
+    import.meta.env.VITE_SUPABASE_URL!,
+    import.meta.env.VITE_SUPABASE_ANON_KEY!
+  );
+}
+
 export const CalendarApp: React.FC = () => {
-  let supabaseClient: SupabaseClient | undefined;
   const auth = useAuth();
   const user: User | null | undefined = auth?.user;
-
-  if (!window.location.href.includes('http://localhost:3002')) {
-    supabaseClient = createSupabaseClient(import.meta.env.VITE_SUPABASE_URL!, import.meta.env.VITE_SUPABASE_ANON_KEY!);
-  }
 
   // Get userId based on environment
 
@@ -38,7 +46,7 @@ export const CalendarApp: React.FC = () => {
   }, [currentDate, userId]);
 
   useEffect(() => {
-    if (!window.location.href.includes('http://localhost:3002') && supabaseClient) {
+    if (window.location.href.includes('http://localhost:3002') && supabaseClient) {
       async function maybeSignInWithGoogle() {
         const { data: { session } } = await supabaseClient!.auth.getSession();
         // get the user id from the session
