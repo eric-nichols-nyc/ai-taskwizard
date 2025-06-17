@@ -14,9 +14,13 @@ export function AuthProvider({
   }: { 
     children: React.ReactNode
     isHost?: boolean
-    supabase: SupabaseClient
+    supabase?: SupabaseClient
     accessToken?: string
   }) {
+  if (!supabase && isHost) {
+    throw new Error('Supabase client must be provided to AuthProvider');
+  }
+
   const [user, setUser] = useState<User | null>(null)
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
@@ -26,12 +30,13 @@ export function AuthProvider({
   useEffect(() => {
     // If an accessToken prop is provided, use it (dev or otherwise)
     if (accessToken) {
-      supabase.auth.setSession({
+      supabase?.auth.setSession({
         access_token: accessToken,
         refresh_token: '',
       });
     } else {
-      supabase.auth.getSession().then(({ data: { session } }) => {
+      supabase?.auth.getSession().then((result) => {
+        const session = result?.data?.session;
         setSession(session)
         setUser(session?.user ?? null)
         setLoading(false)
@@ -39,7 +44,7 @@ export function AuthProvider({
     }
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const onAuthChangeResult = supabase?.auth.onAuthStateChange((_event, session) => {
       setSession(session)
       setUser(session?.user ?? null)
       setLoading(false)
@@ -48,15 +53,17 @@ export function AuthProvider({
         setSession(null)
       }
     });
+    const subscription = onAuthChangeResult?.data?.subscription;
 
-    return () => subscription.unsubscribe()
-  }, [accessToken, isHost])
+    return () => subscription?.unsubscribe();
+  }, [accessToken, isHost, supabase])
 
   const signIn = async (email: string, password: string) => {
     try {
       setLoading(true)
-      const { error } = await supabase.auth.signInWithPassword({ email, password })
-      if (error) return { error: error.message }
+      const result = await supabase?.auth.signInWithPassword({ email, password })
+      if (!result) return { error: 'Supabase client not available' }
+      if (result.error) return { error: result.error.message }
       return {}
     } catch {
       return { error: 'An unexpected error occurred' }
@@ -68,7 +75,7 @@ export function AuthProvider({
   const signUp = async (email: string, password: string, metadata?: { firstName?: string; lastName?: string }) => {
     try {
       setLoading(true)
-      const { error } = await supabase.auth.signUp({
+      const result = await supabase?.auth.signUp({
         email,
         password,
         options: {
@@ -76,7 +83,8 @@ export function AuthProvider({
           data: metadata
         }
       })
-      if (error) return { error: error.message }
+      if (!result) return { error: 'Supabase client not available' }
+      if (result.error) return { error: result.error.message }
       setSuccess("Check your email to verify your account.")
       return {}
     } catch {
@@ -88,18 +96,19 @@ export function AuthProvider({
 
   const signOut = async () => {
     setLoading(true)
-    await supabase.auth.signOut()
+    await supabase?.auth.signOut()
     setLoading(false)
   }
 
   const signInWithProvider = async (provider: 'google' | 'github') => {
     try {
       setLoading(true)
-      const { error } = await supabase.auth.signInWithOAuth({
+      const result = await supabase?.auth.signInWithOAuth({
         provider,
         options: { redirectTo: `${window.location.origin}/auth/callback` },
       })
-      if (error) return { error: error.message }
+      if (!result) return { error: 'Supabase client not available' }
+      if (result.error) return { error: result.error.message }
       return {}
     } catch {
       return { error: 'An unexpected error occurred' }
@@ -110,10 +119,11 @@ export function AuthProvider({
 
   const resetPassword = async (email: string) => {
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      const result = await supabase?.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/auth/reset-password`,
       })
-      if (error) return { error: error.message }
+      if (!result) return { error: 'Supabase client not available' }
+      if (result.error) return { error: result.error.message }
       return {}
     } catch {
       return { error: 'An unexpected error occurred' }
@@ -123,8 +133,9 @@ export function AuthProvider({
   const updateProfile = async (updates: { email?: string; password?: string }) => {
     try {
       setLoading(true)
-      const { error } = await supabase.auth.updateUser(updates)
-      if (error) return { error: error.message }
+      const result = await supabase?.auth.updateUser(updates)
+      if (!result) return { error: 'Supabase client not available' }
+      if (result.error) return { error: result.error.message }
       return {}
     } catch {
       return { error: 'An unexpected error occurred' }

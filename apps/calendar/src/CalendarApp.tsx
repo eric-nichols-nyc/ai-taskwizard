@@ -2,11 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Calendar, Plus } from 'lucide-react';
 import { createSupabaseClient, useAuth } from '@turbo-with-tailwind-v4/supabase';
 import type { SupabaseClient, User } from '@supabase/supabase-js';
+import { AuthProvider } from '@turbo-with-tailwind-v4/supabase';
 
 // Debug: Log environment variables
-console.log('VITE_SUPABASE_URL:', import.meta.env.VITE_SUPABASE_URL);
-console.log('VITE_SUPABASE_ANON_KEY:', import.meta.env.VITE_SUPABASE_ANON_KEY);
-
 // Types
 interface Task {
   id: string;
@@ -138,6 +136,7 @@ export const CalendarApp: React.FC = () => {
   };
 
   return (
+  <AuthProvider isHost={false}> 
     <div className="w-full mx-auto p-6">
       {/* Header Component */}
       <div className="flex items-center justify-between mb-6 pb-4 border-b">
@@ -243,5 +242,6 @@ export const CalendarApp: React.FC = () => {
         </div>
       </div>
     </div>
+    </AuthProvider>
   );
 };
