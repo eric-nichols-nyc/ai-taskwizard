@@ -25,7 +25,8 @@
     "dev": "tsc --watch",
     "type-check": "tsc --noEmit"
   },
-  "peerDependencies": {
+  "peerDependencies": 
+  {
     "react": "^19.1.0"
   },
   "dependencies": {

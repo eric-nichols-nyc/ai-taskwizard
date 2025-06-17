@@ -1,9 +1,7 @@
-import { useEffect } from 'react'
-import { RouterProvider } from '@tanstack/react-router'
-import { AuthProvider } from '@turbo-with-tailwind-v4/supabase'
+import { useEffect, useState } from 'react'
 import { supabase } from './supabaseClient'
-import { router } from './router'
-
+import { useHostAuth } from '@turbo-with-tailwind-v4/supabase'
+//import { Dashboard } from './Dashboard'
 
 const IS_ISOLATED = window.location.href.includes(import.meta.env.VITE_ISOLATED_HOST);
 
@@ -19,12 +17,34 @@ const IS_ISOLATED = window.location.href.includes(import.meta.env.VITE_ISOLATED_
 //   }
 // }
 
-function App() {
+function DashboardApp() {
+  const { user: hostUser, loading } = useHostAuth();
+  const [user, setUser] = useState(hostUser);
+
+  // Log user whenever it changes
+  useEffect(() => {
+    console.log('DashboardApp - user:', user);
+  }, [user]);
+
+  // Update local user if hostUser changes and is present
+  useEffect(() => {
+    if (hostUser) {
+      setUser(hostUser);
+      console.log('DashboardApp - user is from host:', hostUser);
+    }
+  }, [hostUser]);
+
   useEffect(() => {
     async function maybeSignInWithGoogle() {
       if (IS_ISOLATED) {
         const { data: { session } } = await supabase.auth.getSession();
-        if (!session) {
+        console.log('Dashboard app - Session:', session);
+        if (session) {
+          // If no hostUser, but session user exists, set local user from session
+          if (!hostUser && session.user) {
+            setUser(session.user);
+          }
+        } else {
           const { error } = await supabase.auth.signInWithOAuth({
             provider: 'google',
             options: {
@@ -38,17 +58,34 @@ function App() {
       }
     }
     maybeSignInWithGoogle();
-  }, []);
+    // Add hostUser as a dependency so we can set user if session is found after hostUser is null
+  }, [hostUser]);
 
   return (
-   !IS_ISOLATED ? (
-        <RouterProvider router={router} />
+    !IS_ISOLATED ? (
+      // <Dashboard />
+      <div>
+      {loading ? 'Loading...' : user ? <div>
+        <h1>Dashboard</h1>
+        <p>User ID: {user.id}</p>
+        <p>Email: {user.email}</p>
+        <p>Name: {user.user_metadata.name}</p>
+      </div> : 'No user found'}
+    </div>
     ) : (
-      <AuthProvider isHost={false} supabase={supabase} >
-        <RouterProvider router={router} />
-      </AuthProvider>
+      <div className='w-full dark'>
+        {/* <Dashboard /> */}
+        <div>
+          {loading ? 'Loading...' : user ? <div>
+        <h1>Dashboard</h1>
+        <p>User ID: {user.id}</p>
+        <p>Email: {user.email}</p>
+        <p>Name: {user.user_metadata.name}</p>
+      </div> : 'No user found'}
+        </div>
+      </div>
     )
   )
 }
 
-export default App
+export default DashboardApp

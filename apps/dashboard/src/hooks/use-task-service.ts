@@ -23,7 +23,6 @@ export const useTaskService = () => {
     setLoading(true);
     taskService.getTasks()
       .then((tasks) => {
-        console.log('Dashboard: Tasks:', tasks);
         setTasks(tasks);
       })
       .catch((err) => {

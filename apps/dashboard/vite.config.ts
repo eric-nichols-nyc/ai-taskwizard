@@ -9,7 +9,7 @@ export default defineConfig({
     name: "dashboard",
     filename: 'remoteEntry.js',
     exposes: {
-      "./Dashboard": "./src/Dashboard.tsx",
+      "./App": "./src/App.tsx",
     },
     shared: ['react', 'react-dom']
   })],
