@@ -2,7 +2,7 @@ import { createRouter, createRootRoute, createRoute } from '@tanstack/react-rout
 import { Root } from './Root';
 import { Dashboard } from './pages/Dashboard';
 //import { Notes } from './pages/Notes';
-import { Calendar } from './pages/Calendar';
+//import { Calendar } from './pages/Calendar';
 import { Friends } from './pages/Friends';
 // import { Community } from './pages/Community';
 // import { FocusMode } from './pages/FocusMode';
@@ -48,11 +48,11 @@ const loginRoute = createRoute({
 //   component: Notes,
 // });
 
-const calendarRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/calendar',
-  component: Calendar,
-});
+// const calendarRoute = createRoute({
+//   getParentRoute: () => rootRoute,
+//   path: '/calendar',
+//   component: Calendar,
+// });
 
 const friendsRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -89,7 +89,7 @@ export const routeTree = rootRoute.addChildren([
   indexRoute,
   dashboardRoute,
  // notesRoute,
-  calendarRoute,
+  //calendarRoute,
   friendsRoute,
   //communityRoute,
   //focusModeRoute,
