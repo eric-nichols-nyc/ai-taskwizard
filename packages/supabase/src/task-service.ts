@@ -9,6 +9,7 @@ export interface TaskService {
   updateTask(id: string, updates: Partial<Task>): Promise<Task | null>;
   deleteTask(id: string): Promise<boolean>;
   createTaskWithDefaults(data: { title: string; [key: string]: any }): Promise<any>;
+  getTasksByUserId(userId: string): Promise<Task[]>;
   // Add more methods as needed (e.g., getTasksByDate, getTasksByPriority)
 }
 
@@ -103,6 +104,20 @@ export function createTaskService(supabase: SupabaseClient): TaskService {
         throw new Error(error.message || 'Failed to insert task');
       }
       return data;
+    },
+
+    async getTasksByUserId(userId) {
+      try {
+        const { data, error } = await supabase.from('tasks').select('*').eq('user_id', userId);
+        if (error) {
+          console.error('Error fetching tasks by user id:', error.message);
+          throw new Error('Failed to fetch tasks for the user.');
+        }
+        return data ? (data as Task[]) : [];
+      } catch (err) {
+        console.error('Unexpected error in getTasksByUserId:', err);
+        throw err;
+      }
     },
   };
 }

@@ -9,11 +9,11 @@ import { cn } from "../../lib/utils"
 import { Card } from "@turbo-with-tailwind-v4/ui/card"
 import { Task } from "@turbo-with-tailwind-v4/supabase/types"
 import { useTaskService } from "../../hooks/use-task-service"
-import { useTasksQuery } from "../../hooks/use-tasks-query"
+import { useTasksByUserIdQuery } from "../../hooks/use-tasks-query"
 import { Badge } from "@turbo-with-tailwind-v4/design-system"
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useUpdateTaskMutation } from '../../hooks/use-update-task-mutation'
-//import { useAuth } from '@turbo-with-tailwind-v4/supabase'
+import { useAuth } from '@turbo-with-tailwind-v4/supabase'
 // get user token from session
 
 function formatDateMMMdd(date: Date): string {
@@ -26,12 +26,15 @@ function parseLocalDate(dateString: string): Date {
 }
 
 export default function TodoList() {
-  const { data: tasks = [], isLoading } = useTasksQuery()
+  const { session } = useAuth()
+  const userId = session?.user?.id
+  const { data: tasks = [], isLoading } = useTasksByUserIdQuery(userId)
   const queryClient = useQueryClient()
   const {  createTask } = useTaskService()
-  //const { session } = useAuth()
-  const [newTaskText, setNewTaskText] = useState("")
   const updateTaskMutation = useUpdateTaskMutation()
+
+  console.log('Current user id:', userId)
+  const [newTaskText, setNewTaskText] = useState("")
 
   // Filter for today's tasks with status 'todo'
   const todayString = new Date().toLocaleDateString('en-CA'); // 'YYYY-MM-DD'

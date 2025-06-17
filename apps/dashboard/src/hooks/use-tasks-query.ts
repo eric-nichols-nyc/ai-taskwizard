@@ -10,3 +10,11 @@ export function useTasksQuery() {
     queryFn: () => taskService.getTasks(),
   })
 }
+
+export function useTasksByUserIdQuery(userId: string | undefined) {
+  return useQuery({
+    queryKey: ['tasks', userId],
+    queryFn: () => userId ? taskService.getTasksByUserId(userId) : Promise.resolve([]),
+    enabled: !!userId,
+  });
+}

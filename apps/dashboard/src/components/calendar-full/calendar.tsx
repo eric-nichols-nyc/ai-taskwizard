@@ -3,13 +3,17 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useTaskService } from "../../hooks/use-task-service";
-import { useRealtimeTasks } from "../../hooks/use-realtime-tasks";
+import { useTasksByUserIdQuery } from "../../hooks/use-tasks-query";
+import { useAuth } from '@turbo-with-tailwind-v4/supabase';
+
 function formatDateYYYYMMDD(date: Date): string {
   return date.toISOString().slice(0, 10); // "2025-06-13"
 }
 
 export function Calendar() {
-  const { tasks } = useRealtimeTasks();
+  const { session } = useAuth();
+  const userId = session?.user?.id;
+  const { data: tasks = [] } = useTasksByUserIdQuery(userId);
   const { handleCalendarDayClick, setSelectedDate } = useTaskService();
 
   // Get today's date
