@@ -4,10 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --port 3001",
+    "dev": "vite --port 4001",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview --port 3001",
+    "preview": "vite preview --port 4001",
     "test": "vitest",
     "test:ui": "vitest --ui"
   },
@@ -63,7 +63,7 @@
   },
   "vite": {
     "server": {
-      "port": 3001
+      "port": 4001
     }
   }
 }
