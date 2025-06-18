@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useRouter } from '@tanstack/react-router';
 import { IconLayoutDashboard, IconNotes, IconCalendar, IconBrain, IconSettings, IconX } from '@tabler/icons-react';
-import { useAuth } from '@turbo-with-tailwind-v4/supabase';
+import { useAuth } from '@turbo-with-tailwind-v4/database';
 
 interface NavItemProps {
   icon: React.ReactNode;

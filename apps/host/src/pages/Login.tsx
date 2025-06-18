@@ -1,5 +1,5 @@
 import { AuthLayout } from "../layouts/auth-layout";
-import { SignIn } from "@turbo-with-tailwind-v4/supabase";
+import { SignIn } from "@turbo-with-tailwind-v4/database";
 
 export const Login = () => {
   return (

@@ -2,9 +2,9 @@
 'use client'
 import * as React from 'react'
 import { createContext, useEffect, useState } from 'react'
-import { supabase } from '@/supabaseClient'
+import { supabase } from './supabaseClient'
 import { type User, type Session } from '@supabase/supabase-js'
-import { type AuthContextType } from '@/types'
+import { type AuthContextType } from './types'
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 

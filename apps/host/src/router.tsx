@@ -1,6 +1,6 @@
 import { createRouter, createRootRoute, createRoute } from '@tanstack/react-router';
 import { Root } from './Root';
-import { Dashboard } from './pages/Dashboard';
+//import { Dashboard } from './pages/Dashboard';
 //import { Notes } from './pages/Notes';
 //import { Calendar } from './pages/Calendar';
 import { Friends } from './pages/Friends';
@@ -30,11 +30,11 @@ const indexRoute = createRoute({
   component: Landing,
 });
 
-const dashboardRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/dashboard',
-  component: Dashboard,
-});
+// const dashboardRoute = createRoute({
+//   getParentRoute: () => rootRoute,
+//   path: '/dashboard',
+//   component: Dashboard,
+// });
 
 const loginRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -87,7 +87,7 @@ const friendsRoute = createRoute({
 // Create and export the router
 export const routeTree = rootRoute.addChildren([
   indexRoute,
-  dashboardRoute,
+  //dashboardRoute,
  // notesRoute,
   //calendarRoute,
   friendsRoute,

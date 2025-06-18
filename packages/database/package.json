@@ -1,5 +1,5 @@
 {
-  "name": "database",
+  "name": "@turbo-with-tailwind-v4/database",
   "private": true,
   "version": "0.0.0",
   "type": "module",

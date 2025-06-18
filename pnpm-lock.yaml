@@ -212,6 +212,9 @@ importers:
       '@tanstack/react-router':
         specifier: ^1.119.0
         version: 1.119.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@turbo-with-tailwind-v4/database':
+        specifier: workspace:*
+        version: link:../../packages/database
       '@turbo-with-tailwind-v4/design-system':
         specifier: workspace:*
         version: link:../../packages/design-system
@@ -445,6 +448,9 @@ importers:
       '@turbo-with-tailwind-v4/auth':
         specifier: workspace:*
         version: link:../../packages/auth
+      '@turbo-with-tailwind-v4/database':
+        specifier: workspace:*
+        version: link:../../packages/database
       '@turbo-with-tailwind-v4/design-system':
         specifier: workspace:*
         version: link:../../packages/design-system
