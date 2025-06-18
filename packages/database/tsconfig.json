@@ -3,7 +3,7 @@
   "include": ["src"],
   "exclude": ["dist", "build", "node_modules"],
   "compilerOptions": {
-    "outDir": "./dist",
+    "outDir": "dist",
     "declaration": true,
     "emitDeclarationOnly": false,
     "module": "ESNext",
