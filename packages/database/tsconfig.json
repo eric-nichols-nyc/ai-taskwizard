@@ -13,7 +13,6 @@
     "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
     "verbatimModuleSyntax": true,
-    "noEmit": true,
     "skipLibCheck": true,
     "strict": true
   }
