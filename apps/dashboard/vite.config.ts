@@ -16,6 +16,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      "@turbo-with-tailwind-v4/database": path.resolve(__dirname, "../../packages/database/src"),
     },
   },
   optimizeDeps: {

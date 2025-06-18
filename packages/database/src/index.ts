@@ -2,6 +2,7 @@ export { AuthProvider } from './AuthProvider'
 export { useAuth } from './useAuth'
 export { SignIn } from './sign-in'
 export { CardSchema } from './schemas'
+export { supabase } from './supabaseClient'
 export type { AuthContextType, AuthGuardProps } from './types'
 import type { SupabaseClient } from '@supabase/supabase-js';
 

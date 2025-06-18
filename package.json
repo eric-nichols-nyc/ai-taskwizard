@@ -25,6 +25,10 @@
     "build:kanban": "turbo run build --filter=kanban...",
       "clean": "git clean -xdf node_modules"
   },
+    "peerDependencies": {
+    "react": "^19.1.0",
+    "react-dom": "^19.0.0"
+  },
   "devDependencies": {
     "prettier": "^3.5.3",
     "turbo": "^2.5.2",
@@ -34,9 +38,5 @@
   "engines": {
     "node": "20.x",
     "pnpm": "9.4.0"
-  },
-  "dependencies": {
-    "react": "^19.1.0",
-    "react-dom": "^19.0.0"
   }
 }
