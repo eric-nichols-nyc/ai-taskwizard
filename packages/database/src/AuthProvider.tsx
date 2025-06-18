@@ -2,19 +2,18 @@
 'use client'
 import * as React from 'react'
 import { createContext, useEffect, useState } from 'react'
-import { User, Session, SupabaseClient } from '@supabase/supabase-js'
-import { AuthContextType } from './types'
+import { supabase } from '@/supabaseClient'
+import { type User, type Session } from '@supabase/supabase-js'
+import { type AuthContextType } from '@/types'
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ 
     children, 
     isHost = false,
-    supabase
   }: { 
     children: React.ReactNode
     isHost?: boolean
-    supabase: SupabaseClient
   }) {
   const [user, setUser] = useState<User | null>(null)
   const [session, setSession] = useState<Session | null>(null)
