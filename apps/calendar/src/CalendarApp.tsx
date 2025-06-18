@@ -136,112 +136,112 @@ export const CalendarApp: React.FC = () => {
   };
 
   return (
-  <AuthProvider isHost={false}> 
-    <div className="w-full mx-auto p-6">
-      {/* Header Component */}
-      <div className="flex items-center justify-between mb-6 pb-4 border-b">
-        <div className="flex items-center space-x-4">
-          <Calendar className="w-6 h-6 text-blue-600" />
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900 calendar-month-title">
-              {['January', 'February', 'March', 'April', 'May', 'June',
-                'July', 'August', 'September', 'October', 'November', 'December'][currentDate.getMonth()]} {currentDate.getFullYear()}
-            </h1>
-            <p className="text-sm text-gray-600">
-              Today is {new Date().toLocaleDateString('en-US', {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-              })}
-            </p>
+    <AuthProvider isHost={false} supabase={supabaseClient!}>
+      <div className="w-full mx-auto p-6">
+        {/* Header Component */}
+        <div className="flex items-center justify-between mb-6 pb-4 border-b">
+          <div className="flex items-center space-x-4">
+            <Calendar className="w-6 h-6 text-blue-600" />
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 calendar-month-title">
+                {['January', 'February', 'March', 'April', 'May', 'June',
+                  'July', 'August', 'September', 'October', 'November', 'December'][currentDate.getMonth()]} {currentDate.getFullYear()}
+              </h1>
+              <p className="text-sm text-gray-600">
+                Today is {new Date().toLocaleDateString('en-US', {
+                  weekday: 'long',
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })}
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center space-x-3">
+            <button
+              onClick={() => navigateMonth(-1)}
+              className="px-3 py-1 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded"
+            >
+              ←
+            </button>
+            <button
+              onClick={() => navigateMonth(1)}
+              className="px-3 py-1 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded"
+            >
+              →
+            </button>
+            <button
+              onClick={() => {}} // Placeholder for event popover
+              className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Add Event</span>
+            </button>
           </div>
         </div>
-        <div className="flex items-center space-x-3">
-          <button
-            onClick={() => navigateMonth(-1)}
-            className="px-3 py-1 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded"
-          >
-            ←
-          </button>
-          <button
-            onClick={() => navigateMonth(1)}
-            className="px-3 py-1 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded"
-          >
-            →
-          </button>
-          <button
-            onClick={() => {}} // Placeholder for event popover
-            className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Add Event</span>
-          </button>
-        </div>
-      </div>
-      {/* Calendar Body Component */}
-      <div className="bg-card rounded-lg shadow">
-        {/* Day headers */}
-        <div className="hidden sm:grid grid-cols-1 sm:grid-cols-7 gap-px calendar-grid-gap calendar-header">
-          {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day: string) => (
-            <div
-              key={day}
-              className="px-3 py-2 text-center text-sm font-medium calendar-header-day"
-            >
-              {day}
-            </div>
-          ))}
-        </div>
-        {/* Calendar days */}
-        <div className="grid grid-cols-1 sm:grid-cols-7 gap-px calendar-grid-gap">
-          {getDaysInMonth().map((date: Date | null, index: number) => {
-            const dayTasks: Task[] = getTasksForDate(date);
-            const isToday: boolean = !!date && date.toDateString() === new Date().toDateString();
-            return (
+        {/* Calendar Body Component */}
+        <div className="bg-card rounded-lg shadow">
+          {/* Day headers */}
+          <div className="hidden sm:grid grid-cols-1 sm:grid-cols-7 gap-px calendar-grid-gap calendar-header">
+            {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day: string) => (
               <div
-                key={index}
-                className={`min-h-[60px] sm:min-h-[100px] md:min-h-[140px] p-1 sm:p-2 cursor-pointer transition-colors ${
-                  isToday
-                    ? 'calendar-today'
-                    : 'calendar-day'
-                }`}
-                onClick={() => {}} // Placeholder for event popover
+                key={day}
+                className="px-3 py-2 text-center text-sm font-medium calendar-header-day"
               >
-                {date && (
-                  <>
-                    <div className={`text-xs sm:text-sm font-medium mb-1 ${
-                      isToday ? '' : ''
-                    }`}>
-                      {date.getDate()}
-                    </div>
-                    <div className="flex flex-col gap-1">
-                      {dayTasks.slice(0, 3).map((task: Task) => (
-                        <div
-                          key={task.id}
-                          className="calendar-event w-full block rounded-md border-l-4 px-3 py-1 text-xs font-medium mb-1 text-white"
-                          style={{
-                            borderLeftColor: '#3B82F6',
-                            backgroundColor: 'rgba(19,19,22,0.7)',
-                            color: '#fff'
-                          }}
-                        >
-                          {task.title}
-                        </div>
-                      ))}
-                      {dayTasks.length > 3 && (
-                        <div className="text-xs text-gray-500 px-2">
-                          +{dayTasks.length - 3} more
-                        </div>
-                      )}
-                    </div>
-                  </>
-                )}
+                {day}
               </div>
-            );
-          })}
+            ))}
+          </div>
+          {/* Calendar days */}
+          <div className="grid grid-cols-1 sm:grid-cols-7 gap-px calendar-grid-gap">
+            {getDaysInMonth().map((date: Date | null, index: number) => {
+              const dayTasks: Task[] = getTasksForDate(date);
+              const isToday: boolean = !!date && date.toDateString() === new Date().toDateString();
+              return (
+                <div
+                  key={index}
+                  className={`min-h-[60px] sm:min-h-[100px] md:min-h-[140px] p-1 sm:p-2 cursor-pointer transition-colors ${
+                    isToday
+                      ? 'calendar-today'
+                      : 'calendar-day'
+                  }`}
+                  onClick={() => {}} // Placeholder for event popover
+                >
+                  {date && (
+                    <>
+                      <div className={`text-xs sm:text-sm font-medium mb-1 ${
+                        isToday ? '' : ''
+                      }`}>
+                        {date.getDate()}
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        {dayTasks.slice(0, 3).map((task: Task) => (
+                          <div
+                            key={task.id}
+                            className="calendar-event w-full block rounded-md border-l-4 px-3 py-1 text-xs font-medium mb-1 text-white"
+                            style={{
+                              borderLeftColor: '#3B82F6',
+                              backgroundColor: 'rgba(19,19,22,0.7)',
+                              color: '#fff'
+                            }}
+                          >
+                            {task.title}
+                          </div>
+                        ))}
+                        {dayTasks.length > 3 && (
+                          <div className="text-xs text-gray-500 px-2">
+                            +{dayTasks.length - 3} more
+                          </div>
+                        )}
+                      </div>
+                    </>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
-    </div>
     </AuthProvider>
   );
 };
