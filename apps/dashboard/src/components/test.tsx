@@ -23,6 +23,7 @@ const IS_ISOLATED = window.location.href.includes(
 // }
 
 export function TestComponent() {
+    console.log("TestComponent");
   const { user: hostUser } = useAuth();
   const [user, setUser] = useState(hostUser);
   const [session, setSession] = useState<Session | null>(null);
