@@ -4,7 +4,7 @@ import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useTaskService } from "../../hooks/use-task-service";
 import { useTasksByUserIdQuery } from "../../hooks/use-tasks-query";
-import { useAuth } from '@turbo-with-tailwind-v4/supabase';
+import { useAuth } from '@turbo-with-tailwind-v4/database';
 
 function formatDateYYYYMMDD(date: Date): string {
   return date.toISOString().slice(0, 10); // "2025-06-13"

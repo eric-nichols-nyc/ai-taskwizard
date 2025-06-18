@@ -13,7 +13,7 @@ import { useTasksByUserIdQuery } from "../../hooks/use-tasks-query"
 import { Badge } from "@turbo-with-tailwind-v4/design-system"
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useUpdateTaskMutation } from '../../hooks/use-update-task-mutation'
-import { useAuth } from '@turbo-with-tailwind-v4/supabase'
+import { useAuth } from '@turbo-with-tailwind-v4/database'
 // get user token from session
 
 function formatDateMMMdd(date: Date): string {

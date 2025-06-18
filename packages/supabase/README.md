@@ -65,7 +65,7 @@ export const Root = () => (
 ### 3. Access Auth State and Actions with `useAuth`
 
 ```tsx
-import { useAuth } from '@turbo-with-tailwind-v4/supabase';
+import { useAuth } from '@turbo-with-tailwind-v4/database';
 
 function MyComponent() {
   const { user, signIn, signOut, loading } = useAuth();
@@ -78,7 +78,7 @@ function MyComponent() {
 
 #### Real Example (from host app):
 ```tsx
-import { useAuth } from '@turbo-with-tailwind-v4/supabase';
+import { useAuth } from '@turbo-with-tailwind-v4/database';
 
 export function Landing() {
   const { user } = useAuth();
