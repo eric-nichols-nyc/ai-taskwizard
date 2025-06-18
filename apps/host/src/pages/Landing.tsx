@@ -1,7 +1,7 @@
 "use client"
 import { useRouter } from '@tanstack/react-router';
 import { Button } from '@turbo-with-tailwind-v4/ui/button';
-import { useAuth } from '@turbo-with-tailwind-v4/supabase'
+import { useAuth } from '@turbo-with-tailwind-v4/database'
 import { motion } from "motion/react"
 import { Zap } from "lucide-react"
 import { useEffect } from "react"

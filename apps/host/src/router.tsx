@@ -1,6 +1,6 @@
 import { createRouter, createRootRoute, createRoute } from '@tanstack/react-router';
 import { Root } from './Root';
-//import { Dashboard } from './pages/Dashboard';
+import { Dashboard } from './pages/Dashboard';
 //import { Notes } from './pages/Notes';
 //import { Calendar } from './pages/Calendar';
 import { Friends } from './pages/Friends';
@@ -10,19 +10,12 @@ import { Friends } from './pages/Friends';
 // import { Settings } from './pages/Settings';
 import { Login } from './pages/Login';
 import { Landing } from './pages/Landing';
-import AuthCallback from './pages/auth/callback';
 
 // Define routes
 const rootRoute = createRootRoute({
   component: Root,
 });
 
-// create a route for the auth callback
-const authCallbackRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/auth/callback',
-  component: AuthCallback,
-});
 
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -30,11 +23,11 @@ const indexRoute = createRoute({
   component: Landing,
 });
 
-// const dashboardRoute = createRoute({
-//   getParentRoute: () => rootRoute,
-//   path: '/dashboard',
-//   component: Dashboard,
-// });
+const dashboardRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/dashboard',
+  component: Dashboard,
+});
 
 const loginRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -87,7 +80,7 @@ const friendsRoute = createRoute({
 // Create and export the router
 export const routeTree = rootRoute.addChildren([
   indexRoute,
-  //dashboardRoute,
+  dashboardRoute,
  // notesRoute,
   //calendarRoute,
   friendsRoute,
@@ -96,7 +89,6 @@ export const routeTree = rootRoute.addChildren([
   ///aiAssistantRoute,
   //settingsRoute,
   loginRoute,
-  authCallbackRoute,
 ]);
 
 export const router = createRouter({ routeTree });
