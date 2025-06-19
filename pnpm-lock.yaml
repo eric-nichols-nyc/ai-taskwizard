@@ -94,6 +94,9 @@ importers:
       '@tailwindcss/vite':
         specifier: ^4.1.4
         version: 4.1.10(vite@6.3.5(@types/node@22.15.32)(jiti@2.4.2)(lightningcss@1.30.1))
+      '@turbo-with-tailwind-v4/database':
+        specifier: workspace:*
+        version: link:../../packages/database
       '@turbo-with-tailwind-v4/design-system':
         specifier: workspace:*
         version: link:../../packages/design-system

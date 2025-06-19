@@ -1,5 +1,6 @@
-import { CalendarApp } from 'calendar/CalendarApp';
+import { App as CalendarApp } from 'calendar/App';
 import { DashboardLayout } from '../layouts/dashboard-layout';
+
 export const Calendar = () => {
   return (
     <DashboardLayout>

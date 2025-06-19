@@ -1,5 +1,4 @@
 import { SignIn as SignInComponent } from "@turbo-with-tailwind-v4/design-system/sign-in"
-import "./styles.css"
 import { useAuth } from "./useAuth"
 
 export function SignIn() {

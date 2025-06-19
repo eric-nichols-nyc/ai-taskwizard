@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Plus } from 'lucide-react';
-import { createSupabaseClient, useAuth } from '@turbo-with-tailwind-v4/supabase';
+import { supabase, useAuth } from '@turbo-with-tailwind-v4/database';
 import type { SupabaseClient, User } from '@supabase/supabase-js';
-import { AuthProvider } from '@turbo-with-tailwind-v4/supabase';
 
 // Debug: Log environment variables
 // Types
@@ -17,10 +16,7 @@ interface Task {
 // Initialize Supabase client once, outside the component
 let supabaseClient: SupabaseClient | undefined = undefined;
 if (typeof window !== 'undefined' && window.location.href.includes('http://localhost:3002')) {
-  supabaseClient = createSupabaseClient(
-    import.meta.env.VITE_SUPABASE_URL!,
-    import.meta.env.VITE_SUPABASE_ANON_KEY!
-  );
+  supabaseClient = supabase;
 }
 
 export const CalendarApp: React.FC = () => {
@@ -136,9 +132,18 @@ export const CalendarApp: React.FC = () => {
   };
 
   return (
-    <AuthProvider isHost={false} supabase={supabaseClient!}>
       <div className="w-full mx-auto p-6">
         {/* Header Component */}
+        {
+          user ? (
+            <div>
+              <div>Email: {user.email}</div>
+              <div>ID: {user.id}</div>
+            </div>
+          ) : (
+            <div>No User Found</div>
+          )
+        }
         <div className="flex items-center justify-between mb-6 pb-4 border-b">
           <div className="flex items-center space-x-4">
             <Calendar className="w-6 h-6 text-blue-600" />
@@ -242,6 +247,5 @@ export const CalendarApp: React.FC = () => {
           </div>
         </div>
       </div>
-    </AuthProvider>
   );
 };
