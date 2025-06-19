@@ -1,7 +1,0 @@
-{
-  "routes": [{ "src": "/[^.]+", "dest": "/", "status": 200 }],
-  "engines": {
-    "node": "20.x",
-    "pnpm": "9.4.0"
-  }
-}
