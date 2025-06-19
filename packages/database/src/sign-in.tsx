@@ -1,145 +1,164 @@
-import React, { useState } from 'react';
-import { Input } from '@turbo-with-tailwind-v4/design-system/components/ui/input';
-import { Button } from '@turbo-with-tailwind-v4/design-system/components/ui/button';
-import { useAuth } from './useAuth';
-export const SignIn: React.FC = () => {
-  const { signIn, signUp, signInWithProvider } = useAuth();
-  const [isSignUp, setIsSignUp] = useState(false)
-  const [email, setEmail] = useState("xonawot585@finfave.com")
-  const [password, setPassword] = useState("testing")
-  const [firstName, setFirstName] = useState("")
-  const [lastName, setLastName] = useState("")
-  const [loading, setLoading] = useState(false)
-  const [success, setSuccess] = useState<string | null>(null)
-  const [error, setError] = useState<string | null>(null);
+"use client"
 
-  const handleSubmit = async () => {
-    setError(null)
-    setSuccess(null)
-    setLoading(true)
-    if (isSignUp) {
-      const result = await signUp(email, password, { firstName, lastName })
-      console.log('signUp result:', result)
-      if (result.error) {
-        setError(result.error)
-      } else {
-        window.location.href = '/dashboard';
-      }
-      console.log('After signUp:', { error, success, loading })
-    } else {
-      const result = await signIn(email, password)
-      console.log('signIn result:', result)
-      if (result.error) {
-        setError(result.error)
-      } else {
-        window.location.href = '/';
-      }
-      console.log('After signIn:', { error, success, loading })
-    }
-    setLoading(false)
-    console.log('After setLoading(false):', { error, success, loading })
+import type React from "react"
+import "./styles.css"
+
+import { useState } from "react"
+import { Button } from "@turbo-with-tailwind-v4/design-system/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@turbo-with-tailwind-v4/design-system/components/ui/card"
+import { Input } from "@turbo-with-tailwind-v4/design-system/components/ui/input"
+import { Label } from "@turbo-with-tailwind-v4/design-system/components/ui/label"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@turbo-with-tailwind-v4/design-system/components/ui/tabs"
+
+export function SignIn() {
+  const [isLoading, setIsLoading] = useState(false)
+  const [activeTab, setActiveTab] = useState("signin")
+
+  const handleSignIn = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    setIsLoading(true)
+
+    // Add your sign-in logic here
+    const formData = new FormData(event.currentTarget)
+    const email = formData.get("signin-email") as string
+    const password = formData.get("signin-password") as string
+
+    console.log("Sign in:", { email, password })
+
+    // Simulate API call
+    setTimeout(() => {
+      setIsLoading(false)
+    }, 1000)
+  }
+
+  const handleSignUp = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    setIsLoading(true)
+
+    // Add your sign-up logic here
+    const formData = new FormData(event.currentTarget)
+    const name = formData.get("signup-name") as string
+    const email = formData.get("signup-email") as string
+    const password = formData.get("signup-password") as string
+    const confirmPassword = formData.get("signup-confirm-password") as string
+
+    console.log("Sign up:", { name, email, password, confirmPassword })
+
+    // Simulate API call
+    setTimeout(() => {
+      setIsLoading(false)
+    }, 1000)
   }
 
   return (
-    <div className="w-full max-w-md space-y-8">
-      {/* Header */}
-      <div className="text-center">
-        <h1 className="text-3xl font-bold text-white mb-8">Supabase Authentication</h1>
-      </div>
+    <div className="flex items-center justify-center min-h-screen bg-gray-50">
+      <Card className="w-full max-w-md">
+        <CardHeader className="space-y-1">
+          <CardTitle className="text-2xl text-center">Welcome</CardTitle>
+          <CardDescription className="text-center">Sign in to your account or create a new one</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="signin">Sign In</TabsTrigger>
+              <TabsTrigger value="signup">Sign Up</TabsTrigger>
+            </TabsList>
 
-      {/* Toggle Switch */}
-      <div className="flex items-center justify-center space-x-4 mb-8">
-        <span
-          className={`text-lg font-medium cursor-pointer transition-colors ${
-            !isSignUp ? "text-white" : "text-gray-400"
-          }`}
-          onClick={() => setIsSignUp(false)}
-        >
-          Login
-        </span>
+            <TabsContent value="signin" className="space-y-4 mt-4">
+              <form onSubmit={handleSignIn} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="signin-email">Email</Label>
+                  <Input id="signin-email" name="signin-email" type="email" placeholder="Enter your email" required />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="signin-password">Password</Label>
+                  <Input
+                    id="signin-password"
+                    name="signin-password"
+                    type="password"
+                    placeholder="Enter your password"
+                    required
+                  />
+                </div>
+                <Button type="submit" className="w-full" disabled={isLoading}>
+                  {isLoading ? "Signing in..." : "Sign In"}
+                </Button>
+              </form>
+              <div className="text-center">
+                <Button variant="link" className="text-sm text-muted-foreground">
+                  Forgot your password?
+                </Button>
+              </div>
+              <div className="text-center text-sm text-muted-foreground">
+                Don't have an account yet?{" "}
+                <Button
+                  variant="link"
+                  className="p-0 h-auto text-sm font-medium text-primary"
+                  onClick={() => setActiveTab("signup")}
+                >
+                  Sign up
+                </Button>
+              </div>
+            </TabsContent>
 
-        <div
-          className="relative w-12 h-6 bg-gray-600 rounded-full cursor-pointer transition-colors"
-          onClick={() => setIsSignUp(!isSignUp)}
-        >
-          <div
-            className={`absolute top-0.5 w-5 h-5 bg-white rounded-full transition-transform duration-200 ease-in-out ${
-              isSignUp ? "translate-x-6 bg-green-500" : "translate-x-0.5"
-            }`}
-          />
-          {isSignUp && <div className="absolute inset-0 bg-blue-500 rounded-full" />}
-          <div
-            className={`absolute top-0.5 w-5 h-5 rounded-full transition-transform duration-200 ease-in-out z-10 ${
-              isSignUp ? "translate-x-6 bg-white" : "translate-x-0.5 bg-white"
-            }`}
-          />
-        </div>
-
-        <span
-          className={`text-lg font-medium cursor-pointer transition-colors ${
-            isSignUp ? "text-white" : "text-gray-400"
-          }`}
-          onClick={() => setIsSignUp(true)}
-        >
-          Sign Up
-        </span>
-      </div>
-
-      {/* Form */}
-      <div className="space-y-4">
-        {isSignUp && (
-          <div className="flex space-x-2">
-            <Input
-              type="text"
-              placeholder="First Name"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              className="bg-gray-800 border-gray-700 text-white placeholder-gray-400 h-12 text-base focus:border-blue-500 focus:ring-blue-500"
-            />
-            <Input
-              type="text"
-              placeholder="Last Name"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              className="bg-gray-800 border-gray-700 text-white placeholder-gray-400 h-12 text-base focus:border-blue-500 focus:ring-blue-500"
-            />
-          </div>
-        )}
-        <div className="space-y-2">
-          <Input
-            type="email"
-            placeholder="E-mail"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="bg-gray-800 border-gray-700 text-white placeholder-gray-400 h-12 text-base focus:border-blue-500 focus:ring-blue-500"
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="bg-gray-800 border-gray-700 text-white placeholder-gray-400 h-12 text-base focus:border-blue-500 focus:ring-blue-500"
-          />
-        </div>
-
-        <Button
-          className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium h-12 text-base mt-6"
-          onClick={handleSubmit}
-          disabled={loading}
-        >
-          {loading ? (isSignUp ? "Signing Up..." : "Logging In...") : isSignUp ? "Sign Up" : "Login"}
-        </Button>
-
-        {error && (
-          <div className="text-red-500 text-center mt-2">{error}</div>
-        )}
-        {success && (
-          <div className="text-green-500 text-center mt-2">{success}</div>
-        )}
-      </div>
+            <TabsContent value="signup" className="space-y-4 mt-4">
+              <form onSubmit={handleSignUp} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="signup-name">Full Name</Label>
+                  <Input id="signup-name" name="signup-name" type="text" placeholder="Enter your full name" required />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="signup-email">Email</Label>
+                  <Input id="signup-email" name="signup-email" type="email" placeholder="Enter your email" required />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="signup-password">Password</Label>
+                  <Input
+                    id="signup-password"
+                    name="signup-password"
+                    type="password"
+                    placeholder="Create a password"
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="signup-confirm-password">Confirm Password</Label>
+                  <Input
+                    id="signup-confirm-password"
+                    name="signup-confirm-password"
+                    type="password"
+                    placeholder="Confirm your password"
+                    required
+                  />
+                </div>
+                <Button type="submit" className="w-full" disabled={isLoading}>
+                  {isLoading ? "Creating account..." : "Create Account"}
+                </Button>
+              </form>
+              <div className="text-center text-sm text-muted-foreground">
+                By creating an account, you agree to our{" "}
+                <Button variant="link" className="p-0 h-auto text-sm">
+                  Terms of Service
+                </Button>{" "}
+                and{" "}
+                <Button variant="link" className="p-0 h-auto text-sm">
+                  Privacy Policy
+                </Button>
+              </div>
+              <div className="text-center text-sm text-muted-foreground mt-4">
+                Already have an account?{" "}
+                <Button
+                  variant="link"
+                  className="p-0 h-auto text-sm font-medium text-primary"
+                  onClick={() => setActiveTab("signin")}
+                >
+                  Sign in
+                </Button>
+              </div>
+            </TabsContent>
+          </Tabs>
+        </CardContent>
+      </Card>
     </div>
-  );
-};
+  )
+}

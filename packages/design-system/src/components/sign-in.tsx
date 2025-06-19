@@ -4,7 +4,7 @@ import { useState } from "react"
 import { Button } from "./ui/button"
 import { Input } from "./ui/input"
 import { Chrome } from "lucide-react"
-
+import { Card } from "./ui/card"
 export function SignIn() {
   const [isSignUp, setIsSignUp] = useState(true)
   const [email, setEmail] = useState("")
@@ -17,6 +17,7 @@ export function SignIn() {
 
   return (
     <div className="min-h-screen bg-black flex items-center justify-center p-4">
+      <Card>
       <div className="w-full max-w-md space-y-8">
         {/* Header */}
         <div className="text-center">
@@ -113,6 +114,7 @@ export function SignIn() {
           </Button>
         </div>
       </div>
+      </Card>
     </div>
   )
 }

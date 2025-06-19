@@ -3,6 +3,7 @@ import {
   supabase,
   useAuth,
 } from "@turbo-with-tailwind-v4/database";
+import {Greeting} from "../greeting/greeting";
 import type { Session } from '@supabase/supabase-js';
 //import { Dashboard } from './Dashboard'
 
@@ -22,7 +23,7 @@ const IS_ISOLATED = window.location.href.includes(
 //   }
 // }
 
-export function TestComponent() {
+export function Dashboard() {
   const { user: hostUser } = useAuth();
   const [user, setUser] = useState(hostUser);
   const [session, setSession] = useState<Session | null>(null);
@@ -91,6 +92,7 @@ export function TestComponent() {
               <p>User ID: {user.id}</p>
               <p>Email: {user.email}</p>
               <p>Name: {user.user_metadata.name}</p>
+              <Greeting />
             </div>
           ) : (
             "No user found"
