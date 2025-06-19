@@ -994,6 +994,9 @@ importers:
       '@supabase/supabase-js':
         specifier: ^2.39.3
         version: 2.50.0
+      '@tailwindcss/postcss':
+        specifier: ^4.0.0
+        version: 4.1.10
       '@turbo-with-tailwind-v4/design-system':
         specifier: workspace:*
         version: link:../design-system
@@ -1004,7 +1007,7 @@ importers:
         specifier: ^19.1.0
         version: 19.1.0
       tailwindcss:
-        specifier: ^4.1.10
+        specifier: ^4.0.0
         version: 4.1.10
       zod:
         specifier: ^3.25.63
@@ -1104,7 +1107,7 @@ importers:
         specifier: ^3.0.2
         version: 3.3.1
       tailwindcss:
-        specifier: ^4.0.12
+        specifier: ^4.1.10
         version: 4.1.10
     devDependencies:
       '@radix-ui/react-slot':

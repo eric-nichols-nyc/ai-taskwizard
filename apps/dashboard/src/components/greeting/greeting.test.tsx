@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react'
-import Greeting from './greeting'
+import { Greeting } from './greeting'
 
 describe('Greeting', () => {
   it('renders the greeting and quote', () => {
