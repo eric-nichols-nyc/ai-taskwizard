@@ -76,6 +76,7 @@ interface SidebarProps {
 
 export const Sidebar = ({ variant = "sidebar", onClose }: SidebarProps) => {
   const { user } = useAuth();
+  console.log("Sidebar: user", user?.identities);
   const navItems = [
     {
       icon: <IconLayoutDashboard size={20} />,

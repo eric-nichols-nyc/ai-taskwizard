@@ -22,7 +22,6 @@
     "@tanstack/react-router": "^1.119.0",
     "@turbo-with-tailwind-v4/auth": "workspace:*",
     "@turbo-with-tailwind-v4/design-system": "workspace:*",
-    "@turbo-with-tailwind-v4/supabase": "workspace:*",
     "@turbo-with-tailwind-v4/database": "workspace:*",
     "@turbo-with-tailwind-v4/ui": "workspace:*",
     "clsx": "^2.1.1",
