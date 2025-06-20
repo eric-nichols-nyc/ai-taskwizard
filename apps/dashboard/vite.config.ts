@@ -22,8 +22,7 @@ export default defineConfig({
   optimizeDeps: {
     include: [
       "@turbo-with-tailwind-v4/design-system",
-      "@turbo-with-tailwind-v4/ui",
-      "@turbo-with-tailwind-v4/supabase"
+      "@turbo-with-tailwind-v4/ui"
     ]
   },
   build: {
@@ -35,7 +34,6 @@ export default defineConfig({
       // external: [
       //   "@turbo-with-tailwind-v4/design-system",
       //   "@turbo-with-tailwind-v4/ui",
-      //   "@turbo-with-tailwind-v4/supabase"
       // ]
     }
   },
