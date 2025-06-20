@@ -4,6 +4,7 @@ import type { Task } from '@turbo-with-tailwind-v4/database';
 import { useAddTask } from '../../hooks/use-tasks';
 import { Button } from '@turbo-with-tailwind-v4/design-system/button';
 import { Input } from '@turbo-with-tailwind-v4/design-system/input';
+import { Plus } from 'lucide-react';
 
 // The root container component
 const TasksRoot = ({ children }: { children: React.ReactNode }) => {
@@ -30,13 +31,13 @@ const TasksInput = () => {
             <Input
                 type="text"
                 placeholder="Add a new task..."
-                className="flex-1"
+                className="bg-slate-800 border-2 border-blue-500 text-white placeholder:text-slate-400 rounded-full px-6 py-4 text-lg focus:border-blue-400 focus:ring-0"
                 value={title}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
                 disabled={addTaskMutation.isPending}
             />
-            <Button type="submit" disabled={addTaskMutation.isPending || !title.trim()}>
-                {addTaskMutation.isPending ? 'Adding...' : 'Add Task'}
+            <Button className="bg-blue-500 hover:bg-blue-600 text-white rounded-full p-4 text-lg focus:ring-0" type="submit" disabled={addTaskMutation.isPending || !title.trim()}>
+                {addTaskMutation.isPending ? 'Adding...' : <Plus />}
             </Button>
         </form>
     )

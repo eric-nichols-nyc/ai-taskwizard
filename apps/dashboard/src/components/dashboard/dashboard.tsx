@@ -95,7 +95,6 @@ export function Dashboard() {
               <h1>Dashboard User: {IS_ISOLATED ? "Isolated" : "Host"}</h1>
               <p>User ID: {user.id}</p>
               <p>Email: {user.email}</p>
-              <p>Name: {user.user_metadata.name}</p>
               </div>
               <div>
                 <Greeting />
