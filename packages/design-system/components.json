@@ -15,7 +15,7 @@
     "utils": "@turbo-with-tailwind-v4/design-system/lib/utils",
     "hooks": "@turbo-with-tailwind-v4/design-system/hooks",
     "lib": "@turbo-with-tailwind-v4/design-system/lib",
-    "ui": "@repo/design-system/components/ui"
+    "ui": "@turbo-with-tailwind-v4/design-system/components/ui"
   },
   "iconLibrary": "lucide"
 }

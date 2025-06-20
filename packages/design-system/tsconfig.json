@@ -3,6 +3,10 @@
   "include": ["src"],
   "exclude": ["dist", "build", "node_modules"],
   "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@turbo-with-tailwind-v4/design-system/*": ["./src/*"]
+    },
     "outDir": "./dist",
     "declaration": true,
     "emitDeclarationOnly": false,

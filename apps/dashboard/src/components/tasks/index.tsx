@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { TaskItem } from './task-item'; // This will be created next
+import { TaskItem } from './task-item';
 import type { Task } from '@turbo-with-tailwind-v4/database';
 import { useAddTask } from '../../hooks/use-tasks';
 import { Button } from '@turbo-with-tailwind-v4/design-system/button';

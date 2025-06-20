@@ -4,12 +4,25 @@ import { useUpdateTask, useDeleteTask } from '../../hooks/use-tasks';
 import { Button } from '@turbo-with-tailwind-v4/design-system/button';
 import { Checkbox } from '@turbo-with-tailwind-v4/design-system/checkbox';
 import { Flag, Trash2, Pencil } from 'lucide-react'; // Using icons for actions
+import { Input } from '@turbo-with-tailwind-v4/design-system/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@turbo-with-tailwind-v4/design-system/select';
+
+type Priority = 'Low' | 'Medium' | 'High';
 
 type TaskItemProps = {
   task: Task;
 };
 
 export const TaskItem = ({ task }: TaskItemProps) => {
+  const [isEditing, setIsEditing] = React.useState(false);
+  const [editedTitle, setEditedTitle] = React.useState(task.title);
+  const [editedPriority, setEditedPriority] = React.useState<Priority>(task.priority ?? 'Medium');
   const updateTaskMutation = useUpdateTask();
   const deleteTaskMutation = useDeleteTask();
 
@@ -21,6 +34,54 @@ export const TaskItem = ({ task }: TaskItemProps) => {
   const handleDelete = () => {
     deleteTaskMutation.mutate(task.id);
   };
+
+  const handleSave = () => {
+    const hasTitleChanged = editedTitle.trim() && editedTitle !== task.title;
+    const hasPriorityChanged = editedPriority !== task.priority;
+
+    if (hasTitleChanged || hasPriorityChanged) {
+        updateTaskMutation.mutate({
+            id: task.id,
+            updates: {
+                ...(hasTitleChanged && { title: editedTitle }),
+                ...(hasPriorityChanged && { priority: editedPriority }),
+            }
+        });
+    }
+    setIsEditing(false);
+  }
+
+  if (isEditing) {
+    return (
+      <div className="flex items-center gap-4 bg-slate-700 rounded-2xl p-4 transition-colors">
+        <Input
+            value={editedTitle}
+            onChange={(e) => setEditedTitle(e.target.value)}
+            className="text-lg flex-1 bg-transparent border-0 text-white focus:ring-0"
+        />
+        <div className="flex items-center gap-2">
+            <Select value={editedPriority} onValueChange={(value) => setEditedPriority(value as Priority)}>
+                <SelectTrigger className="w-[110px] bg-transparent border-0 text-orange-400 focus:ring-0">
+                    <SelectValue placeholder="Priority" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="Low">Low</SelectItem>
+                    <SelectItem value="Medium">Medium</SelectItem>
+                    <SelectItem value="High">High</SelectItem>
+                </SelectContent>
+            </Select>
+        </div>
+        <div className="flex items-center gap-1">
+          <Button variant="ghost" className="text-slate-400 hover:text-white" onClick={handleSave}>
+            Save
+          </Button>
+          <Button variant="ghost" onClick={() => setIsEditing(false)} className="text-slate-400 hover:text-red-500">
+            Cancel
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -44,7 +105,7 @@ export const TaskItem = ({ task }: TaskItemProps) => {
       </div>
       
       <div className="flex items-center gap-1">
-        <Button variant="ghost" size="icon" className="text-slate-400 hover:text-white">
+        <Button variant="ghost" size="icon" className="text-slate-400 hover:text-white" onClick={() => setIsEditing(true)}>
           <Pencil className="w-4 h-4" />
         </Button>
         <Button variant="ghost" size="icon" onClick={handleDelete} disabled={deleteTaskMutation.isPending} className="text-slate-400 hover:text-red-500">

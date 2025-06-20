@@ -54,3 +54,6 @@ node_modules/
 *.sln
 *.sw?
 # OS specific
+
+# Taskmaster
+**/.taskmaster/reports/

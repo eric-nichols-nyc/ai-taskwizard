@@ -7,23 +7,11 @@ import {Greeting} from "../greeting/greeting";
 import type { Session } from '@supabase/supabase-js';
 import { Tasks } from '../tasks';
 import { useGetTasks } from '../../hooks/use-tasks';
-//import { Dashboard } from './Dashboard'
+import { Card } from "@turbo-with-tailwind-v4/design-system/card";
 
 const IS_ISOLATED = window.location.href.includes(
   import.meta.env.VITE_ISOLATED_HOST
 );
-
-// async function devSignIn() {
-//   if (import.meta.env.MODE === 'development') {
-//     const { error } = await supabaseDev.auth.signInWithPassword({
-//       email: import.meta.env.VITE_DEV_EMAIL,
-//       password: import.meta.env.VITE_DEV_PASSWORD,
-//     });
-//     if (error) {
-//       console.error('Dev sign-in failed:', error.message);
-//     }
-//   }
-// }
 
 export function Dashboard() {
   const { user: hostUser } = useAuth();
@@ -31,6 +19,26 @@ export function Dashboard() {
   const [session, setSession] = useState<Session | null>(null);
   const [loadingSession, setLoadingSession] = useState(true);
   const { data: tasks, isLoading: isLoadingTasks } = useGetTasks();
+
+  console.log('All tasks from hook:', tasks);
+
+  const filteredTasks = tasks?.filter(task => {
+    if (task.status !== 'todo') {
+      return false;
+    }
+    if (!task.due_date) {
+      return false;
+    }
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    const todayString = `${year}-${month}-${day}`;
+
+    return task.due_date === todayString;
+  });
+
+  console.log('Filtered tasks (due today and todo):', filteredTasks);
 
   // Update local user if hostUser changes and is present
   useEffect(() => {
@@ -84,38 +92,39 @@ export function Dashboard() {
   }
 
   return (
-      <div className="w-full dark">
-        {/* <Dashboard /> */}
-        <div>
+      <div className="dark flex flex-col items-center justify-center gap-4 w-[600px] mx-auto">
           {loadingSession ? (
             "Loading..."
           ) : user ? (
-            <div>
+            <div className="flex flex-col items-center justify-center gap-4 w-full">
               <div>
               <h1>Dashboard User: {IS_ISOLATED ? "Isolated" : "Host"}</h1>
               <p>User ID: {user.id}</p>
               <p>Email: {user.email}</p>
               </div>
-              <div>
+              <div className="w-full">
                 <Greeting />
               </div>
-              <div>
+              <Card className="w-full min-h-[300px]">
                 {isLoadingTasks ? (
                     <p>Loading tasks...</p>
                 ) : (
                     <Tasks>
                         <Tasks.Input />
-                        <Tasks.List tasks={tasks || []}>
-                            {(task) => <Tasks.Item key={task.id} task={task} />}
-                        </Tasks.List>
+                        {filteredTasks && filteredTasks.length > 0 ? (
+                            <Tasks.List tasks={filteredTasks}>
+                                {(task) => <Tasks.Item key={task.id} task={task} />}
+                            </Tasks.List>
+                        ) : (
+                            <p className="text-center text-slate-500 mt-4">No tasks here yet... Add one above!</p>
+                        )}
                     </Tasks>
                 )}
-              </div>
+              </Card>
             </div>
           ) : (
             "No user found"
           )}
-        </div>
       </div>
   );
 }

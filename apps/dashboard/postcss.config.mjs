@@ -1,5 +1,1 @@
-export default {
-  plugins: {
-    "@tailwindcss/postcss": {},
-  },
-}
+export { default } from "@turbo-with-tailwind-v4/design-system/postcss.config";
