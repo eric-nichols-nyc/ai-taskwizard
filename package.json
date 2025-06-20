@@ -23,9 +23,9 @@
     "build-and-preview:apps": "pnpm build:apps && pnpm preview:apps",
     "dev:kanban": "turbo run dev --filter=kanban...",
     "build:kanban": "turbo run build --filter=kanban...",
-      "clean": "git clean -xdf node_modules"
+    "clean": "git clean -xdf node_modules"
   },
-    "peerDependencies": {
+  "peerDependencies": {
     "react": "^19.1.0",
     "react-dom": "^19.0.0"
   },
@@ -38,5 +38,8 @@
   "engines": {
     "node": "20.x",
     "pnpm": "9.4.0"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.3"
   }
 }

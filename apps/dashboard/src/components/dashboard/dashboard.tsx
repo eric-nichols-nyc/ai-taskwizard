@@ -5,6 +5,8 @@ import {
 } from "@turbo-with-tailwind-v4/database";
 import {Greeting} from "../greeting/greeting";
 import type { Session } from '@supabase/supabase-js';
+import { Tasks } from '../tasks';
+import { useGetTasks } from '../../hooks/use-tasks';
 //import { Dashboard } from './Dashboard'
 
 const IS_ISOLATED = window.location.href.includes(
@@ -28,6 +30,7 @@ export function Dashboard() {
   const [user, setUser] = useState(hostUser);
   const [session, setSession] = useState<Session | null>(null);
   const [loadingSession, setLoadingSession] = useState(true);
+  const { data: tasks, isLoading: isLoadingTasks } = useGetTasks();
 
   // Update local user if hostUser changes and is present
   useEffect(() => {
@@ -88,11 +91,27 @@ export function Dashboard() {
             "Loading..."
           ) : user ? (
             <div>
+              <div>
               <h1>Dashboard User: {IS_ISOLATED ? "Isolated" : "Host"}</h1>
               <p>User ID: {user.id}</p>
               <p>Email: {user.email}</p>
               <p>Name: {user.user_metadata.name}</p>
-              <Greeting />
+              </div>
+              <div>
+                <Greeting />
+              </div>
+              <div>
+                {isLoadingTasks ? (
+                    <p>Loading tasks...</p>
+                ) : (
+                    <Tasks>
+                        <Tasks.Input />
+                        <Tasks.List tasks={tasks || []}>
+                            {(task) => <Tasks.Item key={task.id} task={task} />}
+                        </Tasks.List>
+                    </Tasks>
+                )}
+              </div>
             </div>
           ) : (
             "No user found"

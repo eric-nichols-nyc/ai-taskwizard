@@ -3,7 +3,8 @@ export { useAuth } from './useAuth'
 export { SignIn } from './sign-in'
 export { CardSchema } from './schemas'
 export { supabase } from './supabaseClient'
-export type { AuthContextType, AuthGuardProps } from './types'
+export { createTaskService, type CreateTaskPayload } from './task-service'
+export type { AuthContextType, AuthGuardProps, Task } from './types'
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 export interface AuthProviderProps {

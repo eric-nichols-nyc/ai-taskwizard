@@ -1,0 +1,156 @@
+{
+    "master": {
+        "metadata": {
+            "description": "Default tag for the project",
+            "createdAt": "2024-08-05T12:00:00.000Z"
+        },
+        "tasks": [
+            {
+                "id": 1,
+                "title": "Backend Setup",
+                "description": "Initialize the Supabase project and run the SQL script to create the `tasks` table.",
+                "status": "done",
+                "dependencies": [],
+                "priority": "high",
+                "details": "Create a new project in Supabase. Use the SQL from the PRD to create the 'tasks' table, ensuring the schema matches exactly.",
+                "testStrategy": "Verify the table exists in the Supabase dashboard and all columns and constraints are correct."
+            },
+            {
+                "id": 2,
+                "title": "Project Setup",
+                "description": "Configure a Vite + React project with Tailwind CSS and install all required dependencies. Initialize `shadcn/ui`.",
+                "status": "done",
+                "dependencies": [],
+                "priority": "high",
+                "details": "Use `npm create vite@latest -- --template react-ts`. Follow instructions to add Tailwind CSS. Install `zod`, `zustand`, `@tanstack/react-query`, and `supabase-js`. Initialize `shadcn/ui` using its CLI.",
+                "testStrategy": "Run `npm run dev` and confirm the default Vite + React page loads without errors."
+            },
+            {
+                "id": 3,
+                "title": "API Layer",
+                "description": "Create hooks using TanStack Query for `getTasks`, `addTask`, `updateTask`, and `deleteTask`.",
+                "status": "done",
+                "dependencies": [1, 2],
+                "priority": "high",
+                "details": "Create a `lib/supabase.ts` file to initialize the Supabase client. Create a `hooks/useTasks.ts` file. Implement four exported functions: `useGetTasks`, `useAddTask`, `useUpdateTask`, `useDeleteTask`. These hooks will wrap the corresponding Supabase client calls and use TanStack Query's `useQuery` and `useMutation` hooks.",
+                "testStrategy": "Create a test page to call each hook and verify the data flow by checking network requests and database state in Supabase.",
+                "subtasks": [
+                    {
+                        "id": "3.1",
+                        "title": "Initialize Supabase Client",
+                        "description": "Create the `lib/supabase.ts` file and export an initialized Supabase client instance.",
+                        "status": "done",
+                        "dependencies": [],
+                        "details": "Create a file at `src/lib/supabase.ts`. It should import `createClient` from `@supabase/supabase-js`. It will need the Supabase URL and anon key from environment variables. Export the initialized client as a const.",
+                        "testStrategy": "Ensure environment variables are loaded correctly and the client can be imported elsewhere without errors."
+                    },
+                    {
+                        "id": "3.2",
+                        "title": "Define Task Types and Schema",
+                        "description": "Create a `types/task.ts` file to define the Zod schema and TypeScript type for a task.",
+                        "status": "done",
+                        "dependencies": [],
+                        "details": "Create `src/types/task.ts`. Import `z` from `zod`. Define a `taskSchema` that matches the database table structure. Infer the TypeScript type using `z.infer<typeof taskSchema>` and export it.",
+                        "testStrategy": "Verify the Zod schema correctly validates mock task objects."
+                    },
+                    {
+                        "id": "3.3",
+                        "title": "Implement `useGetTasks` Hook",
+                        "description": "Create the `hooks/useTasks.ts` file and implement the `useGetTasks` query hook.",
+                        "status": "done",
+                        "dependencies": ["3.1", "3.2"],
+                        "details": "Create `src/hooks/useTasks.ts`. Import `useQuery` from `@tanstack/react-query` and the Supabase client. Create an async function to fetch tasks from the Supabase `tasks` table. Wrap this fetcher in a `useGetTasks` hook that uses `useQuery`.",
+                        "testStrategy": "Use the hook in a component and log the result to ensure tasks are fetched successfully."
+                    },
+                    {
+                        "id": "3.4",
+                        "title": "Implement `useAddTask` Hook",
+                        "description": "In `hooks/useTasks.ts`, implement the `useAddTask` mutation hook for creating new tasks.",
+                        "status": "done",
+                        "dependencies": ["3.3"],
+                        "details": "Import `useMutation` and `useQueryClient`. Create an async function that takes new task data (matching the Zod schema) and inserts it into the Supabase `tasks` table. The `useAddTask` hook should use `useMutation` and invalidate the `tasks` query on success.",
+                        "testStrategy": "Call the mutation and verify a new task appears in the database and the UI refreshes."
+                    },
+                    {
+                        "id": "3.5",
+                        "title": "Implement `useUpdateTask` Hook",
+                        "description": "In `hooks/useTasks.ts`, implement the `useUpdateTask` mutation hook for updating tasks.",
+                        "status": "done",
+                        "dependencies": ["3.3"],
+                        "details": "Similar to `useAddTask`, create an async function that takes a task ID and update data. The `useUpdateTask` hook will use `useMutation` to perform the update in Supabase and invalidate the `tasks` query on success.",
+                        "testStrategy": "Call the mutation to change a task's status or text and verify the change in the database and UI."
+                    },
+                    {
+                        "id": "3.6",
+                        "title": "Implement `useDeleteTask` Hook",
+                        "description": "In `hooks/useTasks.ts`, implement the `useDeleteTask` mutation hook for deleting tasks.",
+                        "status": "done",
+                        "dependencies": ["3.3"],
+                        "details": "Create an async function that takes a task ID. The `useDeleteTask` hook will use `useMutation` to delete the task from Supabase and invalidate the `tasks` query on success.",
+                        "testStrategy": "Call the mutation to delete a task and verify it is removed from the database and UI."
+                    }
+                ]
+            },
+            {
+                "id": 4,
+                "title": "Component Scaffolding",
+                "description": "Build the basic structure of the `Tasks` compound component and the `TaskItem` component.",
+                "status": "done",
+                "dependencies": [2],
+                "priority": "medium",
+                "details": "Create a `components/tasks/index.tsx` file for the compound component. Export `Tasks`, `Tasks.List`, `Tasks.Input`, etc. Create a `components/tasks/TaskItem.tsx` for the individual task item. Use placeholder content for now.",
+                "testStrategy": "Import and render the basic `Tasks` component on a page to ensure it displays without errors."
+            },
+            {
+                "id": 5,
+                "title": "Core Functionality",
+                "description": "Implement the ability to add, view, delete, and update the status of tasks via the checkbox.",
+                "status": "pending",
+                "dependencies": [3, 4],
+                "priority": "high",
+                "details": "Integrate the API hooks from Task 3 into the components from Task 4. The `Tasks.List` component should use `useGetTasks`. The `Tasks.Input` should use `useAddTask`. The `TaskItem` should use `useUpdateTask` for the checkbox and `useDeleteTask` for the delete button.",
+                "testStrategy": "Manually test the full CRUD lifecycle of a task through the UI. Verify changes are persisted in the Supabase database."
+            },
+            {
+                "id": 6,
+                "title": "Full Edit Mode",
+                "description": "Implement the state switching on `TaskItem` to allow for inline editing of a task's text and priority.",
+                "status": "pending",
+                "dependencies": [5],
+                "priority": "medium",
+                "details": "Add state management (Zustand or local state) to the `TaskItem` to toggle between 'normal' and 'edit' modes. The 'edit' mode should display inputs and use the `useUpdateTask` mutation on save.",
+                "testStrategy": "Click the edit icon, change the task text and priority, save, and verify the changes are persisted and displayed correctly."
+            },
+            {
+                "id": 7,
+                "title": "Advanced Status",
+                "description": "Enhance status updates to support 'inprogress' in addition to 'todo' and 'done'.",
+                "status": "pending",
+                "dependencies": [5],
+                "priority": "low",
+                "details": "Update the UI to allow setting the 'inprogress' status, perhaps through a dropdown or other control in the `TaskItem` component. The `useUpdateTask` hook will need to handle this new status value.",
+                "testStrategy": "Set a task to 'inprogress' and verify the status is updated in the UI and database."
+            },
+            {
+                "id": 8,
+                "title": "Due Dates",
+                "description": "Integrate a date picker to set and display a `due_date` for tasks.",
+                "status": "pending",
+                "dependencies": [5],
+                "priority": "low",
+                "details": "Add a `DatePicker` component from `shadcn/ui`. Add a button to the `TaskItem` to open the date picker. Use `useUpdateTask` to save the selected due date.",
+                "testStrategy": "Select a due date for a task, save it, and confirm it's displayed correctly and persisted in the database."
+            },
+            {
+                "id": 9,
+                "title": "UI Polish",
+                "description": "Add animations, loading states, and toast notifications for a better user experience.",
+                "status": "pending",
+                "dependencies": [6],
+                "priority": "low",
+                "details": "Use `framer-motion` for list item animations. Integrate the `sonner` or `react-hot-toast` library. Display loading spinners during mutation operations and show success/error toasts on completion.",
+                "testStrategy": "Perform various actions and verify that loading states are shown, animations are smooth, and toasts appear as expected."
+            }
+        ]
+    }
+} 
