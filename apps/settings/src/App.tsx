@@ -1,12 +1,10 @@
-import { Settings } from "./Settings";
+import { SettingsPage } from "./Settings";
 
-function App() {
+export function App() {
 
   return (
     <>
-      <Settings />
+      <SettingsPage />
     </>
   );
 }
-
-export default App;

@@ -42,6 +42,10 @@
     "./sign-in": {
       "types": "./src/components/sign-in.tsx",
       "import": "./src/components/sign-in.tsx"
+    },
+    "./avatar": {
+      "types": "./src/components/ui/avatar.tsx",
+      "import": "./src/components/ui/avatar.tsx"
     }
   },
   "scripts": {
@@ -61,6 +65,7 @@
     "typescript": "^5.8.2"
   },
   "dependencies": {
+    "@radix-ui/react-avatar": "^1.1.10",
     "@radix-ui/react-dropdown-menu": "^2.1.15",
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-popover": "^1.1.14",

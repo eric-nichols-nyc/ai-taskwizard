@@ -16,9 +16,9 @@ export default defineConfig(({ mode }) => {
   }
   const dashboardRemote = env.VITE_DASHBOARD_REMOTE;
   const calendarRemote = env.VITE_CALENDAR_REMOTE;
-  // const notesRemote = env.VITE_NOTES_REMOTE;
-  // const focusRemote = env.VITE_FOCUS_REMOTE;
-  // const settingsRemote = env.VITE_SETTINGS_REMOTE;
+  const notesRemote = env.VITE_NOTES_REMOTE;
+  const focusRemote = env.VITE_FOCUS_REMOTE;
+  const settingsRemote = env.VITE_SETTINGS_REMOTE;
 
 
   console.log('Vite mode:', mode);
@@ -30,9 +30,9 @@ export default defineConfig(({ mode }) => {
         remotes: {
           dashboard: dashboardRemote,
           calendar: calendarRemote,
-          // notes: notesRemote,
-          // focus: focusRemote,
-          // settings: settingsRemote
+          notes: notesRemote,
+          focus: focusRemote,
+          settings: settingsRemote
         },
         shared: ['react', 'react-dom']
       })
