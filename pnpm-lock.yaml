@@ -100,9 +100,6 @@ importers:
       '@turbo-with-tailwind-v4/design-system':
         specifier: workspace:*
         version: link:../../packages/design-system
-      '@turbo-with-tailwind-v4/supabase':
-        specifier: workspace:*
-        version: link:../../packages/supabase
       '@turbo-with-tailwind-v4/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -212,9 +209,6 @@ importers:
       '@turbo-with-tailwind-v4/design-system':
         specifier: workspace:*
         version: link:../../packages/design-system
-      '@turbo-with-tailwind-v4/supabase':
-        specifier: workspace:*
-        version: link:../../packages/supabase
       '@turbo-with-tailwind-v4/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -448,9 +442,6 @@ importers:
       '@turbo-with-tailwind-v4/design-system':
         specifier: workspace:*
         version: link:../../packages/design-system
-      '@turbo-with-tailwind-v4/supabase':
-        specifier: workspace:*
-        version: link:../../packages/supabase
       '@turbo-with-tailwind-v4/ui':
         specifier: workspace:*
         version: link:../../packages/ui
