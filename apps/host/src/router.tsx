@@ -7,7 +7,7 @@ import { Friends } from './pages/Friends';
 // import { Community } from './pages/Community';
 // import { FocusMode } from './pages/FocusMode';
 // import { AIAssistant } from './pages/AIAssistant';
-// import { Settings } from './pages/Settings';
+import { Settings } from './pages/Settings';
 import { Login } from './pages/Login';
 import { Landing } from './pages/Landing';
 
@@ -71,11 +71,11 @@ const friendsRoute = createRoute({
 //   component: AIAssistant,
 // });
 
-// const settingsRoute = createRoute({
-//   getParentRoute: () => rootRoute,
-//   path: '/settings',
-//   component: Settings,
-// });
+const settingsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/settings',
+  component: Settings,
+});
 
 // Create and export the router
 export const routeTree = rootRoute.addChildren([
@@ -87,7 +87,7 @@ export const routeTree = rootRoute.addChildren([
   //communityRoute,
   //focusModeRoute,
   ///aiAssistantRoute,
-  //settingsRoute,
+  settingsRoute,
   loginRoute,
 ]);
 
