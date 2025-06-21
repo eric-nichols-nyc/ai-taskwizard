@@ -1,8 +1,8 @@
-import { SupabaseClient } from "@supabase/supabase-js";
+import { supabase } from './supabaseClient';
 
-export async function devSignIn(supabaseDev: SupabaseClient) {
+export async function devSignIn() {
   if (import.meta.env.MODE === 'development') {
-    const { error } = await supabaseDev.auth.signInWithPassword({
+    const { error } = await supabase.auth.signInWithPassword({
       email: import.meta.env.VITE_DEV_EMAIL,
       password: import.meta.env.VITE_DEV_PASSWORD,
     });

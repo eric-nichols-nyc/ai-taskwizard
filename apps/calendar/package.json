@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "preinstall": "npx corepack enable && npx corepack prepare pnpm@9.4.0 --activate",
-    "dev": "vite --port 3002",
+    "dev": "vite --port 4002",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview --port 3002"

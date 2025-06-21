@@ -1,6 +1,7 @@
 export { AuthProvider } from './AuthProvider'
 export { useAuth } from './useAuth'
 export { SignIn } from './sign-in'
+export { devSignIn } from './devSignIn'
 export { CardSchema } from './schemas'
 export { supabase } from './supabaseClient'
 export { createTaskService, type CreateTaskPayload } from './task-service'
