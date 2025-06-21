@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Plus } from 'lucide-react';
-import { supabase, useAuth } from '@turbo-with-tailwind-v4/database';
+import { supabase, useAuth, signInWithGoogle } from '@turbo-with-tailwind-v4/database';
 import type { SupabaseClient, User } from '@supabase/supabase-js';
 
 // Debug: Log environment variables
@@ -43,20 +43,14 @@ export const CalendarApp: React.FC = () => {
   }, [currentDate, userId]);
 
   useEffect(() => {
-    if (window.location.href.includes(import.meta.env.VITE_DEV_URL) && supabaseClient) {
+    if (IS_DEV && supabaseClient) {
       async function maybeSignInWithGoogle() {
-        const { data: { session } } = await supabaseClient!.auth.getSession();
-        // get the user id from the session
-        console.log('user from session data', userId);
-        setUserId(session?.user?.id);
-        if (!session) {
-          const { error } = await supabaseClient!.auth.signInWithOAuth({
-            provider: 'google',
-            options: { redirectTo: window.location.origin },
-          });
-          if (error) {
-            console.error('Google sign-in failed:', error.message);
-          }
+        try {
+          const session = await signInWithGoogle();
+          setUserId(session?.user?.id);
+          console.log('user from session data', userId);
+        } catch (error) {
+          console.error('Error during Google sign-in:', error);
         }
       }
       maybeSignInWithGoogle();
