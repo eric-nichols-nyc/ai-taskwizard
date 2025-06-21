@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Plus } from 'lucide-react';
+import { Button } from '@turbo-with-tailwind-v4/design-system/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@turbo-with-tailwind-v4/design-system/dialog';
 import { supabase, useAuth, signInWithGoogle } from '@turbo-with-tailwind-v4/database';
 import type { SupabaseClient, User } from '@supabase/supabase-js';
 
@@ -12,6 +14,26 @@ interface Task {
   user_id: string;
   // ...other fields as needed
 }
+
+const TaskForm: React.FC<{ onCancel: () => void; onSubmit: () => void }> = ({ onCancel, onSubmit }) => {
+  return (
+    <form onSubmit={(e) => { e.preventDefault(); onSubmit(); }}>
+      <div className="grid gap-4 py-4">
+        <div className="grid grid-cols-4 items-center gap-4">
+          <label htmlFor="title" className="text-right">
+            Title
+          </label>
+          <input id="title" placeholder="Enter task" className="col-span-3 p-2 border rounded" />
+        </div>
+      </div>
+      <DialogFooter>
+        <Button type="button" onClick={onCancel} className="px-4 py-2 bg-gray-200 rounded">Cancel</Button>
+        <Button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded">Add Task</Button>
+      </DialogFooter>
+    </form>
+  );
+};
+
 const IS_DEV = window.location.href.includes(
   import.meta.env.VITE_DEV_URL
 );
@@ -30,6 +52,7 @@ export const CalendarApp: React.FC = () => {
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const [tasks, setTasks] = useState<Task[]>([]);
   const[userId, setUserId] = useState<string | undefined>(undefined);
+  const [isAddTaskDialogOpen, setIsAddTaskDialogOpen] = useState(false);
   useEffect(() => {
     console.log('IS_DEV', IS_DEV);
     if (user) {
@@ -159,25 +182,25 @@ export const CalendarApp: React.FC = () => {
             </div>
           </div>
           <div className="flex items-center space-x-3">
-            <button
+            <Button
               onClick={() => navigateMonth(-1)}
               className="px-3 py-1 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded"
             >
               ←
-            </button>
+            </Button>
             <button
               onClick={() => navigateMonth(1)}
               className="px-3 py-1 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded"
             >
               →
             </button>
-            <button
-              onClick={() => {}} // Placeholder for event popover
+            <Button
+              onClick={() => setIsAddTaskDialogOpen(true)}
               className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
             >
               <Plus className="w-4 h-4" />
               <span>Add Task</span>
-            </button>
+            </Button>
           </div>
         </div>
         {/* Calendar Body Component */}
@@ -242,6 +265,23 @@ export const CalendarApp: React.FC = () => {
             })}
           </div>
         </div>
+        <Dialog open={isAddTaskDialogOpen} onOpenChange={setIsAddTaskDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Add New Task</DialogTitle>
+              <DialogDescription>
+                Fill in the details below to add a new task to your calendar.
+              </DialogDescription>
+            </DialogHeader>
+            <TaskForm
+              onSubmit={() => {
+                console.log('Form submitted');
+                setIsAddTaskDialogOpen(false);
+              }}
+              onCancel={() => setIsAddTaskDialogOpen(false)}
+            />
+          </DialogContent>
+        </Dialog>
       </div>
   );
 };

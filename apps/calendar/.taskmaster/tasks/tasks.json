@@ -1,0 +1,680 @@
+{
+  "master": {
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Set up monorepo connections",
+        "description": "Configure the app to properly connect to the database package and design-system package within the monorepo structure.",
+        "details": "1. Ensure proper imports from the database package\n2. Configure imports from the design-system package for Shadcn components\n3. Set up any necessary configuration files to establish these connections\n4. Verify that the app can access both packages without errors\n\nExample configuration in package.json:\n```json\n{\n  \"dependencies\": {\n    \"@monorepo/database\": \"workspace:*\",\n    \"@monorepo/design-system\": \"workspace:*\"\n  }\n}\n```\n\nExample import usage:\n```jsx\nimport { db } from '@monorepo/database';\nimport { Button } from '@monorepo/design-system';\n```",
+        "testStrategy": "1. Write unit tests to verify successful imports from both packages\n2. Create a simple component that uses elements from both packages\n3. Test that database connections can be established\n4. Verify that design system components render correctly",
+        "priority": "high",
+        "dependencies": [],
+        "status": "done",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Analyze Monorepo Structure and Dependencies",
+            "description": "Examine the monorepo's layout and identify dependencies between packages.",
+            "dependencies": [],
+            "details": "Use tools like `pnpm ls` or `yarn why` to visualize dependencies.",
+            "status": "done"
+          },
+          {
+            "id": 2,
+            "title": "Configure package.json and Workspace Settings",
+            "description": "Set up workspace settings in `package.json` to manage dependencies across packages.",
+            "dependencies": [
+              1
+            ],
+            "details": "Use `workspaces` field in `package.json` to define workspace packages.",
+            "status": "done"
+          },
+          {
+            "id": 3,
+            "title": "Set Up Import Paths for Database and Design-System Packages",
+            "description": "Configure import paths for shared packages like database and design-system components.",
+            "dependencies": [
+              2
+            ],
+            "details": "Use aliases or symlinks to simplify imports across packages.",
+            "status": "done"
+          },
+          {
+            "id": 4,
+            "title": "Implement and Verify Configuration Files",
+            "description": "Create and validate configuration files for dependencies and imports.",
+            "dependencies": [
+              3
+            ],
+            "details": "Ensure configuration files are correctly referenced in each package.",
+            "status": "done"
+          },
+          {
+            "id": 5,
+            "title": "Write and Run Tests to Confirm Connections",
+            "description": "Develop and execute tests to verify that all packages are correctly connected.",
+            "dependencies": [
+              4
+            ],
+            "details": "Use integration tests to check for successful imports and dependencies.",
+            "status": "pending"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Create task data model",
+        "description": "Define the task data model structure that will be used throughout the application and for database storage.",
+        "details": "1. Define the Task interface/type with appropriate properties\n2. Ensure compatibility with the database package's schema requirements\n3. Include fields for task title, description, date, status, etc.\n\n```typescript\n// Example Task model\ninterface Task {\n  id: string;\n  title: string;\n  description?: string;\n  date: Date;\n  completed: boolean;\n  createdAt: Date;\n  updatedAt: Date;\n}\n\n// Database schema integration example\nimport { defineSchema } from '@monorepo/database';\n\nexport const taskSchema = defineSchema({\n  // schema definition based on database package requirements\n});\n```",
+        "testStrategy": "1. Create unit tests to validate the task model structure\n2. Test serialization/deserialization of task objects\n3. Verify compatibility with database package by creating test records\n4. Ensure all required fields are properly typed and validated",
+        "priority": "high",
+        "dependencies": [
+          1
+        ],
+        "status": "done",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Define the Task Interface/Type",
+            "description": "Create a TypeScript interface or type that accurately represents the Task data model, ensuring strong typing and clarity for all required fields.",
+            "dependencies": [],
+            "details": "Specify all properties, their types, and any optional or required fields. Follow TypeScript best practices to avoid using 'any' and leverage enums where appropriate.",
+            "status": "done"
+          },
+          {
+            "id": 2,
+            "title": "Align Model with Database Schema Requirements",
+            "description": "Ensure the Task model matches the database schema, considering field types, constraints, and naming conventions for compatibility.",
+            "dependencies": [
+              1
+            ],
+            "details": "Map TypeScript types to database column types, address nullable fields, and ensure the model can be easily persisted and retrieved from the database.",
+            "status": "done"
+          },
+          {
+            "id": 3,
+            "title": "Implement Serialization/Deserialization Logic",
+            "description": "Develop functions to serialize Task objects for storage and deserialize them when retrieving from the database, maintaining type safety.",
+            "dependencies": [
+              2
+            ],
+            "details": "Handle conversion between TypeScript objects and database representations, including date formatting and enum/string conversions if necessary.",
+            "status": "pending"
+          },
+          {
+            "id": 4,
+            "title": "Write and Execute Model Validation Tests",
+            "description": "Create and run tests to validate the Task model, ensuring correct typing, schema alignment, and proper serialization/deserialization.",
+            "dependencies": [
+              3
+            ],
+            "details": "Write unit tests to check type enforcement, required fields, and edge cases. Validate that serialization and deserialization logic works as intended.",
+            "status": "pending"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Implement task database operations",
+        "description": "Create the necessary functions to perform CRUD operations on tasks using the database package.",
+        "details": "1. Create functions for creating, reading, updating, and deleting tasks\n2. Utilize the database package's API for these operations\n3. Implement proper error handling and validation\n\n```typescript\n// Example implementation\nimport { db } from '@monorepo/database';\nimport { Task } from '../models/task';\n\nexport const taskService = {\n  async createTask(task: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>): Promise<Task> {\n    return db.tasks.create({\n      data: {\n        ...task,\n        createdAt: new Date(),\n        updatedAt: new Date()\n      }\n    });\n  },\n  \n  async getTasksByDate(date: Date): Promise<Task[]> {\n    return db.tasks.findMany({\n      where: {\n        date: {\n          equals: date\n        }\n      }\n    });\n  },\n  \n  // Additional CRUD operations\n};\n```",
+        "testStrategy": "1. Write unit tests for each CRUD operation\n2. Create integration tests with a test database\n3. Test edge cases like invalid data, connection errors\n4. Verify that operations correctly interact with the database package",
+        "priority": "high",
+        "dependencies": [
+          2
+        ],
+        "status": "done",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Implement Create Operation",
+            "description": "Develop the logic to handle the creation of new records in the database, including parsing request bodies and mapping HTTP POST requests to the appropriate controller actions.",
+            "dependencies": [],
+            "details": "Ensure the endpoint accepts valid input, inserts data into the database, and returns a success response with the created resource.",
+            "status": "done"
+          },
+          {
+            "id": 2,
+            "title": "Implement Read Operation(s)",
+            "description": "Develop the logic to retrieve records from the database, supporting both single and multiple resource queries, and map HTTP GET requests to the appropriate controller actions.",
+            "dependencies": [
+              1
+            ],
+            "details": "Support filtering, pagination, and retrieval by ID or query parameters as needed.",
+            "status": "done"
+          },
+          {
+            "id": 3,
+            "title": "Implement Update Operation",
+            "description": "Develop the logic to update existing records in the database, mapping HTTP PUT/PATCH requests to the appropriate controller actions.",
+            "dependencies": [
+              2
+            ],
+            "details": "Ensure the endpoint validates input, updates the correct resource, and returns the updated resource or a success status.",
+            "status": "done"
+          },
+          {
+            "id": 4,
+            "title": "Implement Delete Operation",
+            "description": "Develop the logic to delete records from the database, mapping HTTP DELETE requests to the appropriate controller actions.",
+            "dependencies": [
+              3
+            ],
+            "details": "Ensure the endpoint handles deletion by ID and returns appropriate success or error responses.",
+            "status": "done"
+          },
+          {
+            "id": 5,
+            "title": "Add Error Handling and Validation",
+            "description": "Implement robust error handling and input validation for all CRUD operations to ensure data integrity and provide meaningful error messages.",
+            "dependencies": [
+              4
+            ],
+            "details": "Use validation libraries or custom logic to enforce data constraints, handle missing or invalid data, and return standardized error responses.",
+            "status": "pending"
+          },
+          {
+            "id": 6,
+            "title": "Write Unit and Integration Tests for All Operations",
+            "description": "Develop comprehensive unit and integration tests to verify the correctness and reliability of all CRUD operations, including error cases and edge conditions.",
+            "dependencies": [
+              5
+            ],
+            "details": "Ensure tests cover successful operations, validation failures, and error scenarios for each endpoint.",
+            "status": "pending"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Create New Task button component",
+        "description": "Implement a button component that allows users to initiate the task creation process.",
+        "details": "1. Create a button component using Shadcn components from the design system\n2. Position the button appropriately in the UI\n3. Add click handler to open the task form overlay\n\n```jsx\nimport { Button } from '@monorepo/design-system';\nimport { PlusIcon } from '@monorepo/design-system/icons';\n\nconst NewTaskButton = ({ onClick }) => {\n  return (\n    <Button \n      variant=\"primary\" \n      onClick={onClick}\n      className=\"flex items-center gap-2\"\n    >\n      <PlusIcon className=\"w-4 h-4\" />\n      New Task\n    </Button>\n  );\n};\n\nexport default NewTaskButton;\n```",
+        "testStrategy": "1. Test that the button renders correctly\n2. Verify that the click handler is called when the button is clicked\n3. Test accessibility features (keyboard navigation, screen reader support)\n4. Check that the button styling matches design system specifications",
+        "priority": "medium",
+        "dependencies": [
+          1
+        ],
+        "status": "done",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Implement Button UI Using Design System Components",
+            "description": "Create the button component using the appropriate design system (e.g., Carbon, Material, or Dell). Ensure correct usage of button types, grouping, and visual hierarchy as per design guidelines.",
+            "dependencies": [],
+            "details": "Reference the design system documentation to select the correct button variant and ensure consistent spacing, sizing, and grouping. Apply the recommended structure for button groups if needed.",
+            "status": "done"
+          },
+          {
+            "id": 2,
+            "title": "Add and Test Click Handler Logic",
+            "description": "Integrate the click event handler for the button and verify that it triggers the intended action. Test the button's interactive states (normal, hover, focus, active, disabled).",
+            "dependencies": [
+              1
+            ],
+            "details": "Implement the logic to handle button clicks, ensuring the handler is connected and functional. Test all interactive states to confirm correct behavior and feedback.",
+            "status": "pending"
+          },
+          {
+            "id": 3,
+            "title": "Ensure Accessibility and Styling Compliance",
+            "description": "Verify that the button meets accessibility standards (keyboard navigation, ARIA attributes, color contrast) and adheres to the design system's styling requirements.",
+            "dependencies": [
+              2
+            ],
+            "details": "Check for accessible labeling, focus indicators, and sufficient color contrast. Ensure the button's appearance matches the design system's specifications for all states.",
+            "status": "pending"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "title": "Implement task form overlay component",
+        "description": "Create an overlay component that contains the form for adding new tasks.",
+        "details": "1. Create an overlay/modal component using Shadcn components\n2. Implement open/close functionality\n3. Ensure proper styling and positioning\n4. Add accessibility features\n\n```jsx\nimport { Dialog, DialogContent, DialogHeader, DialogTitle } from '@monorepo/design-system';\n\nconst TaskFormOverlay = ({ isOpen, onClose, children }) => {\n  return (\n    <Dialog open={isOpen} onOpenChange={onClose}>\n      <DialogContent className=\"sm:max-w-[425px]\">\n        <DialogHeader>\n          <DialogTitle>Add New Task</DialogTitle>\n        </DialogHeader>\n        {children}\n      </DialogContent>\n    </Dialog>\n  );\n};\n\nexport default TaskFormOverlay;\n```",
+        "testStrategy": "1. Test opening and closing of the overlay\n2. Verify that the overlay renders its children correctly\n3. Test keyboard interactions (Esc to close, etc.)\n4. Check that focus is properly trapped within the overlay when open\n5. Test that the overlay is properly accessible",
+        "priority": "medium",
+        "dependencies": [
+          1,
+          4
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Implement Overlay/Modal Structure",
+            "description": "Create the foundational UI components for the modal overlay, including the modal container, header, body, and background overlay elements.",
+            "dependencies": [],
+            "details": "Ensure the modal structure includes a translucent background, a header for context, and a content area. Follow best practices for modal anatomy, such as appropriate sizing and placement on the screen.",
+            "status": "pending"
+          },
+          {
+            "id": 2,
+            "title": "Integrate Open/Close Logic",
+            "description": "Add state management and event handlers to control the opening and closing of the modal overlay.",
+            "dependencies": [
+              1
+            ],
+            "details": "Implement logic for opening and closing the modal via buttons, clicking outside the modal, and pressing the Escape key. Ensure there are clear escape hatches for users to dismiss the modal.",
+            "status": "pending"
+          },
+          {
+            "id": 3,
+            "title": "Style the Overlay According to Design System",
+            "description": "Apply styles to the modal and overlay to match the project's design system and ensure visual consistency.",
+            "dependencies": [
+              1
+            ],
+            "details": "Style the modal with appropriate colors, spacing, and typography. Ensure the overlay uses a lightbox effect to focus attention and that the modal size and location follow best practices.",
+            "status": "pending"
+          },
+          {
+            "id": 4,
+            "title": "Add Accessibility Features (Focus Trap, Keyboard Navigation)",
+            "description": "Enhance the modal with accessibility features such as focus management, keyboard navigation, and ARIA attributes.",
+            "dependencies": [
+              2
+            ],
+            "details": "Implement focus trap so keyboard users cannot interact with background content. Ensure the modal receives focus when opened and can be closed with the Escape key. Add ARIA roles and labels for screen readers.",
+            "status": "pending"
+          },
+          {
+            "id": 5,
+            "title": "Write Tests for Overlay Behavior",
+            "description": "Develop automated tests to verify the modal's open/close logic, accessibility features, and visual appearance.",
+            "dependencies": [
+              2,
+              3,
+              4
+            ],
+            "details": "Write unit and integration tests to cover user interactions (open, close, keyboard navigation), focus management, and compliance with accessibility standards.",
+            "status": "pending"
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "title": "Create task form component",
+        "description": "Build a form component for adding new tasks with appropriate fields and validation.",
+        "details": "1. Create a form with fields for task details (title, date, etc.)\n2. Implement form validation\n3. Add submit and cancel buttons\n4. Use Shadcn form components from the design system\n\n```jsx\nimport { useState } from 'react';\nimport { Form, FormField, FormItem, FormLabel, FormControl, Input, Button, DatePicker } from '@monorepo/design-system';\n\nconst TaskForm = ({ onSubmit, onCancel }) => {\n  const [formData, setFormData] = useState({\n    title: '',\n    description: '',\n    date: new Date(),\n  });\n  \n  const handleChange = (e) => {\n    const { name, value } = e.target;\n    setFormData(prev => ({ ...prev, [name]: value }));\n  };\n  \n  const handleDateChange = (date) => {\n    setFormData(prev => ({ ...prev, date }));\n  };\n  \n  const handleSubmit = (e) => {\n    e.preventDefault();\n    onSubmit(formData);\n  };\n  \n  return (\n    <Form onSubmit={handleSubmit}>\n      <FormField>\n        <FormLabel htmlFor=\"title\">Title</FormLabel>\n        <FormControl>\n          <Input \n            id=\"title\" \n            name=\"title\" \n            value={formData.title} \n            onChange={handleChange} \n            required \n          />\n        </FormControl>\n      </FormField>\n      \n      <FormField>\n        <FormLabel htmlFor=\"description\">Description</FormLabel>\n        <FormControl>\n          <Input \n            id=\"description\" \n            name=\"description\" \n            value={formData.description} \n            onChange={handleChange} \n          />\n        </FormControl>\n      </FormField>\n      \n      <FormField>\n        <FormLabel htmlFor=\"date\">Date</FormLabel>\n        <FormControl>\n          <DatePicker \n            id=\"date\" \n            selected={formData.date} \n            onChange={handleDateChange} \n          />\n        </FormControl>\n      </FormField>\n      \n      <div className=\"flex justify-end gap-2 mt-4\">\n        <Button type=\"button\" variant=\"outline\" onClick={onCancel}>Cancel</Button>\n        <Button type=\"submit\">Add Task</Button>\n      </div>\n    </Form>\n  );\n};\n\nexport default TaskForm;\n```",
+        "testStrategy": "1. Test form rendering with all required fields\n2. Verify form validation works correctly\n3. Test form submission with valid and invalid data\n4. Check that the date picker works properly\n5. Test that cancel and submit buttons trigger the correct callbacks",
+        "priority": "medium",
+        "dependencies": [
+          2,
+          5
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Build Form Fields for Task Properties",
+            "description": "Create input fields for all required task properties (e.g., title, description, due date, priority) using appropriate HTML elements and design system components.",
+            "dependencies": [],
+            "details": "Ensure each field is labeled clearly and grouped logically to enhance usability. Use clear headings and subheadings to guide users through the form.",
+            "status": "pending"
+          },
+          {
+            "id": 2,
+            "title": "Implement Form Validation Logic",
+            "description": "Add client-side validation to ensure user input meets requirements for each field, providing real-time feedback and clear error messages.",
+            "dependencies": [
+              1
+            ],
+            "details": "Use inline validation for immediate feedback, especially for complex fields like passwords. Ensure validation rules are not overly restrictive and allow for common user behaviors like copy-paste.",
+            "status": "pending"
+          },
+          {
+            "id": 3,
+            "title": "Integrate Date Picker and Design System Components",
+            "description": "Incorporate a date picker for date fields and ensure all form elements use standardized design system components for consistency.",
+            "dependencies": [
+              1
+            ],
+            "details": "Ensure the date picker is accessible and supports keyboard navigation. Use design system components for buttons, inputs, and other UI elements.",
+            "status": "pending"
+          },
+          {
+            "id": 4,
+            "title": "Add Submit and Cancel Button Logic",
+            "description": "Implement logic for form submission and cancellation, handling both successful and failed submissions gracefully.",
+            "dependencies": [
+              2,
+              3
+            ],
+            "details": "Ensure the submit button is disabled until the form is valid. Provide clear feedback on submission status and allow users to cancel and reset the form easily.",
+            "status": "pending"
+          },
+          {
+            "id": 5,
+            "title": "Ensure Accessibility",
+            "description": "Audit and enhance the form for accessibility, ensuring compatibility with screen readers and keyboard navigation.",
+            "dependencies": [
+              1,
+              3,
+              4
+            ],
+            "details": "Add ARIA labels, ensure proper tab order, and verify that all interactive elements are accessible. Test with assistive technologies.",
+            "status": "pending"
+          },
+          {
+            "id": 6,
+            "title": "Write Tests for Form Behavior and Validation",
+            "description": "Develop automated tests to verify form behavior, validation logic, and accessibility features.",
+            "dependencies": [
+              2,
+              4,
+              5
+            ],
+            "details": "Write unit and integration tests to cover input validation, error messaging, button logic, and accessibility compliance.",
+            "status": "pending"
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "title": "Integrate task creation functionality",
+        "description": "Connect the task form with the database operations to enable adding new tasks to the database.",
+        "details": "1. Create a container component that combines the overlay, form, and database operations\n2. Implement the submission handler to save tasks to the database\n3. Add error handling and loading states\n4. Close the overlay after successful submission\n\n```jsx\nimport { useState } from 'react';\nimport { useQueryClient, useMutation } from '@tanstack/react-query';\nimport { taskService } from '../services/taskService';\nimport NewTaskButton from '../components/NewTaskButton';\nimport TaskFormOverlay from '../components/TaskFormOverlay';\nimport TaskForm from '../components/TaskForm';\n\nconst TaskCreationContainer = () => {\n  const [isOverlayOpen, setIsOverlayOpen] = useState(false);\n  const queryClient = useQueryClient();\n  \n  const createTaskMutation = useMutation({\n    mutationFn: taskService.createTask,\n    onSuccess: () => {\n      queryClient.invalidateQueries({ queryKey: ['tasks'] });\n      setIsOverlayOpen(false);\n    },\n  });\n  \n  const handleOpenOverlay = () => setIsOverlayOpen(true);\n  const handleCloseOverlay = () => setIsOverlayOpen(false);\n  \n  const handleSubmit = (taskData) => {\n    createTaskMutation.mutate(taskData);\n  };\n  \n  return (\n    <>\n      <NewTaskButton onClick={handleOpenOverlay} />\n      <TaskFormOverlay isOpen={isOverlayOpen} onClose={handleCloseOverlay}>\n        <TaskForm \n          onSubmit={handleSubmit} \n          onCancel={handleCloseOverlay} \n          isSubmitting={createTaskMutation.isPending}\n          error={createTaskMutation.error}\n        />\n      </TaskFormOverlay>\n    </>\n  );\n};\n\nexport default TaskCreationContainer;\n```",
+        "testStrategy": "1. Test the complete task creation flow from button click to database submission\n2. Verify that the overlay opens and closes correctly\n3. Test error handling when database operations fail\n4. Check that loading states are properly displayed\n5. Verify that the form clears and overlay closes after successful submission",
+        "priority": "high",
+        "dependencies": [
+          3,
+          6
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Compose Container Component",
+            "description": "Develop the main container component that will encapsulate the overlay and form components, providing structure and context for the task creation flow.",
+            "dependencies": [],
+            "details": "This component should serve as the parent for the overlay and form, managing their layout and any shared state.",
+            "status": "pending"
+          },
+          {
+            "id": 2,
+            "title": "Connect Overlay and Form Components",
+            "description": "Integrate the overlay and form components within the container, ensuring proper rendering and communication between them.",
+            "dependencies": [
+              1
+            ],
+            "details": "Ensure the overlay displays the form and can receive props or callbacks from the container as needed.",
+            "status": "pending"
+          },
+          {
+            "id": 3,
+            "title": "Implement Submission Handler with Database Integration",
+            "description": "Create a submission handler that processes form data and integrates with the backend/database to persist new tasks.",
+            "dependencies": [
+              2
+            ],
+            "details": "Handle asynchronous operations for submitting data and ensure proper error handling for failed requests.",
+            "status": "pending"
+          },
+          {
+            "id": 4,
+            "title": "Add Loading and Error States",
+            "description": "Incorporate UI states for loading and error feedback during form submission to enhance user experience.",
+            "dependencies": [
+              3
+            ],
+            "details": "Display a loading indicator during submission and show error messages if the operation fails.",
+            "status": "pending"
+          },
+          {
+            "id": 5,
+            "title": "Handle Overlay Open/Close Logic",
+            "description": "Implement logic to control when the overlay opens and closes, including responding to user actions and submission outcomes.",
+            "dependencies": [
+              2
+            ],
+            "details": "Ensure the overlay can be triggered by user interaction and closes appropriately after submission or cancellation.",
+            "status": "pending"
+          },
+          {
+            "id": 6,
+            "title": "Test Full Task Creation Flow",
+            "description": "Perform end-to-end testing of the entire task creation process, from opening the overlay to submitting the form and handling responses.",
+            "dependencies": [
+              3,
+              4,
+              5
+            ],
+            "details": "Verify that all components interact correctly and that the user experience is smooth and error-free.",
+            "status": "pending"
+          },
+          {
+            "id": 7,
+            "title": "Ensure State Resets After Submission",
+            "description": "Reset form and overlay state after successful submission or closure to prepare for subsequent task creations.",
+            "dependencies": [],
+            "details": "Clear form fields, reset error/loading states, and ensure the overlay is ready for the next use.",
+            "status": "pending"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "title": "Implement calendar task display",
+        "description": "Update the calendar component to display tasks for the selected day.",
+        "details": "1. Modify the existing calendar component to fetch and display tasks\n2. Create a task list component for the selected day\n3. Implement visual indicators for days with tasks\n4. Use Tanstack Query for data fetching\n\n```jsx\nimport { useQuery } from '@tanstack/react-query';\nimport { Calendar } from '@monorepo/design-system';\nimport { taskService } from '../services/taskService';\nimport TaskList from '../components/TaskList';\n\nconst TaskCalendar = () => {\n  const [selectedDate, setSelectedDate] = useState(new Date());\n  \n  const { data: tasks, isLoading } = useQuery({\n    queryKey: ['tasks', selectedDate],\n    queryFn: () => taskService.getTasksByDate(selectedDate),\n  });\n  \n  const handleDateSelect = (date) => {\n    setSelectedDate(date);\n  };\n  \n  // Function to determine if a day has tasks\n  const getDayClassNames = (day) => {\n    // Implementation to check if the day has tasks and return appropriate class names\n  };\n  \n  return (\n    <div className=\"grid grid-cols-1 md:grid-cols-2 gap-4\">\n      <div>\n        <Calendar \n          selectedDate={selectedDate}\n          onDateSelect={handleDateSelect}\n          getDayClassNames={getDayClassNames}\n        />\n      </div>\n      <div>\n        <h2 className=\"text-xl font-semibold mb-4\">\n          Tasks for {selectedDate.toLocaleDateString()}\n        </h2>\n        {isLoading ? (\n          <p>Loading tasks...</p>\n        ) : (\n          <TaskList tasks={tasks || []} />\n        )}\n      </div>\n    </div>\n  );\n};\n\nexport default TaskCalendar;\n```",
+        "testStrategy": "1. Test that the calendar correctly displays the current month\n2. Verify that selecting a date updates the task list\n3. Test that days with tasks have the correct visual indicators\n4. Check loading states when fetching tasks\n5. Test the display of tasks for the selected day",
+        "priority": "medium",
+        "dependencies": [
+          3
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Update Calendar Component to Support Task Data",
+            "description": "Modify the existing calendar component to accept and display task data, ensuring each day can reflect associated tasks.",
+            "dependencies": [],
+            "details": "This involves updating the calendar's data model and rendering logic to accommodate and visually represent tasks for each date.",
+            "status": "pending"
+          },
+          {
+            "id": 2,
+            "title": "Implement Data Fetching for Selected Day",
+            "description": "Develop logic to fetch tasks corresponding to the day selected by the user on the calendar.",
+            "dependencies": [
+              1
+            ],
+            "details": "Ensure efficient data retrieval, possibly using API calls or local state, and handle asynchronous operations for smooth user experience.",
+            "status": "pending"
+          },
+          {
+            "id": 3,
+            "title": "Create or Update Task List Component",
+            "description": "Build or enhance a component that displays the list of tasks for the selected day, integrating with the calendar selection.",
+            "dependencies": [
+              2
+            ],
+            "details": "The component should update dynamically based on the selected date and fetched data, supporting task details and actions.",
+            "status": "pending"
+          },
+          {
+            "id": 4,
+            "title": "Add Visual Indicators for Days with Tasks",
+            "description": "Enhance the calendar UI to visually indicate which days have tasks, such as with dots, highlights, or badges.",
+            "dependencies": [
+              1
+            ],
+            "details": "This improves usability by allowing users to quickly identify busy days at a glance.",
+            "status": "pending"
+          },
+          {
+            "id": 5,
+            "title": "Handle Loading and Empty States",
+            "description": "Implement UI states for loading (while fetching data) and empty (no tasks for selected day) scenarios in both calendar and task list components.",
+            "dependencies": [
+              2,
+              3
+            ],
+            "details": "Provide clear feedback to users during data fetches and when no tasks are present, ensuring a polished experience.",
+            "status": "pending"
+          },
+          {
+            "id": 6,
+            "title": "Write Tests for Calendar and Task Display",
+            "description": "Develop unit and integration tests to verify correct rendering, data fetching, and state handling for the calendar and task list components.",
+            "dependencies": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "details": "Tests should cover edge cases, UI updates, and user interactions to ensure reliability and maintainability.",
+            "status": "pending"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "title": "Create task list component",
+        "description": "Implement a component to display the list of tasks for a selected day.",
+        "details": "1. Create a component to display tasks in a list format\n2. Include task details like title, description, etc.\n3. Add styling using Tailwind CSS\n4. Handle empty state when no tasks exist\n\n```jsx\nimport { Card, CardContent } from '@monorepo/design-system';\n\nconst TaskList = ({ tasks }) => {\n  if (tasks.length === 0) {\n    return (\n      <div className=\"text-center p-4 border border-dashed rounded-md\">\n        <p className=\"text-gray-500\">No tasks for this day</p>\n      </div>\n    );\n  }\n  \n  return (\n    <div className=\"space-y-3\">\n      {tasks.map((task) => (\n        <Card key={task.id}>\n          <CardContent className=\"p-4\">\n            <h3 className=\"font-medium\">{task.title}</h3>\n            {task.description && (\n              <p className=\"text-sm text-gray-600 mt-1\">{task.description}</p>\n            )}\n            <div className=\"flex justify-between items-center mt-2\">\n              <span className=\"text-xs text-gray-500\">\n                {task.date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}\n              </span>\n              {/* Additional task actions could go here */}\n            </div>\n          </CardContent>\n        </Card>\n      ))}\n    </div>\n  );\n};\n\nexport default TaskList;\n```",
+        "testStrategy": "1. Test rendering with various task data sets\n2. Verify the empty state is displayed when no tasks exist\n3. Check that task details are correctly displayed\n4. Test with different screen sizes to ensure responsive design\n5. Verify that the component correctly handles task data structure",
+        "priority": "medium",
+        "dependencies": [
+          2,
+          8
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Implement Task List Rendering Logic",
+            "description": "Develop the core logic to render a list of tasks by mapping over the task data and displaying each item using a dedicated component.",
+            "dependencies": [],
+            "details": "Use React's map function to iterate over the tasks array and render a Task component for each item, ensuring each has a unique key.",
+            "status": "pending"
+          },
+          {
+            "id": 2,
+            "title": "Style the List with Tailwind CSS",
+            "description": "Apply Tailwind CSS classes to the task list and its items to ensure a visually appealing and consistent UI.",
+            "dependencies": [
+              1
+            ],
+            "details": "Add Tailwind utility classes to the list container and individual task items for layout, spacing, and typography.",
+            "status": "pending"
+          },
+          {
+            "id": 3,
+            "title": "Handle Empty State Display",
+            "description": "Implement logic to detect when the task list is empty and display an appropriate message or UI element.",
+            "dependencies": [
+              1,
+              2
+            ],
+            "details": "Check if the tasks array is empty and conditionally render a placeholder or message using Tailwind CSS for styling.",
+            "status": "pending"
+          },
+          {
+            "id": 4,
+            "title": "Write Tests for Various Data Scenarios",
+            "description": "Create tests to verify correct rendering of the task list for different data scenarios, including empty, single, and multiple tasks.",
+            "dependencies": [
+              1,
+              2,
+              3
+            ],
+            "details": "Use a testing framework like Jest and React Testing Library to write unit and integration tests covering all edge cases.",
+            "status": "pending"
+          }
+        ]
+      },
+      {
+        "id": 10,
+        "title": "Implement real-time calendar updates",
+        "description": "Ensure the calendar updates in real-time when a new task is added for the current day.",
+        "details": "1. Set up Tanstack Query cache invalidation after task creation\n2. Implement optimistic updates for better UX\n3. Add visual feedback when a task is added\n4. Ensure the calendar day indicators update when tasks change\n\n```jsx\n// In the main App component or a context provider\nimport { QueryClient, QueryClientProvider } from '@tanstack/react-query';\nimport TaskCreationContainer from './containers/TaskCreationContainer';\nimport TaskCalendar from './components/TaskCalendar';\n\nconst App = () => {\n  const queryClient = new QueryClient({\n    defaultOptions: {\n      queries: {\n        staleTime: 60000, // 1 minute\n        refetchOnWindowFocus: true,\n      },\n    },\n  });\n  \n  return (\n    <QueryClientProvider client={queryClient}>\n      <div className=\"container mx-auto p-4\">\n        <header className=\"flex justify-between items-center mb-6\">\n          <h1 className=\"text-2xl font-bold\">Task Calendar</h1>\n          <TaskCreationContainer />\n        </header>\n        <main>\n          <TaskCalendar />\n        </main>\n      </div>\n    </QueryClientProvider>\n  );\n};\n\n// Update the task creation mutation to include optimistic updates\nconst createTaskMutation = useMutation({\n  mutationFn: taskService.createTask,\n  onMutate: async (newTask) => {\n    // Cancel any outgoing refetches\n    await queryClient.cancelQueries({ queryKey: ['tasks', newTask.date] });\n    \n    // Snapshot the previous value\n    const previousTasks = queryClient.getQueryData(['tasks', newTask.date]);\n    \n    // Optimistically update to the new value\n    queryClient.setQueryData(['tasks', newTask.date], old => {\n      return [...(old || []), { ...newTask, id: 'temp-id-' + Date.now() }];\n    });\n    \n    return { previousTasks };\n  },\n  onError: (err, newTask, context) => {\n    // If the mutation fails, use the context returned from onMutate to roll back\n    queryClient.setQueryData(['tasks', newTask.date], context.previousTasks);\n  },\n  onSettled: (data, error, variables) => {\n    // Always refetch after error or success to ensure cache is in sync with server\n    queryClient.invalidateQueries({ queryKey: ['tasks', variables.date] });\n  },\n});\n```",
+        "testStrategy": "1. Test that adding a task immediately updates the calendar\n2. Verify optimistic updates work correctly\n3. Test error recovery when a task creation fails\n4. Check that the calendar day indicators update correctly\n5. Test with network delays to ensure good UX during slow connections",
+        "priority": "low",
+        "dependencies": [
+          7,
+          8,
+          9
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Set Up Query Cache Invalidation",
+            "description": "Configure the query client to invalidate relevant queries after mutations to ensure the UI reflects the latest server state.",
+            "dependencies": [],
+            "details": "Implement cache invalidation using the query client's invalidateQueries method after successful or failed mutations to keep data consistent across the app.",
+            "status": "pending"
+          },
+          {
+            "id": 2,
+            "title": "Implement Optimistic UI Updates",
+            "description": "Update the UI immediately in response to user actions before receiving server confirmation, providing a seamless experience.",
+            "dependencies": [
+              1
+            ],
+            "details": "Apply optimistic updates by updating local state or cache as soon as a mutation is triggered, and handle rollback if the server call fails.",
+            "status": "pending"
+          },
+          {
+            "id": 3,
+            "title": "Add Visual Feedback for Task Addition",
+            "description": "Provide immediate visual cues (e.g., loading indicators, temporary task items) when a user adds a new task.",
+            "dependencies": [
+              2
+            ],
+            "details": "Show a 'sending' or 'pending' status for new tasks until the server confirms the addition, and update the UI accordingly.",
+            "status": "pending"
+          },
+          {
+            "id": 4,
+            "title": "Update Calendar Indicators in Real-Time",
+            "description": "Ensure calendar UI elements reflect task changes instantly as tasks are added, updated, or removed.",
+            "dependencies": [
+              2
+            ],
+            "details": "Synchronize calendar indicators with the task list state, updating them optimistically and reconciling with server responses.",
+            "status": "pending"
+          },
+          {
+            "id": 5,
+            "title": "Handle Error Recovery for Failed Updates",
+            "description": "Implement robust error handling to revert optimistic updates and notify users if a server update fails.",
+            "dependencies": [
+              2
+            ],
+            "details": "Detect failed mutations, roll back optimistic changes, and display error messages or prompts to the user.",
+            "status": "pending"
+          },
+          {
+            "id": 6,
+            "title": "Test with Simulated Network Delays",
+            "description": "Simulate slow or unreliable network conditions to verify the resilience and responsiveness of optimistic UI updates.",
+            "dependencies": [
+              3,
+              4,
+              5
+            ],
+            "details": "Use tools or mock APIs to introduce artificial latency and observe UI behavior during pending and failed requests.",
+            "status": "pending"
+          },
+          {
+            "id": 7,
+            "title": "Write Integration Tests for Real-Time Updates",
+            "description": "Develop automated tests to ensure real-time updates, cache invalidation, and error recovery work as intended.",
+            "dependencies": [],
+            "details": "Create integration tests that cover optimistic updates, cache synchronization, visual feedback, and error handling under various scenarios.",
+            "status": "pending"
+          }
+        ]
+      }
+    ],
+    "metadata": {
+      "created": "2025-06-21T18:06:16.571Z",
+      "updated": "2025-06-21T18:06:16.571Z",
+      "description": "Tasks for master context"
+    }
+  }
+}

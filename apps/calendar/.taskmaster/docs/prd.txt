@@ -1,0 +1,10 @@
+app is part of a monorepo- app needs to connect to database package- app needs to connect to design-system package
+- Shadcn components are imported from design system pkg
+
+Tech: react, tailwind, shadcn, tanstack
+
+I need to implement the following new features into my app:
+- User can add a task clicking the new task button
+- Task are added in a form in an overlay
+- Form connects to database package
+- Calendar updated to show tasks for that day after submission

@@ -26,7 +26,6 @@ export default defineConfig({
   optimizeDeps: {
     include: [
       "@turbo-with-tailwind-v4/design-system",
-      "@turbo-with-tailwind-v4/ui",
       '@turbo-with-tailwind-v4/database'
     ]
   },
