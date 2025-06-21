@@ -1,8 +1,11 @@
 import { Settings, Upload, Trash2, LogOut, Edit } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@turbo-with-tailwind-v4/design-system/card"
 import { Avatar, AvatarFallback } from "@turbo-with-tailwind-v4/design-system/avatar"
+import { useAuth } from "@turbo-with-tailwind-v4/database"
 
 export function SettingsPage() {
+  const { user } = useAuth();
+
   return (
     <div className="min-h-screen bg-app">
       <div className="max-w-2xl mx-auto p-6">
@@ -50,13 +53,12 @@ export function SettingsPage() {
             <CardContent className="space-y-4">
               <div>
                 <label className="text-sm text-secondary block mb-2">Name</label>
-                <div className="settings-input">Eric Nichols</div>
+                <div className="settings-input">{user?.user_metadata.name}</div>
               </div>
               <div>
                 <label className="text-sm text-secondary block mb-2">
-                  Email <span className="text-muted">(Managed by Google)</span>
+                  Email <span className="settings-input">{user?.email}</span>
                 </label>
-                <div className="settings-input">ebn646@gmail.com</div>
               </div>
             </CardContent>
           </Card>

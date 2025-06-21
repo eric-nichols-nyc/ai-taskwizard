@@ -10,9 +10,8 @@ export default defineConfig({
     name: "settings",
     filename: 'remoteEntry.js',
     exposes: {
-      "./App": "./src/App.tsx",
-      "./Settings": "./src/Settings.tsx"
-    },
+      "./App": "./src/App.tsx"
+        },
     shared: ['react', 'react-dom']
   })],
   resolve: {
@@ -22,9 +21,7 @@ export default defineConfig({
   },
   optimizeDeps: {
     include: [
-      "@turbo-with-tailwind-v4/design-system",
-      "@turbo-with-tailwind-v4/ui"
-    ]
+      "@turbo-with-tailwind-v4/design-system"]
   },
   build: {
     modulePreload: false,
@@ -33,9 +30,7 @@ export default defineConfig({
     cssCodeSplit: false,
     rollupOptions: {
       external: [
-        "@turbo-with-tailwind-v4/design-system",
-        "@turbo-with-tailwind-v4/ui"
-      ]
+        "@turbo-with-tailwind-v4/design-system"]
     }
   },
   server: {
