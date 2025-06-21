@@ -15,7 +15,6 @@ export function AuthProvider({
     children: React.ReactNode
     isHost?: boolean
   }) {
-    console.log('AuthProvider Rendered')
   const [user, setUser] = useState<User | null>(null)
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
@@ -116,7 +115,6 @@ export function AuthProvider({
       timestamp: Date.now()
     }
     
-    console.log('Host: Broadcasting auth state:', message)
     
     if (targetWindow) {
       // Send to specific window
