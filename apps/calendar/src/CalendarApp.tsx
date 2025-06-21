@@ -12,10 +12,12 @@ interface Task {
   user_id: string;
   // ...other fields as needed
 }
-
+const IS_DEV = window.location.href.includes(
+  import.meta.env.VITE_DEV_URL
+);
 // Initialize Supabase client once, outside the component
 let supabaseClient: SupabaseClient | undefined = undefined;
-if (typeof window !== 'undefined' && window.location.href.includes('http://localhost:3002')) {
+if (typeof window !== 'undefined' && window.location.href.includes(import.meta.env.VITE_DEV_URL)) {
   supabaseClient = supabase;
 }
 
@@ -29,6 +31,7 @@ export const CalendarApp: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const[userId, setUserId] = useState<string | undefined>(undefined);
   useEffect(() => {
+    console.log('IS_DEV', IS_DEV);
     if (user) {
       setUserId(user.id);
     }
@@ -40,7 +43,7 @@ export const CalendarApp: React.FC = () => {
   }, [currentDate, userId]);
 
   useEffect(() => {
-    if (window.location.href.includes('http://localhost:3002') && supabaseClient) {
+    if (window.location.href.includes(import.meta.env.VITE_DEV_URL) && supabaseClient) {
       async function maybeSignInWithGoogle() {
         const { data: { session } } = await supabaseClient!.auth.getSession();
         // get the user id from the session
@@ -179,7 +182,7 @@ export const CalendarApp: React.FC = () => {
               className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
             >
               <Plus className="w-4 h-4" />
-              <span>Add Event</span>
+              <span>Add Task</span>
             </button>
           </div>
         </div>
