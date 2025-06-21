@@ -238,7 +238,7 @@
           1,
           4
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
@@ -246,7 +246,7 @@
             "description": "Create the foundational UI components for the modal overlay, including the modal container, header, body, and background overlay elements.",
             "dependencies": [],
             "details": "Ensure the modal structure includes a translucent background, a header for context, and a content area. Follow best practices for modal anatomy, such as appropriate sizing and placement on the screen.",
-            "status": "pending"
+            "status": "done"
           },
           {
             "id": 2,
@@ -256,7 +256,7 @@
               1
             ],
             "details": "Implement logic for opening and closing the modal via buttons, clicking outside the modal, and pressing the Escape key. Ensure there are clear escape hatches for users to dismiss the modal.",
-            "status": "pending"
+            "status": "done"
           },
           {
             "id": 3,
@@ -266,7 +266,7 @@
               1
             ],
             "details": "Style the modal with appropriate colors, spacing, and typography. Ensure the overlay uses a lightbox effect to focus attention and that the modal size and location follow best practices.",
-            "status": "pending"
+            "status": "done"
           },
           {
             "id": 4,
@@ -276,7 +276,7 @@
               2
             ],
             "details": "Implement focus trap so keyboard users cannot interact with background content. Ensure the modal receives focus when opened and can be closed with the Escape key. Add ARIA roles and labels for screen readers.",
-            "status": "pending"
+            "status": "done"
           },
           {
             "id": 5,
@@ -303,7 +303,7 @@
           2,
           5
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,

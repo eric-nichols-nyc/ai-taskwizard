@@ -4,7 +4,7 @@ import { Button } from '@turbo-with-tailwind-v4/design-system/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@turbo-with-tailwind-v4/design-system/dialog';
 import { supabase, useAuth, signInWithGoogle } from '@turbo-with-tailwind-v4/database';
 import type { SupabaseClient, User } from '@supabase/supabase-js';
-
+import { useAddTask } from '@turbo-with-tailwind-v4/database/use-tasks';
 // Debug: Log environment variables
 // Types
 interface Task {
@@ -15,20 +15,52 @@ interface Task {
   // ...other fields as needed
 }
 
-const TaskForm: React.FC<{ onCancel: () => void; onSubmit: () => void }> = ({ onCancel, onSubmit }) => {
+const TaskForm: React.FC<{
+  onCancel: () => void;
+  onSubmit: (data: { title: string }) => void;
+  isSubmitting: boolean;
+  error: string | null;
+}> = ({ onCancel, onSubmit, isSubmitting, error }) => {
+  const [title, setTitle] = React.useState('');
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log('Attempting to handle submit...');
+    try {
+      if (title.trim()) {
+        console.log('Submitting data:', { title });
+        onSubmit({ title });
+        console.log('onSubmit prop called successfully.');
+      } else {
+        console.warn('Submission prevented: title is empty.');
+      }
+    } catch (err) {
+      console.error('Error in handleSubmit:', err);
+    }
+  };
+
   return (
-    <form onSubmit={(e) => { e.preventDefault(); onSubmit(); }}>
+    <form onSubmit={handleSubmit}>
       <div className="grid gap-4 py-4">
         <div className="grid grid-cols-4 items-center gap-4">
           <label htmlFor="title" className="text-right">
             Title
           </label>
-          <input id="title" placeholder="Enter task" className="col-span-3 p-2 border rounded" />
+          <input
+            id="title"
+            placeholder="Enter task title"
+            className="col-span-3 p-2 border rounded"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
         </div>
+        {error && <p className="col-span-4 text-red-500 text-sm text-center py-2">{error}</p>}
       </div>
       <DialogFooter>
-        <Button type="button" onClick={onCancel} className="px-4 py-2 bg-gray-200 rounded">Cancel</Button>
-        <Button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded">Add Task</Button>
+        <Button type="button" onClick={onCancel} className="px-4 py-2 bg-gray-200 rounded" disabled={isSubmitting}>Cancel</Button>
+        <Button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded" disabled={isSubmitting}>
+          {isSubmitting ? 'Adding...' : 'Add Task'}
+        </Button>
       </DialogFooter>
     </form>
   );
@@ -53,6 +85,7 @@ export const CalendarApp: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const[userId, setUserId] = useState<string | undefined>(undefined);
   const [isAddTaskDialogOpen, setIsAddTaskDialogOpen] = useState(false);
+  const addTaskMutation = useAddTask();
   useEffect(() => {
     console.log('IS_DEV', IS_DEV);
     if (user) {
@@ -274,11 +307,17 @@ export const CalendarApp: React.FC = () => {
               </DialogDescription>
             </DialogHeader>
             <TaskForm
-              onSubmit={() => {
-                console.log('Form submitted');
-                setIsAddTaskDialogOpen(false);
+              onSubmit={(data) => {
+                addTaskMutation.mutate(data, {
+                  onSuccess: () => {
+                    setIsAddTaskDialogOpen(false);
+                    fetchTasksForMonth();
+                  }
+                });
               }}
               onCancel={() => setIsAddTaskDialogOpen(false)}
+              isSubmitting={addTaskMutation.isPending}
+              error={addTaskMutation.error?.message || null}
             />
           </DialogContent>
         </Dialog>

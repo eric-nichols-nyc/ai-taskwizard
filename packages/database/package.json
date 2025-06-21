@@ -20,6 +20,10 @@
       "import": "./dist/task-service.js",
       "types": "./dist/task-service.d.ts"
     },
+    "./use-tasks": {
+      "import": "./dist/use-tasks.js",
+      "types": "./dist/use-tasks.d.ts"
+    },
     ".": {
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
