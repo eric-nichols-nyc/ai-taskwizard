@@ -98,8 +98,6 @@ export function Dashboard() {
           ) : user ? (
             <div className="flex flex-col items-center justify-center gap-4 w-full">
               <div>
-              <h1>Dashboard User: {IS_ISOLATED ? "Isolated" : "Host"}</h1>
-              <p>User ID: {user.id}</p>
               <p>Email: {user.email}</p>
               </div>
               <div className="w-full">

@@ -138,7 +138,6 @@ export const CalendarApp: React.FC = () => {
           user ? (
             <div>
               <div>Email: {user.email}</div>
-              <div>ID: {user.id}</div>
             </div>
           ) : (
             <div>No User Found</div>

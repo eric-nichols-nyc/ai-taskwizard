@@ -93,8 +93,8 @@ export const Sidebar = ({ variant = "sidebar", onClose }: SidebarProps) => {
     <div
       className={
         variant === "sidebar"
-          ? "bg-background  h-full w-[230px] p-4 flex flex-col"
-          : "fixed inset-0 z-50 bg-background flex items-center justify-center"
+          ? "bg-background h-full w-[256px] p-4 flex flex-col border-r border-gray-700"
+          : "fixed inset-0 z-50 bg-background/80 flex items-center justify-center"
       }
     >
       <div
@@ -146,7 +146,7 @@ export const Sidebar = ({ variant = "sidebar", onClose }: SidebarProps) => {
           <>
             <div className="flex-grow" />
             {/* User Profile */}
-            <div className="px-4 py-2 flex items-center gap-3">
+            <Link to="/settings" className="px-4 py-2 flex items-center gap-3 hover:bg-gray-800 hover:scale-[1.02] transition-all rounded-lg">
               <div className="flex-shrink-0 w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white text-base leading-none">
                 {user?.email?.charAt(0).toUpperCase()}
               </div>
@@ -155,7 +155,7 @@ export const Sidebar = ({ variant = "sidebar", onClose }: SidebarProps) => {
                   {user?.email}
                 </span>
               </div>
-            </div>
+            </Link>
           </>
         )}
       </div>
