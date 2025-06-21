@@ -2,9 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Calendar, Plus } from 'lucide-react';
 import { Button } from '@turbo-with-tailwind-v4/design-system/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@turbo-with-tailwind-v4/design-system/dialog';
-import { supabase, useAuth, signInWithGoogle } from '@turbo-with-tailwind-v4/database';
-import type { SupabaseClient, User } from '@supabase/supabase-js';
+import { supabase, useAuth, signInWithEmail } from '@turbo-with-tailwind-v4/database';
+import type { User } from '@supabase/supabase-js';
 import { useAddTask } from '@turbo-with-tailwind-v4/database/use-tasks';
+
+console.log('[Calendar App] Environment:', import.meta.env);
+
 // Debug: Log environment variables
 // Types
 interface Task {
@@ -66,15 +69,6 @@ const TaskForm: React.FC<{
   );
 };
 
-const IS_DEV = window.location.href.includes(
-  import.meta.env.VITE_DEV_URL
-);
-// Initialize Supabase client once, outside the component
-let supabaseClient: SupabaseClient | undefined = undefined;
-if (typeof window !== 'undefined' && window.location.href.includes(import.meta.env.VITE_DEV_URL)) {
-  supabaseClient = supabase;
-}
-
 export const CalendarApp: React.FC = () => {
   const auth = useAuth();
   const user: User | null | undefined = auth?.user;
@@ -87,46 +81,47 @@ export const CalendarApp: React.FC = () => {
   const [isAddTaskDialogOpen, setIsAddTaskDialogOpen] = useState(false);
   const addTaskMutation = useAddTask();
   useEffect(() => {
-    console.log('IS_DEV', IS_DEV);
     if (user) {
       setUserId(user.id);
     }
   }, [user]);
 
   useEffect(() => {
-    fetchTasksForMonth();
+    if (userId) {
+      console.log('** User id found', userId);
+      fetchTasksForMonth();
+    } else {
+      console.log('** No user id found', userId);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentDate, userId]);
 
   useEffect(() => {
-    if (IS_DEV && supabaseClient) {
-      async function maybeSignInWithGoogle() {
+    if (import.meta.env.MODE === 'development') {
+      async function maybeSignIn() {
         try {
-          const session = await signInWithGoogle();
-          setUserId(session?.user?.id);
-          console.log('user from session data', userId);
+          const sessionData = await signInWithEmail();
+          setUserId(sessionData?.user?.id);
+          console.log('Dev sign-in successful, user from session data:', sessionData?.user?.id);
         } catch (error) {
-          console.error('Error during Google sign-in:', error);
+          console.error('Error during dev sign-in:', error);
         }
       }
-      maybeSignInWithGoogle();
+      maybeSignIn();
     }
-  }, [supabaseClient]);
+  }, []);
 
   // Fetch all tasks for the current month
   const fetchTasksForMonth = async (): Promise<void> => {
-    if (!userId) {
-      console.log('No user id found');
-      return;
-    }
-    if (!supabaseClient) return;
+    console.log('** Fetching tasks for month', userId);
+    if (!supabase) return;
     const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
     const endOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
     const startDateStr = startOfMonth.toISOString().split('T')[0];
     const endDateStr = endOfMonth.toISOString().split('T')[0];
     console.log('[Calendar] Fetching tasks for', { userId, startDateStr, endDateStr });
     try {
-      const { data, error } = await supabaseClient
+      const { data, error } = await supabase
         .from('tasks')
         .select('*')
         .eq('user_id', userId)

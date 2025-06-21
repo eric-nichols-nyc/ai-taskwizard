@@ -1,7 +1,7 @@
 export { AuthProvider } from './AuthProvider'
 export { useAuth } from './useAuth'
 export { SignIn } from './sign-in'
-export { devSignIn } from './devSignIn'
+export { signInWithEmail } from './signInWithEmail'
 export { signInWithGoogle } from './signInWithGoogle'
 export { CardSchema } from './schemas'
 export { supabase } from './supabaseClient'

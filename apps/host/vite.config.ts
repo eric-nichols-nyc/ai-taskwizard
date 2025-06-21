@@ -36,22 +36,17 @@ export default defineConfig(({ mode }) => {
         },
         shared: ['react',
           'react-dom',
-          '@tanstack/react-query',
-          '@tanstack/react-query-devtools',
-          '@turbo-with-tailwind-v4/database'
         ]
       })
     ],
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "./src"),
-        "@turbo-with-tailwind-v4/database": path.resolve(__dirname, "../../packages/database/src"),
       },
     },
     optimizeDeps: {
       include: [
         "@turbo-with-tailwind-v4/design-system",
-        "@turbo-with-tailwind-v4/ui",
         '@turbo-with-tailwind-v4/database'
       ]
     },
