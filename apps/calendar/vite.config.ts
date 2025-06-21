@@ -12,7 +12,11 @@ export default defineConfig({
       "./App": "./src/App.tsx",
       "./CalendarApp": "./src/CalendarApp.tsx"
     },
-    shared: ['react', 'react-dom']
+    shared: [
+      'react',
+      'react-dom',
+      '@turbo-with-tailwind-v4/database'
+    ]
   })],
   resolve: {
     alias: {
@@ -22,7 +26,8 @@ export default defineConfig({
   optimizeDeps: {
     include: [
       "@turbo-with-tailwind-v4/design-system",
-      "@turbo-with-tailwind-v4/ui"
+      "@turbo-with-tailwind-v4/ui",
+      '@turbo-with-tailwind-v4/database'
     ]
   },
   build: {
@@ -33,7 +38,8 @@ export default defineConfig({
     rollupOptions: {
       external: [
         "@turbo-with-tailwind-v4/design-system",
-        "@turbo-with-tailwind-v4/ui"
+        "@turbo-with-tailwind-v4/ui",
+        '@turbo-with-tailwind-v4/database'
       ]
     }
   },

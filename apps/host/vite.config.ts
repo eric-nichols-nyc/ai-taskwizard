@@ -34,7 +34,12 @@ export default defineConfig(({ mode }) => {
           focus: focusRemote,
           settings: settingsRemote
         },
-        shared: ['react', 'react-dom']
+        shared: ['react',
+          'react-dom',
+          '@tanstack/react-query',
+          '@tanstack/react-query-devtools',
+          '@turbo-with-tailwind-v4/database'
+        ]
       })
     ],
     resolve: {
@@ -46,7 +51,8 @@ export default defineConfig(({ mode }) => {
     optimizeDeps: {
       include: [
         "@turbo-with-tailwind-v4/design-system",
-        "@turbo-with-tailwind-v4/ui"
+        "@turbo-with-tailwind-v4/ui",
+        '@turbo-with-tailwind-v4/database'
       ]
     },
     build: {
@@ -58,7 +64,8 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         external: [
           "@turbo-with-tailwind-v4/design-system",
-          "@turbo-with-tailwind-v4/ui"
+          "@turbo-with-tailwind-v4/ui",
+          '@turbo-with-tailwind-v4/database'
         ]
       }
     },
