@@ -2,9 +2,13 @@ import { Settings, Upload, Trash2, LogOut, Edit } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@turbo-with-tailwind-v4/design-system/card"
 import { Avatar, AvatarFallback } from "@turbo-with-tailwind-v4/design-system/avatar"
 import { useAuth } from "@turbo-with-tailwind-v4/database"
-
 export function SettingsPage() {
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
+
+  const handleSignOut = async () => {
+    await signOut();
+    window.location.href = "/";
+  }
 
   return (
     <div className="min-h-screen bg-app">
@@ -69,7 +73,7 @@ export function SettingsPage() {
               <CardTitle className="text-primary">Account Actions</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              <button className="settings-button-secondary w-full justify-start flex items-center">
+              <button onClick={handleSignOut} className="cursor-pointer settings-button-secondary w-full justify-start flex items-center">
                 <LogOut className="w-4 h-4 mr-2" />
                 Sign Out
               </button>
