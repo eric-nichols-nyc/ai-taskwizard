@@ -57,3 +57,6 @@ node_modules/
 
 # Taskmaster
 **/.taskmaster/reports/
+
+# Cursor
+**/.cursor/mcp.json
