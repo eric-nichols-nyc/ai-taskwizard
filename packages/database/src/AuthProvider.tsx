@@ -19,6 +19,7 @@ export function AuthProvider({
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
 
+
   useEffect(() => {
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -147,6 +148,7 @@ export function AuthProvider({
       })
       
       if (error) {
+        console.error("Sign in error:", error)
         return { error: error.message }
       }
       
