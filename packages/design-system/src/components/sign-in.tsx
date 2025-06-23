@@ -54,8 +54,8 @@ export function SignIn({ onSignIn, onSignUp }: SignInProps) {
   }
 
   return (
-    <div className="flex items-center justify-center">
-      <Card className={`${activeTab === "signin" ? "w-[448px]" : "w-[448px]"}`}>
+    <div className="flex items-center justify-center min-h-screen px-4">
+      <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl text-center">Welcome to Task Wizard</CardTitle>
           <CardDescription className="text-center">Sign in to your account or create a new one</CardDescription>
