@@ -1,21 +1,14 @@
-import { useEffect, useState } from 'react';
 import { Button } from '@turbo-with-tailwind-v4/ui/button';
 import { motion } from 'motion/react';
 import { Zap } from 'lucide-react';
 import { useRouter } from '@tanstack/react-router';
+import { useAuth } from '@turbo-with-tailwind-v4/database';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function Header() {
   // Simulate fetching user (replace with real auth logic)
-  const [user, setUser] = useState<unknown>(null);
+  const { user } = useAuth();
   const router = useRouter();
 
-  useEffect(() => {
-    // Simulate async user fetch
-    setTimeout(() => {
-      // setUser({ name: 'Test User' }); // Uncomment to simulate logged in
-      setUser(null); // Simulate not logged in
-    }, 100);
-  }, []);
 
   return (
     <motion.header

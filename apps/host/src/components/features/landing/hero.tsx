@@ -2,8 +2,10 @@ import { Button } from '@turbo-with-tailwind-v4/ui/button';
 import { motion } from "motion/react"
 import { useRouter } from '@tanstack/react-router';
 import { Header } from '../../header';
+import { useAuth } from '@turbo-with-tailwind-v4/database';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function Hero() {
+  const { user } = useAuth();
   const router = useRouter();
   return (
     <>
@@ -61,10 +63,10 @@ export function Hero() {
         >
           <Button
             size="lg"
-            onClick={() => router.navigate({ to: '/login' })}
+            onClick={() => router.navigate({ to: user ? '/dashboard' : '/login' })}
             className="cursor-pointer bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-4 rounded-full text-lg font-semibold shadow-2xl hover:shadow-purple-500/25 transition-all duration-300 transform hover:scale-105"
           >
-            Start Now
+            {user ? 'Go to Dashboard' : 'Start Now'}
           </Button>
         </motion.div>
 
