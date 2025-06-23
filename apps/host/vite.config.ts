@@ -1,6 +1,7 @@
 import path from "path"
 import react from "@vitejs/plugin-react"
 import federation from "@originjs/vite-plugin-federation"
+import tailwindcss from "@tailwindcss/vite"
 import { defineConfig, loadEnv } from "vite"
 
 
@@ -25,6 +26,7 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [
       react(),
+      tailwindcss(),
       federation({
         name: 'host',
         remotes: {

@@ -15,7 +15,8 @@ export default defineConfig({
     shared: [
       'react',
       'react-dom',
-      '@turbo-with-tailwind-v4/database'
+      '@turbo-with-tailwind-v4/database',
+      '@turbo-with-tailwind-v4/design-system'
     ]
   })],
   resolve: {
@@ -36,9 +37,7 @@ export default defineConfig({
     cssCodeSplit: false,
     rollupOptions: {
       external: [
-        "@turbo-with-tailwind-v4/design-system",
-        "@turbo-with-tailwind-v4/ui",
-        '@turbo-with-tailwind-v4/database'
+        "@turbo-with-tailwind-v4/ui"
       ]
     }
   },

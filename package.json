@@ -6,15 +6,15 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "turbo run build",
-    "preview": "turbo run preview",
+    "build": "turbo run build --concurrency=15",
+    "preview": "turbo run preview --concurrency=15",
     "build:dashboard": "turbo run build --filter=dashboard...",
     "build:host": "turbo run build --filter=host...",
     "build:calendar": "turbo run build --filter=calendar...",
     "build:notes": "turbo run build --filter=notes...",
     "build:focus": "turbo run build --filter=focus...",
     "build:settings": "turbo run build --filter=settings...",
-    "dev": "turbo run dev",
+    "dev": "turbo run dev --concurrency=15",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types",

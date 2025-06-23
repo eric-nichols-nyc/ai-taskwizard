@@ -11,8 +11,8 @@ import {
   CheckCircle,
   Circle
 } from 'lucide-react';
-
-const TechnicalArchitecture = () => {
+import { Header } from '../../header';
+export const TechnicalArchitecture = () => {
   const [activeSection, setActiveSection] = useState('overview');
   const [serviceStatus, setServiceStatus] = useState({
     host: 'online',
@@ -123,7 +123,9 @@ const TechnicalArchitecture = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-8">
+    <div className="flex flex-col min-h-screen bg-gray-900 text-white w-full">
+      <Header />
+    <div className="min-h-screen bg-gray-900 text-white p-8 w-full">
       <div className="max-w-7xl mx-auto">
         
         {/* Header */}
@@ -142,19 +144,17 @@ const TechnicalArchitecture = () => {
             demonstrating enterprise-level engineering practices and cutting-edge technology.
           </p>
         </div>
+        
 
         {/* Architecture Diagram */}
         <div className="mb-16">
           <h3 className="text-2xl font-bold mb-8 text-center">Live Microfrontend Architecture</h3>
           
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
-            {microfrontends.map((service, index) => (
-              <div key={service.name} className="relative">
+          <div className="flex flex-wrap gap-4 mb-8 justify-center">
+            {microfrontends.map((service) => (
+              <div key={service.name} className="relative flex-1 min-w-[23  0px] max-w-xs">
                 {/* Connection Lines */}
-                {index > 0 && (
-                  <div className="absolute -left-2 top-1/2 w-4 h-px bg-gradient-to-r from-purple-500/50 to-transparent hidden md:block"></div>
-                )}
-                
+                {/* Removed for flex layout */}
                 <div className="bg-gray-800 border border-gray-700 rounded-lg p-4 hover:border-purple-500/50 transition-all duration-300">
                   <div className="flex items-center justify-between mb-3">
                     <div className="text-sm font-medium text-purple-400">:{service.port}</div>
@@ -341,9 +341,8 @@ const TechnicalArchitecture = () => {
           </p>
         </div>
 
+        </div>
       </div>
     </div>
   );
 };
-
-export default TechnicalArchitecture;

@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { RouterProvider } from '@tanstack/react-router';
 import { router } from './router';
-import './index.css';
+//import './index.css';
 
 // Add global error handler for better debugging
 window.addEventListener('error', (event) => {

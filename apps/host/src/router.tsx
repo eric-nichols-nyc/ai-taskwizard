@@ -3,13 +3,13 @@ import { Root } from './Root';
 import { Dashboard } from './pages/Dashboard';
 //import { Notes } from './pages/Notes';
 import { Calendar } from './pages/Calendar';
-import { Friends } from './pages/Friends';
 // import { Community } from './pages/Community';
 // import { FocusMode } from './pages/FocusMode';
 // import { AIAssistant } from './pages/AIAssistant';
 import { Settings } from './pages/Settings';
 import { Login } from './pages/Login';
 import { Landing } from './pages/Landing';
+import { TechnicalArchitecture } from './components/features/technical/technical-architecure';
 
 // Define routes
 const rootRoute = createRootRoute({
@@ -47,10 +47,10 @@ const calendarRoute = createRoute({
   component: Calendar,
 });
 
-const friendsRoute = createRoute({
+const engineeringDeepDiveRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/friends',
-  component: Friends,
+  path: '/engineering-deep-dive',
+  component: TechnicalArchitecture,
 });
 
 // const communityRoute = createRoute({
@@ -83,7 +83,7 @@ export const routeTree = rootRoute.addChildren([
   dashboardRoute,
  // notesRoute,
   calendarRoute,
-  friendsRoute,
+  engineeringDeepDiveRoute,
   //communityRoute,
   //focusModeRoute,
   ///aiAssistantRoute,
