@@ -11,9 +11,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@turbo-with-tailwind-v
 interface SignInProps {
   onSignIn?: (email: string, password: string) => Promise<void>;
   onSignUp?: (name: string, email: string, password: string) => Promise<void>;
+  error?: string | null;
 }
 
-export function SignIn({ onSignIn, onSignUp }: SignInProps) {
+export function SignIn({ onSignIn, onSignUp, error }: SignInProps) {
   console.log("SignInComponent");
   const [isLoading, setIsLoading] = useState(false)
   const [activeTab, setActiveTab] = useState("signin")
@@ -68,6 +69,11 @@ export function SignIn({ onSignIn, onSignUp }: SignInProps) {
             </TabsList>
 
             <TabsContent value="signin" className="space-y-4 mt-4">
+              {error && (
+                <div className="text-red-500 text-center text-sm mb-2">
+                  {error}
+                </div>
+              )}
               <form onSubmit={handleSignIn} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="signin-email">Email</Label>
