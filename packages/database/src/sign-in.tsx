@@ -22,10 +22,10 @@ export function SignIn() {
     }
   };
 
-  const handleSignUp = async (name: string, email: string, password: string) => {
+  const handleSignUp = async (firstName: string, lastName: string, email: string, password: string) => {
     setError(null);
     try {
-      const result = await signUp(email, password, { firstName: name });
+      const result = await signUp(email, password, { firstName, lastName });
       if (!result.error) {
         window.location.href = "/";
       } else {

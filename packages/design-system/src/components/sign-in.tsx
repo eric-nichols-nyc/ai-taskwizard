@@ -7,17 +7,26 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@turb
 import { Input } from "@turbo-with-tailwind-v4/design-system/components/ui/input"
 import { Label } from "@turbo-with-tailwind-v4/design-system/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@turbo-with-tailwind-v4/design-system/components/ui/tabs"
+import { z } from "zod"
 
 interface SignInProps {
   onSignIn?: (email: string, password: string) => Promise<void>;
-  onSignUp?: (name: string, email: string, password: string) => Promise<void>;
+  onSignUp?: (firstName: string, lastName: string, email: string, password: string) => Promise<void>;
   error?: string | null;
 }
+
+const signUpSchema = z.object({
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});
 
 export function SignIn({ onSignIn, onSignUp, error }: SignInProps) {
   console.log("SignInComponent");
   const [isLoading, setIsLoading] = useState(false)
   const [activeTab, setActiveTab] = useState("signin")
+  const [signUpErrors, setSignUpErrors] = useState<string[]>([])
 
   const handleSignIn = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -39,14 +48,23 @@ export function SignIn({ onSignIn, onSignUp, error }: SignInProps) {
   const handleSignUp = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setIsLoading(true)
+    setSignUpErrors([])
 
     try {
       const formData = new FormData(event.currentTarget)
-      const name = formData.get("signup-name") as string
+      const firstName = formData.get("signup-first-name") as string
+      const lastName = formData.get("signup-last-name") as string
       const email = formData.get("signup-email") as string
       const password = formData.get("signup-password") as string
 
-      await onSignUp?.(name, email, password)
+      const result = signUpSchema.safeParse({ firstName, lastName, email, password });
+      if (!result.success) {
+        setSignUpErrors(result.error.errors.map(e => e.message));
+        setIsLoading(false);
+        return;
+      }
+
+      await onSignUp?.(firstName, lastName, email, password)
     } catch (error) {
       console.error("Sign up error:", error)
     } finally {
@@ -111,10 +129,21 @@ export function SignIn({ onSignIn, onSignUp, error }: SignInProps) {
             </TabsContent>
 
             <TabsContent value="signup" className="space-y-4 mt-4">
+              {signUpErrors.length > 0 && (
+                <div className="text-red-500 text-center text-sm mb-2">
+                  {signUpErrors.map((err, idx) => (
+                    <div key={idx}>{err}</div>
+                  ))}
+                </div>
+              )}
               <form onSubmit={handleSignUp} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="signup-name">Full Name</Label>
-                  <Input id="signup-name" name="signup-name" type="text" placeholder="Enter your full name" required />
+                  <Label htmlFor="signup-first-name">First Name</Label>
+                  <Input id="signup-first-name" name="signup-first-name" type="text" placeholder="Enter your first name" required />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="signup-last-name">Last Name</Label>
+                  <Input id="signup-last-name" name="signup-last-name" type="text" placeholder="Enter your last name" required />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="signup-email">Email</Label>
@@ -127,16 +156,6 @@ export function SignIn({ onSignIn, onSignUp, error }: SignInProps) {
                     name="signup-password"
                     type="password"
                     placeholder="Create a password"
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="signup-confirm-password">Confirm Password</Label>
-                  <Input
-                    id="signup-confirm-password"
-                    name="signup-confirm-password"
-                    type="password"
-                    placeholder="Confirm your password"
                     required
                   />
                 </div>

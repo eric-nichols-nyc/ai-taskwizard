@@ -92,7 +92,7 @@ export function Dashboard() {
   }
 
   return (
-      <div className="dark flex flex-col items-center justify-center gap-4 w-[600px] mx-auto">
+      <div className="dark flex flex-col items-center justify-center gap-4 w-full lg:w-[600px] mx-auto p-3">
           {loadingSession ? (
             "Loading..."
           ) : user ? (
