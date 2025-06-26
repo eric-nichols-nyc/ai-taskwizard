@@ -82,6 +82,8 @@ export const CalendarApp: React.FC = () => {
   const[userId, setUserId] = useState<string | undefined>(undefined);
   const [isAddTaskDialogOpen, setIsAddTaskDialogOpen] = useState(false);
   const addTaskMutation = useAddTask();
+  const [view, setView] = useState<'month' | 'week'>('week');
+
   useEffect(() => {
     if (user) {
       setUserId(user.id);
@@ -181,62 +183,118 @@ export const CalendarApp: React.FC = () => {
     });
   };
 
+  // Helper to get week dates (Monday to Sunday)
+  const getWeekDates = (date: Date): Date[] => {
+    const week: Date[] = [];
+    const dayOfWeek = date.getDay(); // 0 = Sunday, 1 = Monday, ...
+    // Calculate Monday
+    const monday = new Date(date);
+    monday.setDate(date.getDate() - ((dayOfWeek + 6) % 7));
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(monday);
+      d.setDate(monday.getDate() + i);
+      week.push(d);
+    }
+    return week;
+  };
+
+  // Week navigation
+  const navigateWeek = (direction: number): void => {
+    setCurrentDate(prev => {
+      const newDate = new Date(prev);
+      newDate.setDate(prev.getDate() + direction * 7);
+      return newDate;
+    });
+  };
+
   return (
-      <div className="w-full mx-auto p-6">
-        {/* Header Component */}
-        {
-          user ? (
-            <div>
-              <div>Email: {user.email}</div>
-            </div>
-          ) : (
-            <div>No User Found</div>
-          )
-        }
-        <div className="flex items-center justify-between mb-6 pb-4 border-b">
-          <div className="flex items-center space-x-4">
-            <Calendar className="w-6 h-6 text-blue-600" />
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900 calendar-month-title">
-                {['January', 'February', 'March', 'April', 'May', 'June',
-                  'July', 'August', 'September', 'October', 'November', 'December'][currentDate.getMonth()]} {currentDate.getFullYear()}
-              </h1>
-              <p className="text-sm text-gray-600">
-                Today is {new Date().toLocaleDateString('en-US', {
-                  weekday: 'long',
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric'
-                })}
-              </p>
-            </div>
+    <div className="w-full mx-auto p-6">
+      {/* Header Component */}
+      {
+        user ? (
+          <div>
+            <div>Email: {user.email}</div>
           </div>
-          <div className="flex items-center space-x-3">
-            <Button
-              onClick={() => navigateMonth(-1)}
-              className="px-3 py-1 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded"
-            >
-              ←
-            </Button>
-            <button
-              onClick={() => navigateMonth(1)}
-              className="px-3 py-1 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded"
-            >
-              →
-            </button>
-            <Button
-              onClick={() => setIsAddTaskDialogOpen(true)}
-              className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              <Plus className="w-4 h-4" />
-              <span>Add Task</span>
-            </Button>
+        ) : (
+          <div>No User Found</div>
+        )
+      }
+      <div className="flex items-center justify-between mb-6 pb-4 border-b">
+        <div className="flex items-center space-x-4">
+          <Calendar className="w-6 h-6 text-blue-600" />
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900 calendar-month-title">
+              {view === 'month'
+                ? `${['January', 'February', 'March', 'April', 'May', 'June',
+                  'July', 'August', 'September', 'October', 'November', 'December'][currentDate.getMonth()]} ${currentDate.getFullYear()}`
+                : (() => {
+                    const weekDates = getWeekDates(currentDate);
+                    const start = weekDates[0];
+                    const end = weekDates[6];
+                    return `${start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${end.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
+                  })()
+              }
+            </h1>
+            <p className="text-sm text-gray-600">
+              Today is {new Date().toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              })}
+            </p>
           </div>
         </div>
-        {/* Calendar Body Component */}
-        <ErrorBoundary>
-          <div className="bg-card rounded-lg shadow">
-            {/* Day headers */}
+        <div className="flex items-center space-x-3">
+          {/* View toggle */}
+          <Button onClick={() => setView('week')} disabled={view === 'week'} className={view === 'week' ? 'bg-blue-600 text-white' : ''}>Week</Button>
+          <Button onClick={() => setView('month')} disabled={view === 'month'} className={view === 'month' ? 'bg-blue-600 text-white' : ''}>Month</Button>
+          {/* Navigation */}
+          {view === 'month' ? (
+            <>
+              <Button
+                onClick={() => navigateMonth(-1)}
+                className="px-3 py-1 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded"
+              >
+                ←
+              </Button>
+              <button
+                onClick={() => navigateMonth(1)}
+                className="px-3 py-1 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded"
+              >
+                →
+              </button>
+            </>
+          ) : (
+            <>
+              <Button
+                onClick={() => navigateWeek(-1)}
+                className="px-3 py-1 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded"
+              >
+                ←
+              </Button>
+              <button
+                onClick={() => navigateWeek(1)}
+                className="px-3 py-1 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded"
+              >
+                →
+              </button>
+            </>
+          )}
+          <Button
+            onClick={() => setIsAddTaskDialogOpen(true)}
+            className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Add Task</span>
+          </Button>
+        </div>
+      </div>
+      {/* Calendar Body Component */}
+      <ErrorBoundary>
+        {view === 'month' ? (
+          <div className="bg-card rounded-lg shadow h-full flex flex-col">
+            {/* Day headers - hidden on mobile */}
             <div className="hidden sm:grid grid-cols-1 sm:grid-cols-7 gap-px calendar-grid-gap calendar-header">
               {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day: string) => (
                 <div
@@ -248,18 +306,19 @@ export const CalendarApp: React.FC = () => {
               ))}
             </div>
             {/* Calendar days */}
-            <div className="grid grid-cols-1 sm:grid-cols-7 gap-px calendar-grid-gap">
+            <div className="grid grid-cols-1 sm:grid-cols-7 gap-px calendar-grid-gap flex-1 min-h-[400px]">
               {getDaysInMonth().map((date: Date | null, index: number) => {
                 const dayTasks: Task[] = getTasksForDate(date);
                 const isToday: boolean = !!date && date.toDateString() === new Date().toDateString();
                 return (
                   <div
                     key={index}
-                    className={`min-h-[60px] sm:min-h-[100px] md:min-h-[140px] p-1 sm:p-2 cursor-pointer transition-colors ${
+                    className={`min-h-[60px] sm:min-h-0 flex flex-col p-1 sm:p-2 cursor-pointer transition-colors ${
                       isToday
                         ? 'calendar-today'
                         : 'calendar-day'
                     }`}
+                    style={{height: '100%'}} // Ensure full height
                     onClick={() => {}} // Placeholder for event popover
                   >
                     {date && (
@@ -269,7 +328,7 @@ export const CalendarApp: React.FC = () => {
                         }`}>
                           {date.getDate()}
                         </div>
-                        <div className="flex flex-col gap-1">
+                        <div className="flex flex-col gap-1 flex-1">
                           {dayTasks.slice(0, 3).map((task: Task) => (
                             <div
                               key={task.id}
@@ -296,30 +355,80 @@ export const CalendarApp: React.FC = () => {
               })}
             </div>
           </div>
-        </ErrorBoundary>
-        <Dialog open={isAddTaskDialogOpen} onOpenChange={setIsAddTaskDialogOpen}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Add New Task</DialogTitle>
-              <DialogDescription>
-                Fill in the details below to add a new task to your calendar.
-              </DialogDescription>
-            </DialogHeader>
-            <TaskForm
-              onSubmit={(data) => {
-                addTaskMutation.mutate(data, {
-                  onSuccess: () => {
-                    setIsAddTaskDialogOpen(false);
-                    fetchTasksForMonth();
-                  }
-                });
-              }}
-              onCancel={() => setIsAddTaskDialogOpen(false)}
-              isSubmitting={addTaskMutation.isPending}
-              error={addTaskMutation.error?.message || null}
-            />
-          </DialogContent>
-        </Dialog>
-      </div>
+        ) : (
+          // Week view
+          <div className="bg-card rounded-lg shadow h-full flex flex-col">
+            {/* Day headers - hidden on mobile */}
+            <div className="hidden sm:grid grid-cols-1 sm:grid-cols-7 gap-px calendar-header">
+              {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => (
+                <div key={day} className="px-3 py-2 text-center text-sm font-medium calendar-header-day">
+                  {day}
+                </div>
+              ))}
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-7 gap-px calendar-grid-gap flex-1 min-h-[400px]">
+              {getWeekDates(currentDate).map((date, index) => {
+                const dayTasks = getTasksForDate(date);
+                const isToday = date.toDateString() === new Date().toDateString();
+                return (
+                  <div
+                    key={index}
+                    className={`min-h-[100px] sm:min-h-0 flex flex-col p-2 cursor-pointer transition-colors ${
+                      isToday ? 'calendar-today' : 'calendar-day'
+                    }`}
+                    style={{height: '100%'}} // Ensure full height
+                  >
+                    <div className="text-xs sm:text-sm font-medium mb-1">{date.getDate()}</div>
+                    <div className="flex flex-col gap-1 flex-1">
+                      {dayTasks.slice(0, 3).map((task) => (
+                        <div
+                          key={task.id}
+                          className="calendar-event w-full block rounded-md border-l-4 px-3 py-1 text-xs font-medium mb-1 text-white"
+                          style={{
+                            borderLeftColor: '#3B82F6',
+                            backgroundColor: 'rgba(19,19,22,0.7)',
+                            color: '#fff'
+                          }}
+                        >
+                          {task.title}
+                        </div>
+                      ))}
+                      {dayTasks.length > 3 && (
+                        <div className="text-xs text-gray-500 px-2">
+                          +{dayTasks.length - 3} more
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </ErrorBoundary>
+      <Dialog open={isAddTaskDialogOpen} onOpenChange={setIsAddTaskDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add New Task</DialogTitle>
+            <DialogDescription>
+              Fill in the details below to add a new task to your calendar.
+            </DialogDescription>
+          </DialogHeader>
+          <TaskForm
+            onSubmit={(data) => {
+              addTaskMutation.mutate(data, {
+                onSuccess: () => {
+                  setIsAddTaskDialogOpen(false);
+                  fetchTasksForMonth();
+                }
+              });
+            }}
+            onCancel={() => setIsAddTaskDialogOpen(false)}
+            isSubmitting={addTaskMutation.isPending}
+            error={addTaskMutation.error?.message || null}
+          />
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 };
