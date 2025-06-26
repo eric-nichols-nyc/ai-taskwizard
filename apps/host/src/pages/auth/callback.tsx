@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import { useAuth } from "@turbo-with-tailwind-v4/supabase"
+import { useAuth } from "@turbo-with-tailwind-v4/database"
 import { useRouter } from "@tanstack/react-router"
 
 export default function AuthCallback() {
@@ -13,5 +13,5 @@ export default function AuthCallback() {
     }
   }, [user, loading, router])
 
-  return <div>Verifying your email...</div>
+  return <div>Loading...</div>
 } 
