@@ -1151,6 +1151,9 @@ importers:
       tailwindcss:
         specifier: ^4.1.10
         version: 4.1.10
+      zod:
+        specifier: ^3.25.67
+        version: 3.25.67
     devDependencies:
       '@radix-ui/react-slot':
         specifier: ^1.2.0

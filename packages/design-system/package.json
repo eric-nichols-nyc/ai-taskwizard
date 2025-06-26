@@ -123,6 +123,7 @@
     "lucide-react": "^0.503.0",
     "postcss": "^8.5.3",
     "tailwind-merge": "^3.0.2",
-    "tailwindcss": "^4.1.10"
+    "tailwindcss": "^4.1.10",
+    "zod": "^3.25.67"
   }
 }
