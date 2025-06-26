@@ -1,17 +1,35 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState } from "react"
-import { Button } from "@turbo-with-tailwind-v4/design-system/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@turbo-with-tailwind-v4/design-system/components/ui/card"
-import { Input } from "@turbo-with-tailwind-v4/design-system/components/ui/input"
-import { Label } from "@turbo-with-tailwind-v4/design-system/components/ui/label"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@turbo-with-tailwind-v4/design-system/components/ui/tabs"
-import { z } from "zod"
+import type React from "react";
+import { useState } from "react";
+import { Button } from "@turbo-with-tailwind-v4/design-system/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@turbo-with-tailwind-v4/design-system/components/ui/card";
+import { Input } from "@turbo-with-tailwind-v4/design-system/components/ui/input";
+import { Label } from "@turbo-with-tailwind-v4/design-system/components/ui/label";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@turbo-with-tailwind-v4/design-system/components/ui/tabs";
+import { z } from "zod";
+import { Chrome } from "lucide-react";
 
 interface SignInProps {
   onSignIn?: (email: string, password: string) => Promise<void>;
-  onSignUp?: (firstName: string, lastName: string, email: string, password: string) => Promise<void>;
+  onSignUp?: (
+    firstName: string,
+    lastName: string,
+    email: string,
+    password: string
+  ) => Promise<void>;
+  onSignInWithProvider?: (provider: 'google') => Promise<void>;
   error?: string | null;
 }
 
@@ -22,70 +40,91 @@ const signUpSchema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
-export function SignIn({ onSignIn, onSignUp, error }: SignInProps) {
+export function SignIn({ onSignIn, onSignUp, onSignInWithProvider, error }: SignInProps) {
   console.log("SignInComponent");
-  const [isLoading, setIsLoading] = useState(false)
-  const [activeTab, setActiveTab] = useState("signin")
-  const [signUpErrors, setSignUpErrors] = useState<string[]>([])
+  const [isLoading, setIsLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState("signin");
+  const [signUpErrors, setSignUpErrors] = useState<string[]>([]);
 
   const handleSignIn = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    setIsLoading(true)
+    event.preventDefault();
+    setIsLoading(true);
 
     try {
-      const formData = new FormData(event.currentTarget)
-      const email = formData.get("signin-email") as string
-      const password = formData.get("signin-password") as string
+      const formData = new FormData(event.currentTarget);
+      const email = formData.get("signin-email") as string;
+      const password = formData.get("signin-password") as string;
 
-      await onSignIn?.(email, password)
+      await onSignIn?.(email, password);
     } catch (error) {
-      console.error("Sign in error:", error)
+      console.error("Sign in error:", error);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleSignUp = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    setIsLoading(true)
-    setSignUpErrors([])
+    event.preventDefault();
+    setIsLoading(true);
+    setSignUpErrors([]);
 
     try {
-      const formData = new FormData(event.currentTarget)
-      const firstName = formData.get("signup-first-name") as string
-      const lastName = formData.get("signup-last-name") as string
-      const email = formData.get("signup-email") as string
-      const password = formData.get("signup-password") as string
+      const formData = new FormData(event.currentTarget);
+      const firstName = formData.get("signup-first-name") as string;
+      const lastName = formData.get("signup-last-name") as string;
+      const email = formData.get("signup-email") as string;
+      const password = formData.get("signup-password") as string;
 
-      const result = signUpSchema.safeParse({ firstName, lastName, email, password });
+      const result = signUpSchema.safeParse({
+        firstName,
+        lastName,
+        email,
+        password,
+      });
       if (!result.success) {
-        setSignUpErrors(result.error.errors.map(e => e.message));
+        setSignUpErrors(result.error.errors.map((e) => e.message));
         setIsLoading(false);
         return;
       }
 
-      await onSignUp?.(firstName, lastName, email, password)
+      await onSignUp?.(firstName, lastName, email, password);
     } catch (error) {
-      console.error("Sign up error:", error)
+      console.error("Sign up error:", error);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
+
+  const handleGoogleSignIn = async () => {
+    if (onSignInWithProvider) {
+      await onSignInWithProvider('google');
+    } else {
+      console.log("Google Sign In");
+    }
+  };
 
   return (
     <div className="flex items-center justify-center min-h-screen px-4">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl text-center">Welcome to Task Wizard</CardTitle>
-          <CardDescription className="text-center">Sign in to your account or create a new one</CardDescription>
+          <CardTitle className="text-2xl text-center">
+            Welcome to Task Wizard
+          </CardTitle>
+          <CardDescription className="text-center">
+            Sign in to your account or create a new one
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <Tabs
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className="w-full"
+          >
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="signin">Sign In</TabsTrigger>
               <TabsTrigger value="signup">Sign Up</TabsTrigger>
             </TabsList>
-
+          {/* Sign In Tab */}
             <TabsContent value="signin" className="space-y-4 mt-4">
               {error && (
                 <div className="text-red-500 text-center text-sm mb-2">
@@ -95,7 +134,13 @@ export function SignIn({ onSignIn, onSignUp, error }: SignInProps) {
               <form onSubmit={handleSignIn} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="signin-email">Email</Label>
-                  <Input id="signin-email" name="signin-email" type="email" placeholder="Enter your email" required />
+                  <Input
+                    id="signin-email"
+                    name="signin-email"
+                    type="email"
+                    placeholder="Enter your email"
+                    required
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="signin-password">Password</Label>
@@ -111,10 +156,25 @@ export function SignIn({ onSignIn, onSignUp, error }: SignInProps) {
                   {isLoading ? "Signing in..." : "Sign In"}
                 </Button>
               </form>
-              <div className="text-center">
-                <Button variant="link" className="text-sm text-muted-foreground">
-                  Forgot your password?
-                </Button>
+              {/* Divider */}
+              <div className="relative my-6">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t border-gray-600" />
+                </div>
+                <div className="relative flex flex-col justify-center items-center text-xs uppercase">
+                  <span className="bg-black px-2 text-gray-400">
+                    Or continue with
+                  </span>
+                  {/* Google Sign In */}
+                  <Button
+                    variant="outline"
+                    className="mt-4 cursor-pointer w-full bg-transparent border-gray-600 text-white hover:bg-gray-800 hover:border-gray-500 hover:text-white font-medium h-12 text-base"
+                    onClick={handleGoogleSignIn}
+                  >
+                    <Chrome className="mr-2 h-5 w-5" />
+                    Sign in with Google
+                  </Button>
+                </div>
               </div>
               <div className="text-center text-sm text-muted-foreground">
                 Don't have an account yet?{" "}
@@ -127,7 +187,7 @@ export function SignIn({ onSignIn, onSignUp, error }: SignInProps) {
                 </Button>
               </div>
             </TabsContent>
-
+            {/* Sign Up Tab */}
             <TabsContent value="signup" className="space-y-4 mt-4">
               {signUpErrors.length > 0 && (
                 <div className="text-red-500 text-center text-sm mb-2">
@@ -139,15 +199,33 @@ export function SignIn({ onSignIn, onSignUp, error }: SignInProps) {
               <form onSubmit={handleSignUp} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="signup-first-name">First Name</Label>
-                  <Input id="signup-first-name" name="signup-first-name" type="text" placeholder="Enter your first name" required />
+                  <Input
+                    id="signup-first-name"
+                    name="signup-first-name"
+                    type="text"
+                    placeholder="Enter your first name"
+                    required
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="signup-last-name">Last Name</Label>
-                  <Input id="signup-last-name" name="signup-last-name" type="text" placeholder="Enter your last name" required />
+                  <Input
+                    id="signup-last-name"
+                    name="signup-last-name"
+                    type="text"
+                    placeholder="Enter your last name"
+                    required
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="signup-email">Email</Label>
-                  <Input id="signup-email" name="signup-email" type="email" placeholder="Enter your email" required />
+                  <Input
+                    id="signup-email"
+                    name="signup-email"
+                    type="email"
+                    placeholder="Enter your email"
+                    required
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="signup-password">Password</Label>
@@ -163,6 +241,20 @@ export function SignIn({ onSignIn, onSignUp, error }: SignInProps) {
                   {isLoading ? "Creating account..." : "Create Account"}
                 </Button>
               </form>
+              <div className="relative flex flex-col justify-center items-center text-xs uppercase">
+                  <span className="bg-black px-2 text-gray-400">
+                    Or continue with
+                  </span>
+                  {/* Google Sign In */}
+                  <Button
+                    variant="outline"
+                    className="mt-4 cursor-pointer w-full bg-transparent border-gray-600 text-white hover:bg-gray-800 hover:border-gray-500 hover:text-white font-medium h-12 text-base"
+                    onClick={handleGoogleSignIn}
+                  >
+                    <Chrome className="mr-2 h-5 w-5" />
+                    Sign in with Google
+                  </Button>
+                </div>
               <div className="text-center text-sm text-muted-foreground">
                 By creating an account, you agree to our{" "}
                 <Button variant="link" className="p-0 h-auto text-sm">
@@ -188,5 +280,5 @@ export function SignIn({ onSignIn, onSignUp, error }: SignInProps) {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

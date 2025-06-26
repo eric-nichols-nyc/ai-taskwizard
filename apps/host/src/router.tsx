@@ -10,11 +10,20 @@ import { Settings } from './pages/Settings';
 import { Login } from './pages/Login';
 import { Landing } from './pages/Landing';
 import { TechnicalArchitecture } from './components/features/technical/technical-architecure';
+import AuthCallback from './pages/auth/callback';
 
 // Define routes
 const rootRoute = createRootRoute({
   component: Root,
 });
+
+// create a route for the auth callback
+const authCallbackRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/auth/callback',
+  component: AuthCallback,
+});
+
 
 
 const indexRoute = createRoute({
@@ -81,6 +90,7 @@ const settingsRoute = createRoute({
 export const routeTree = rootRoute.addChildren([
   indexRoute,
   dashboardRoute,
+  authCallbackRoute,
  // notesRoute,
   calendarRoute,
   engineeringDeepDiveRoute,
