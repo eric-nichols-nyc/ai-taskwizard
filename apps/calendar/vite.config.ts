@@ -37,7 +37,7 @@ export default defineConfig({
     cssCodeSplit: false,
     rollupOptions: {
       external: [
-        "@turbo-with-tailwind-v4/ui"
+       // "@turbo-with-tailwind-v4/ui"
       ]
     }
   },

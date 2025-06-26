@@ -1,17 +1,15 @@
 import { useEffect } from "react"
 import { useAuth } from "@turbo-with-tailwind-v4/database"
-import { useRouter } from "@tanstack/react-router"
 
 export default function AuthCallback() {
   const { user, loading } = useAuth()
-  const router = useRouter()
 
   useEffect(() => {
     console.log('user:', user, 'loading:', loading)
     if (!loading && user) {
-      router.navigate({ to: `${import.meta.env.VITE_HOST_URL}/dashboard` })
+      window.location.href = `${import.meta.env.VITE_HOST_URL}/dashboard`
     }
-  }, [user, loading, router])
+  }, [user, loading])
 
   return <div>Loading...</div>
 } 
