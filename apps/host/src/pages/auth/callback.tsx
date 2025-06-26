@@ -1,5 +1,6 @@
 import { useEffect } from "react"
 import { useAuth } from "@turbo-with-tailwind-v4/database"
+import { LoadingSpinner } from "../../components/loading-spinner"
 
 export default function AuthCallback() {
   const { user, loading } = useAuth()
@@ -11,5 +12,5 @@ export default function AuthCallback() {
     }
   }, [user, loading])
 
-  return <div>Loading...</div>
+  return <LoadingSpinner />
 } 
