@@ -62,7 +62,7 @@ export default defineConfig(({ mode }) => {
       sourcemap: true,
       rollupOptions: {
         external: [
-          "@turbo-with-tailwind-v4/ui"
+         // "@turbo-with-tailwind-v4/ui"
         ]
       }
     },
