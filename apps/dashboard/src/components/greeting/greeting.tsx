@@ -5,8 +5,11 @@ import { useWeatherStore } from "../../stores/weatherStore"
 import { Cloud } from "lucide-react"
 import { WeatherIcon } from "../weather-icon"
 import { getTimeOfDay } from "../../lib/utils"
+import { useAuth } from "@turbo-with-tailwind-v4/database"
 
 export const Greeting = () => {
+  const { simpleUser } = useAuth()
+  console.log("simpleUser", simpleUser)
   const randomQuote = React.useMemo(() => {
     const arr = quotes as { quote: string; author: string }[]
     const idx = Math.floor(Math.random() * arr.length)
@@ -26,8 +29,8 @@ export const Greeting = () => {
     <Card className="flex flex-col p-4">
       <div className="flex items-center mb-2 gap-2">
         {typeof weather?.weather_descriptions?.[0] === 'string' ? WeatherIcon(weather.weather_descriptions[0]) : <Cloud />}
-        <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold">
-          Welcome, Good {timeOfDay}.
+        <h1 className="text-2xl md:text-3xl font-bold">
+          Good {timeOfDay}{simpleUser?.firstname ? `, ${simpleUser.firstname}` : ''}
         </h1>
       </div>
       <p className="mt-1 italic text-sm">

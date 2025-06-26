@@ -97,9 +97,6 @@ export function Dashboard() {
             "Loading..."
           ) : user ? (
             <div className="flex flex-col items-center justify-center gap-4 w-full">
-              <div>
-              <p>Email: {user.email}</p>
-              </div>
               <div className="w-full">
                 <Greeting />
               </div>

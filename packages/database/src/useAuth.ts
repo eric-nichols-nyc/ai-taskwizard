@@ -1,8 +1,25 @@
 import { useContext } from 'react'
 import { AuthContext } from './AuthProvider'
 import { type AuthContextType } from './types'
+import { type User } from '@supabase/supabase-js'
 
-export function useAuth(): AuthContextType {
+function getSimplifiedUser(user: User | null) {
+  if (!user) return null;
+  const { id, email, user_metadata } = user;
+  let firstname = '';
+
+  if (user_metadata && typeof user_metadata === 'object') {
+    if ('firstname' in user_metadata && typeof user_metadata.firstname === 'string') {
+      firstname = user_metadata.firstname ?? '';
+    } else if ('full_name' in user_metadata && typeof user_metadata.full_name === 'string') {
+      firstname = user_metadata.full_name.split(' ')[0] ?? '';
+    }
+  }
+
+  return { firstname: firstname ?? '', id, email: email ?? '' };
+}
+
+export function useAuth(): AuthContextType & { simpleUser: { firstname: string, id: string, email: string } | null } {
   const context = useContext(AuthContext)
   
   if (context === undefined) {
@@ -17,11 +34,14 @@ export function useAuth(): AuthContextType {
         signOut: async () => {},
         signInWithProvider: async () => ({}),
         resetPassword: async () => ({}),
-        updateProfile: async () => ({})
+        updateProfile: async () => ({}),
+        simpleUser: null
       }
     }
     throw new Error('useAuth must be used within an AuthProvider')
   }
   
-  return context
+  const simpleUser = getSimplifiedUser(context.user)
+  
+  return { ...context, simpleUser }
 }
