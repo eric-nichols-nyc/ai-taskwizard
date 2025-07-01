@@ -205,7 +205,7 @@ const TaskCard: React.FC<{ task: Task }> = ({ task }) => {
       }`}
     >
       <h4 className="font-medium text-gray-900 mb-1">{task.title}</h4>
-      <p className="text-sm text-gray-600">{task.description}</p>
+      <p className="text-sm text-gray-600">{task.description} {task.position}</p>
     </div>
   );
 };
