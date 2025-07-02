@@ -1,0 +1,75 @@
+<context>
+# Overview
+A daily Kanban board application for task management, built with React and Next.js. It enables users to organize daily tasks across three columns: Todo, In Progress, and Done. The app targets users who want a simple, persistent, and interactive way to manage daily work, leveraging drag-and-drop and real-time updates. All tasks are persisted in a PostgreSQL database via Prisma ORM, ensuring data is never lost.
+
+# Core Features
+- **Task Creation**: Add new tasks to the Todo column.
+- **Drag & Drop**: Move tasks vertically within columns and horizontally between columns.
+- **Daily View**: View all tasks scheduled for the current day.
+- **Column Reordering**: Reorder the three columns as needed.
+- **Task Editing**: Edit task names and details via modal overlays.
+- **Task Deletion**: Delete tasks when no longer needed.
+- **Persistent Storage**: All tasks are stored in a PostgreSQL database and synchronized in real time.
+
+# User Experience
+- **User Personas**: Individuals and teams managing daily work, students, professionals, and anyone needing a visual workflow.
+- **Key User Flows**:
+  - Sign in (auto sign-in in development)
+  - View today's tasks
+  - Add, edit, delete, and move tasks
+  - Drag tasks to reorder or change status
+- **UI/UX Considerations**:
+  - Responsive design
+  - Smooth drag-and-drop
+  - Modal overlays for editing/deleting
+  - Consistent UI via shared design-system package
+</context>
+<PRD>
+# Technical Architecture
+- **Frontend**: React, Next.js
+- **Backend**: Node.js
+- **State Management**: TanStack Query
+- **Database**: PostgreSQL with Prisma ORM
+- **UI Components**: Custom design-system package
+- **Key Components**:
+  - Board, Column, TaskCard, AddTaskForm, EditTaskForm, DeleteTaskForm, Modal
+- **Data Model**: See README for Prisma schema (tasks table with id, column_id, title, description, position, priority, due_date, user_id, status, etc.)
+- **APIs & Integrations**: CRUD endpoints for tasks, real-time updates via TanStack Query, authentication via AuthProvider
+- **Infrastructure**: Node.js server, PostgreSQL database, Prisma migrations
+
+# Development Roadmap
+- **MVP Requirements**:
+  - User authentication
+  - Board with three columns (Todo, In Progress, Done)
+  - Add/edit/delete tasks
+  - Drag-and-drop for tasks (vertical and horizontal)
+  - Daily view of tasks
+  - Persistent storage and real-time sync
+- **Future Enhancements**:
+  - Column customization
+  - Task due dates and reminders
+  - Team collaboration features
+  - Analytics and reporting
+  - Mobile app version
+
+# Logical Dependency Chain
+- Set up database and Prisma schema
+- Implement authentication
+- Build backend CRUD APIs
+- Create frontend board and columns
+- Implement task creation and display
+- Add drag-and-drop functionality
+- Enable task editing and deletion
+- Integrate real-time sync and persistence
+- Polish UI/UX with design-system
+
+# Risks and Mitigations
+- **Technical challenges**: Drag-and-drop complexity (mitigate with proven libraries and thorough testing)
+- **MVP scope**: Risk of feature creep (mitigate by focusing on core flows first)
+- **Resource constraints**: Limited dev time (mitigate by prioritizing MVP and deferring enhancements)
+
+# Appendix
+- See README for full Prisma schema and component breakdown
+- Positioning algorithm for task order: new tasks use large increments, drag-and-drop recalculates position based on drop location
+- All components use shared design-system for UI consistency
+</PRD> 

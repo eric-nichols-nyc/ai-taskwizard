@@ -1,0 +1,114 @@
+# Kanban Board
+
+A daily task management application built with React and Next.js that allows users to organize tasks across three columns: Todo, In Progress, and Done.
+
+## Tech Stack
+
+- **Frontend**: React, Next.js
+- **Backend**: Node.js
+- **State Management**: TanStack Query
+- **Database**: PostgreSQL with Prisma ORM
+- **UI Components**: Custom design-system package
+
+## Repository Structure
+
+```
+kanban/
+├── packages/
+│   ├── database/           # Database package with Prisma schema
+│   └── design-system/      # Shared UI components
+└── src/
+    └── components/         # Application components
+```
+
+## What is Kanban?
+
+The Kanban board is a task management application that enables users to create daily tasks and move them through three workflow stages:
+
+- **Todo** - New tasks waiting to be started
+- **In Progress** - Tasks currently being worked on  
+- **Done** - Completed tasks
+
+All Kanban cards are synchronized with the tasks database table, ensuring data persistence across sessions.
+
+## User Stories
+
+- **Task Creation**: Users can add new tasks to the todo column
+- **Drag & Drop**: Users can drag tasks vertically within columns and horizontally between columns
+- **Daily View**: Users can view all tasks scheduled for the current day
+- **Column Reordering**: Users can reorder the three columns
+- **Task Editing**: Users can edit task names through an overlay modal
+- **Task Deletion**: Users can delete tasks when no longer needed
+
+## Data Model
+
+The application uses the following Prisma schema for task management:
+
+```prisma
+model tasks {
+  id           String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  column_id    String?        @db.Uuid
+  title        String
+  description  String?
+  position     Int
+  priority     String?        @default("Medium")
+  due_date     DateTime?      @default(dbgenerated("CURRENT_DATE")) @db.Date
+  user_id      String?        @db.Uuid
+  created_at   DateTime?      @default(now()) @db.Timestamptz(6)
+  updated_at   DateTime?      @default(now()) @db.Timestamptz(6)
+  status       String?        @default("todo")
+  kanban_cards kanban_cards[]
+  columns      columns?       @relation(fields: [column_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users        users?         @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tasks_user_id_id_fkey")
+
+  @@schema("public")
+}
+```
+
+## Components Architecture
+
+The application is built with the following component structure in `src/components/`:
+
+- **Board** - Main kanban board container
+- **Column** - Individual column component (Todo/In Progress/Done)
+- **TaskCard** - Individual task display component
+- **AddTaskForm** - Form for creating new tasks
+- **EditTaskForm** - Modal form for editing existing tasks
+- **DeleteTaskForm** - Confirmation dialog for task deletion
+- **Modal** - Reusable modal wrapper component
+
+*All components utilize the shared design-system package for consistent UI.*
+
+## Application Flow
+
+### Initial Setup
+1. Initialize AuthProvider for user authentication
+2. Auto sign-in user in development environment
+3. Fetch user's tasks for the current day
+4. Sort and populate tasks by column status
+
+### Task Management
+- **Adding Tasks**: Click the add task button to create a new task in the todo column at the bottom position
+- **Vertical Dragging**: Drag tasks within the same column to update task position
+- **Horizontal Dragging**: Drag tasks between columns to update column assignment and position
+
+## Position Algorithm
+
+The application implements a sophisticated positioning system to maintain task order:
+
+### New Task Position
+When adding a task, the position is set to a large increment after the previous task to allow for future insertions.
+
+### Drag Position Calculation
+The new position depends on the drop location:
+
+1. **First in Column**: Position set below the top boundary
+2. **Last in Column**: Position set above the bottom boundary  
+3. **Middle Position (Moving Up)**: Position calculated as midpoint between task above and task below
+4. **Middle Position (Moving Down)**: Position calculated as midpoint between task above and task below
+
+This algorithm ensures smooth drag-and-drop functionality while maintaining consistent task ordering across all operations.
+
+## Database Integration
+
+The application uses the `database` package to handle all user task updates, ensuring data consistency and real-time synchronization between the UI and database.
