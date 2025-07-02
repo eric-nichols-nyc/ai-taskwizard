@@ -79,4 +79,18 @@ export function useDeleteTask() {
       queryClient.invalidateQueries({ queryKey: taskKeys.list(user?.id) });
     },
   });
-} 
+}
+
+export function useKanbanBoard(boardId: string | undefined) {
+  const { user } = useAuth();
+  const userId = user?.id;
+
+  return useQuery({
+    queryKey: ['kanban', { boardId, userId }],
+    queryFn: () => {
+      if (!boardId || !userId) throw new Error('Missing boardId or userId');
+      return taskService.getKanbanBoard(boardId, userId);
+    },
+    enabled: !!boardId && !!userId,
+  });
+}

@@ -12,7 +12,18 @@ export interface TaskService {
   deleteTask(id: string): Promise<boolean>;
   createTaskWithDefaults(data: CreateTaskPayload): Promise<Task>;
   getTasksByUserId(userId: string): Promise<Task[]>;
+  getKanbanBoard(boardId: string, userId: string): Promise<KanbanColumn[]>;
   // Add more methods as needed (e.g., getTasksByDate, getTasksByPriority)
+}
+
+export interface KanbanColumn {
+  id: string;
+  board_id: string;
+  name: string;
+  position: number;
+  color?: string | null;
+  created_at?: string;
+  tasks: Task[];
 }
 
 export function createTaskService(): TaskService {
@@ -120,6 +131,33 @@ export function createTaskService(): TaskService {
         console.error('Unexpected error in getTasksByUserId:', err);
         throw err;
       }
+    },
+
+    async getKanbanBoard(boardId: string, userId: string): Promise<KanbanColumn[]> {
+      // 1. Get columns for the board
+      const { data: columns, error: columnsError } = await supabase
+        .from('columns')
+        .select('*')
+        .eq('board_id', boardId)
+        .order('position', { ascending: true });
+      if (columnsError) throw new Error(columnsError.message);
+      if (!columns || columns.length === 0) return [];
+
+      // 2. Get all tasks for these columns and user
+      const columnIds = columns.map((col: KanbanColumn) => col.id);
+      const { data: tasks, error: tasksError } = await supabase
+        .from('tasks')
+        .select('*')
+        .in('column_id', columnIds)
+        .eq('user_id', userId)
+        .order('position', { ascending: true });
+      if (tasksError) throw new Error(tasksError.message);
+
+      // 3. Group tasks by column
+      return columns.map((column: KanbanColumn) => ({
+        ...column,
+        tasks: (tasks ?? []).filter((task: Task) => task.column_id === column.id),
+      }));
     },
   };
 }
