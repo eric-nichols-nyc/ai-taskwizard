@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Column } from "./components/kanban/Column";
 import { TaskCard } from "./components/kanban/TaskCard";
-import { useKanbanStore } from "./store/useKanbanStore";
+import { useKanbanStore, Column as ColumnType } from "./store/useKanbanStore";
 import { signInWithEmail } from '@turbo-with-tailwind-v4/database';
 import {
   DndContext,
@@ -10,14 +10,33 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
+  DragStartEvent,
+  DragOverEvent,
+  DragEndEvent,
 } from "@dnd-kit/core";
-import { SortableContext, horizontalListSortingStrategy } from "@dnd-kit/sortable";
+import { SortableContext, verticalListSortingStrategy, horizontalListSortingStrategy, useSortable, arrayMove } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+
+function SortableColumn({ column, children }: { column: ColumnType; children: React.ReactNode }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: column.id });
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+  return (
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+      {children}
+    </div>
+  );
+}
 
 export const Kanban = () => {
   const {
     columns,
     tasks,
-    addTask,
+    updateColumnPositions,
+    updateTaskPositions,
     activeBoard,
   } = useKanbanStore();
 
@@ -45,6 +64,10 @@ export const Kanban = () => {
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [newTaskDesc, setNewTaskDesc] = useState("");
 
+  // DnD state
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const [activeType, setActiveType] = useState<'task' | 'column' | null>(null);
+
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: { distance: 3 },
@@ -60,17 +83,73 @@ export const Kanban = () => {
       .filter((task) => task.column_id === columnId)
       .sort((a, b) => a.position - b.position);
 
-  const handleDragStart = () => {};
-  const handleDragOver = () => {};
-  const handleDragEnd = () => {};
+  // DnD Handlers
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveId(event.active.id as string);
+    if (event.active.data.current?.type === 'column') setActiveType('column');
+    else setActiveType('task');
+  };
 
+  const handleDragOver = (event: DragOverEvent) => {
+    if (!event.active || !event.over) return;
+    if (activeType === 'task') {
+      const activeTask = tasks.find((t) => t.id === event.active.id);
+      const overTask = tasks.find((t) => t.id === event.over?.id);
+      const overColumn = columns.find((c) => c.id === event.over?.id);
+      if (!activeTask) return;
+      // If dropped over a task
+      if (overTask && activeTask.column_id !== overTask.column_id) {
+        // Move to new column
+        updateTaskPositions(
+          tasks.map((task) =>
+            task.id === activeTask.id
+              ? { ...task, column_id: overTask.column_id, position: 0 }
+              : task
+          )
+        );
+      }
+      // If dropped over a column
+      if (overColumn && activeTask.column_id !== overColumn.id) {
+        updateTaskPositions(
+          tasks.map((task) =>
+            task.id === activeTask.id
+              ? { ...task, column_id: overColumn.id, position: 0 }
+              : task
+          )
+        );
+      }
+    }
+  };
 
-  const handleAddTask = (columnId: string) => {
-    if (newTaskTitle.trim()) {
-      addTask(columnId, newTaskTitle, newTaskDesc);
-      setNewTaskTitle("");
-      setNewTaskDesc("");
-      setShowAddTask(null);
+  const handleDragEnd = (event: DragEndEvent) => {
+    setActiveId(null);
+    setActiveType(null);
+    if (!event.active || !event.over) return;
+    if (activeType === 'column') {
+      const oldIndex = activeColumns.findIndex((c) => c.id === event.active.id);
+      const newIndex = activeColumns.findIndex((c) => c.id === event.over?.id);
+      if (oldIndex !== -1 && newIndex !== -1 && oldIndex !== newIndex) {
+        const newColumns = arrayMove(activeColumns, oldIndex, newIndex).map((col, idx) => ({ ...col, position: idx }));
+        updateColumnPositions(
+          columns.map((col) => newColumns.find((nc) => nc.id === col.id) || col)
+        );
+      }
+    } else if (activeType === 'task') {
+      const activeTask = tasks.find((t) => t.id === event.active.id);
+      const overTask = tasks.find((t) => t.id === event.over?.id);
+      if (activeTask && overTask && activeTask.column_id === overTask.column_id) {
+        const columnTasks = getColumnTasks(activeTask.column_id);
+        const oldIndex = columnTasks.findIndex((t) => t.id === activeTask.id);
+        const newIndex = columnTasks.findIndex((t) => t.id === overTask.id);
+        if (oldIndex !== -1 && newIndex !== -1 && oldIndex !== newIndex) {
+          const reordered = arrayMove(columnTasks, oldIndex, newIndex).map((task, idx) => ({ ...task, position: idx }));
+          const updatedTasks = [
+            ...tasks.filter((t) => t.column_id !== activeTask.column_id),
+            ...reordered,
+          ];
+          updateTaskPositions(updatedTasks);
+        }
+      }
     }
   };
 
@@ -91,62 +170,83 @@ export const Kanban = () => {
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
       >
-        <div className="flex gap-6 overflow-x-auto pb-6 justify-center items-start w-full max-w-screen-lg">
+        <div className="flex flex-row gap-6 overflow-x-auto pb-6 justify-start items-start w-full max-w-screen-lg">
           <SortableContext items={activeColumns.map((c) => c.id)} strategy={horizontalListSortingStrategy}>
             {activeColumns.map((column) => (
-              <Column key={column.id} title={column.title}>
-                <div className="flex flex-col gap-2">
-                  {getColumnTasks(column.id).map((task) => (
-                    <TaskCard key={task.id} title={task.title} dueDate={undefined} priority={undefined} />
-                  ))}
-                  {showAddTask === column.id ? (
-                    <div className="bg-white rounded-lg p-3 shadow-sm border border-gray-200 mt-2">
-                      <input
-                        type="text"
-                        placeholder="Task title"
-                        value={newTaskTitle}
-                        onChange={(e) => setNewTaskTitle(e.target.value)}
-                        className="w-full p-2 mb-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        autoFocus
-                      />
-                      <textarea
-                        placeholder="Task description"
-                        value={newTaskDesc}
-                        onChange={(e) => setNewTaskDesc(e.target.value)}
-                        className="w-full p-2 mb-2 border border-gray-300 rounded text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        rows={2}
-                      />
-                      <div className="flex gap-2">
+              <SortableColumn key={column.id} column={column}>
+                <Column title={column.title}>
+                  <SortableContext items={getColumnTasks(column.id).map((t) => t.id)} strategy={verticalListSortingStrategy}>
+                    <div className="flex flex-col gap-2 w-80">
+                      {getColumnTasks(column.id).map((task) => (
+                        <TaskCard key={task.id} id={task.id} title={task.title} dueDate={undefined} priority={undefined} />
+                      ))}
+                      {showAddTask === column.id ? (
+                        <div className="bg-white rounded-lg p-3 shadow-sm border border-gray-200 mt-2">
+                          <input
+                            type="text"
+                            placeholder="Task title"
+                            value={newTaskTitle}
+                            onChange={(e) => setNewTaskTitle(e.target.value)}
+                            className="w-full p-2 mb-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            autoFocus
+                          />
+                          <textarea
+                            placeholder="Task description"
+                            value={newTaskDesc}
+                            onChange={(e) => setNewTaskDesc(e.target.value)}
+                            className="w-full p-2 mb-2 border border-gray-300 rounded text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            rows={2}
+                          />
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => {
+                                if (newTaskTitle.trim()) {
+                                  useKanbanStore.getState().addTask(column.id, newTaskTitle, newTaskDesc);
+                                  setNewTaskTitle("");
+                                  setNewTaskDesc("");
+                                  setShowAddTask(null);
+                                }
+                              }}
+                              className="px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600"
+                            >
+                              Add Task
+                            </button>
+                            <button
+                              onClick={() => setShowAddTask(null)}
+                              className="px-3 py-1 bg-gray-300 text-gray-700 rounded text-sm hover:bg-gray-400"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
                         <button
-                          onClick={() => handleAddTask(column.id)}
-                          className="px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600"
+                          onClick={() => setShowAddTask(column.id)}
+                          className="w-full p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-200 rounded-lg border-2 border-dashed border-gray-300 hover:border-gray-400 transition-colors flex items-center justify-center gap-2 mt-2"
                         >
-                          Add Task
+                          + Add a card
                         </button>
-                        <button
-                          onClick={() => setShowAddTask(null)}
-                          className="px-3 py-1 bg-gray-300 text-gray-700 rounded text-sm hover:bg-gray-400"
-                        >
-                          Cancel
-                        </button>
-                      </div>
+                      )}
                     </div>
-                  ) : (
-                    <button
-                      onClick={() => setShowAddTask(column.id)}
-                      className="w-full p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-200 rounded-lg border-2 border-dashed border-gray-300 hover:border-gray-400 transition-colors flex items-center justify-center gap-2 mt-2"
-                    >
-                      + Add a card
-                    </button>
-                  )}
-                </div>
-              </Column>
+                  </SortableContext>
+                </Column>
+              </SortableColumn>
             ))}
           </SortableContext>
+          <DragOverlay>
+            {activeType === 'task' && activeId ? (
+              (() => {
+                const task = tasks.find((t) => t.id === activeId);
+                return task ? <TaskCard id={task.id} title={task.title} dueDate={undefined} priority={undefined} /> : null;
+              })()
+            ) : activeType === 'column' && activeId ? (
+              (() => {
+                const column = columns.find((c) => c.id === activeId);
+                return column ? <Column title={column.title} /> : null;
+              })()
+            ) : null}
+          </DragOverlay>
         </div>
-        <DragOverlay>
-          {/* Optionally render a preview of the dragged item */}
-        </DragOverlay>
       </DndContext>
     </div>
   );

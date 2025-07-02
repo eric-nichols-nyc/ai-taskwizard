@@ -8,9 +8,11 @@ export type ColumnProps = {
 
 export function Column({ title, children }: ColumnProps) {
   return (
-    <div className="flex flex-col w-80 min-h-[50vh] bg-white rounded-lg shadow p-4">
+    <div
+      className="bg-white border border-blue-200 shadow-sm rounded-lg p-4 min-w-80 max-w-80 transition-colors hover:border-blue-400 hover:shadow-md"
+    >
       <header className="mb-2 flex items-center justify-between">
-        <h2 className="text-lg font-semibold">{title}</h2>
+        <h2 className="font-semibold text-blue-900 mb-3 text-lg">{title}</h2>
         {/* Add task count or actions here if needed */}
       </header>
       <div className="flex-1 space-y-2 overflow-y-auto">
