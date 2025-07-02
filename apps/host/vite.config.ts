@@ -20,6 +20,7 @@ export default defineConfig(({ mode }) => {
   const notesRemote = env.VITE_NOTES_REMOTE;
   const focusRemote = env.VITE_FOCUS_REMOTE;
   const settingsRemote = env.VITE_SETTINGS_REMOTE;
+  const kanbanRemote = env.VITE_KANBAN_REMOTE;
 
 
   console.log('Vite mode:', mode);
@@ -34,7 +35,8 @@ export default defineConfig(({ mode }) => {
           calendar: calendarRemote,
           notes: notesRemote,
           focus: focusRemote,
-          settings: settingsRemote
+          settings: settingsRemote,
+          kanban: kanbanRemote
         },
         shared: ['react',
           'react-dom',

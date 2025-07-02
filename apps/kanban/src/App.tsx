@@ -1,6 +1,6 @@
 import { Kanban } from './Kanban'
 
-function App() {
+export function App() {
 
   return (
     <div className='w-full dark'>
@@ -11,5 +11,3 @@ function App() {
     </div>
   )
 }
-
-export default App

@@ -6,6 +6,7 @@ import { Calendar } from './pages/Calendar';
 // import { Community } from './pages/Community';
 // import { FocusMode } from './pages/FocusMode';
 // import { AIAssistant } from './pages/AIAssistant';
+import { Kanban } from './pages/Kanban';
 import { Settings } from './pages/Settings';
 import { Login } from './pages/Login';
 import { Landing } from './pages/Landing';
@@ -62,6 +63,12 @@ const engineeringDeepDiveRoute = createRoute({
   component: TechnicalArchitecture,
 });
 
+const kanbanRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/kanban',
+  component: Kanban,
+});
+
 // const communityRoute = createRoute({
 //   getParentRoute: () => rootRoute,
 //   path: '/community',
@@ -94,6 +101,7 @@ export const routeTree = rootRoute.addChildren([
  // notesRoute,
   calendarRoute,
   engineeringDeepDiveRoute,
+  kanbanRoute,
   //communityRoute,
   //focusModeRoute,
   ///aiAssistantRoute,

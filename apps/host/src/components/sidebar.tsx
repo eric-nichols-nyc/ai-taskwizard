@@ -7,6 +7,7 @@ import {
   //  IconBrain,
   IconSettings,
   IconX,
+  IconLayoutKanban,
 } from "@tabler/icons-react";
 import { useAuth } from "@turbo-with-tailwind-v4/database";
 import { Zap } from "lucide-react";
@@ -85,6 +86,7 @@ export const Sidebar = ({ variant = "sidebar", onClose }: SidebarProps) => {
     // { icon: <IconNotes size={20} />, label: 'Notes', to: '/notes' },
     { icon: <IconCalendar size={20} />, label: "Calendar", to: "/calendar" },
     // { icon: <IconBrain size={20} />, label: 'Focus Mode', to: '/focus' },
+    { icon: <IconLayoutKanban size={20} />, label: "Kanban", to: "/kanban" },
     { icon: <IconSettings size={20} />, label: "Settings", to: "/settings" },
   ];
 
