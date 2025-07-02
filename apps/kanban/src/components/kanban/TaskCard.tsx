@@ -9,7 +9,7 @@ export type TaskCardProps = {
 
 export function TaskCard({ title, dueDate, priority }: TaskCardProps) {
   return (
-    <div className="bg-gray-100 rounded-md shadow p-3 flex flex-col gap-1 hover:bg-gray-200 transition-colors">
+    <div className="bg-black rounded-md shadow p-3 flex flex-col gap-1 hover:bg-gray-200 transition-colors">
       <div className="flex items-center justify-between">
         <span className="font-medium text-base">{title}</span>
         {priority && (

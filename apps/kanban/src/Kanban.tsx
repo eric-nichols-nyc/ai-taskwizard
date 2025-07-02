@@ -18,7 +18,6 @@ export const Kanban = () => {
     columns,
     tasks,
     addTask,
-    addColumn,
     activeBoard,
   } = useKanbanStore();
 
@@ -41,9 +40,7 @@ export const Kanban = () => {
     }
   }, []);
 
-  const [showAddColumn, setShowAddColumn] = useState(false);
-  const [newColumnTitle, setNewColumnTitle] = useState("");
-  const [newColumnDesc, setNewColumnDesc] = useState("");
+
   const [showAddTask, setShowAddTask] = useState<string | null>(null);
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [newTaskDesc, setNewTaskDesc] = useState("");
@@ -67,14 +64,6 @@ export const Kanban = () => {
   const handleDragOver = () => {};
   const handleDragEnd = () => {};
 
-  const handleAddColumn = () => {
-    if (newColumnTitle.trim()) {
-      addColumn(activeBoard!, newColumnTitle, newColumnDesc);
-      setNewColumnTitle("");
-      setNewColumnDesc("");
-      setShowAddColumn(false);
-    }
-  };
 
   const handleAddTask = (columnId: string) => {
     if (newTaskTitle.trim()) {
@@ -88,51 +77,11 @@ export const Kanban = () => {
   if (!userId) return <div>...loading</div>;
 
   return (
-    <div className="h-screen bg-gradient-to-br from-gray-100 to-gray-200 p-6 flex flex-col items-center">
+    <div className="h-screen p-6 flex flex-col items-center">
       <div className="mb-6 w-full max-w-screen-lg mx-auto flex flex-col md:flex-row md:items-end md:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2 text-left">My Project Board</h1>
           <p className="text-gray-600 text-left">Manage your tasks with this Kanban board</p>
-        </div>
-        <div>
-          {showAddColumn ? (
-            <div className="flex gap-2">
-              <input
-                type="text"
-                placeholder="Column title"
-                value={newColumnTitle}
-                onChange={(e) => setNewColumnTitle(e.target.value)}
-                className="p-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                autoFocus
-              />
-              <input
-                type="text"
-                placeholder="Description"
-                value={newColumnDesc}
-                onChange={(e) => setNewColumnDesc(e.target.value)}
-                className="p-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <button
-                onClick={handleAddColumn}
-                className="px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600"
-              >
-                Add
-              </button>
-              <button
-                onClick={() => setShowAddColumn(false)}
-                className="px-3 py-1 bg-gray-300 text-gray-700 rounded text-sm hover:bg-gray-400"
-              >
-                Cancel
-              </button>
-            </div>
-          ) : (
-            <button
-              onClick={() => setShowAddColumn(true)}
-              className="px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600"
-            >
-              + Add Column
-            </button>
-          )}
         </div>
       </div>
       <DndContext
