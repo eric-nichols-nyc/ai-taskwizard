@@ -2,7 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Column } from "./components/kanban/Column";
 import { TaskCard } from "./components/kanban/TaskCard";
 import { useKanbanStore, Column as ColumnType } from "./store/useKanbanStore";
-import { signInWithEmail } from '@turbo-with-tailwind-v4/database';
+import { signInWithGoogle } from '@turbo-with-tailwind-v4/database';
+import { useGetTasks } from "@turbo-with-tailwind-v4/database/use-tasks"; // adjust import path as needed
+
 import {
   DndContext,
   DragOverlay,
@@ -40,13 +42,17 @@ export const Kanban = () => {
     activeBoard,
   } = useKanbanStore();
 
+  const { data: userTasks, isLoading, error } = useGetTasks();
+
+  console.log('Kanban - userTasks', userTasks);
+
   const [userId, setUserId] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     if (import.meta.env.MODE === 'development') {
       async function maybeSignIn() {
         try {
-          const sessionData = await signInWithEmail();
+          const sessionData = await signInWithGoogle();
           setUserId(sessionData?.user?.id);
           console.log('Dev sign-in successful, user from session data:', sessionData?.user?.id);
         } catch (error) {

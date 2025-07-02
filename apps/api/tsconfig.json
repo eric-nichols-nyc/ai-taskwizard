@@ -13,7 +13,11 @@
       "declaration": true,
       "declarationMap": true,
       "sourceMap": true,
-      "moduleResolution": "nodenext"
+      "moduleResolution": "nodenext",
+      "baseUrl": ".",
+      "paths": {
+        "@turbo-with-tailwind-v4/database": ["../../packages/database"]
+      }
     },
     "include": ["src/**/*"],
     "exclude": ["node_modules", "dist"]
