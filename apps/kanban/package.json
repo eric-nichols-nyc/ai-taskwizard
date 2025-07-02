@@ -22,6 +22,7 @@
     "@tailwindcss/cli": "^4.1.5",
     "@tailwindcss/postcss": "^4.1.5",
     "@tailwindcss/vite": "^4.1.4",
+    "@supabase/supabase-js": "^2.49.1",
     "@turbo-with-tailwind-v4/database": "workspace:*",
     "@turbo-with-tailwind-v4/design-system": "workspace:*",
     "@turbo-with-tailwind-v4/ui": "workspace:*",
