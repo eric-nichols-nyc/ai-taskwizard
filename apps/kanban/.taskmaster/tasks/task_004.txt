@@ -1,0 +1,11 @@
+# Task ID: 4
+# Title: Integrate Drag and Drop with Backend and Dynamic State
+# Status: pending
+# Dependencies: 12, 2
+# Priority: high
+# Description: Enable drag and drop for tasks using the existing backend logic and prototype, ensuring dynamic updates and production readiness. Use the design system and Tailwind v4.1 for styling.
+# Details:
+
+
+# Test Strategy:
+

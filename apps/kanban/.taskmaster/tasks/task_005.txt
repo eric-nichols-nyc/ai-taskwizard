@@ -1,0 +1,11 @@
+# Task ID: 5
+# Title: Integrate Modal and Task Editing with Backend and Design System
+# Status: pending
+# Dependencies: 2
+# Priority: medium
+# Description: Connect Modal and EditTaskForm components to the backend for editing tasks, using the design system and referencing the prototype. Style with Tailwind v4.1.
+# Details:
+
+
+# Test Strategy:
+

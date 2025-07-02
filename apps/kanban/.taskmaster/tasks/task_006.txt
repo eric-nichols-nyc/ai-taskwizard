@@ -1,0 +1,11 @@
+# Task ID: 6
+# Title: Integrate Task Deletion with Backend and Confirmation Modal
+# Status: pending
+# Dependencies: 2, 5
+# Priority: medium
+# Description: Connect DeleteTaskForm and confirmation modal to the backend for deleting tasks, using the design system and referencing the prototype. Style with Tailwind v4.1.
+# Details:
+
+
+# Test Strategy:
+

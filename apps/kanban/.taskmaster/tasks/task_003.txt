@@ -1,0 +1,11 @@
+# Task ID: 3
+# Title: Integrate Task Creation with Backend and Auth
+# Status: pending
+# Dependencies: 12
+# Priority: high
+# Description: Connect AddTaskForm to the backend using task-service and AuthProvider, ensuring new tasks are dynamically added to the Todo column. Use the design system and Tailwind v4.1 for UI.
+# Details:
+
+
+# Test Strategy:
+

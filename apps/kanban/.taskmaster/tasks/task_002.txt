@@ -1,0 +1,11 @@
+# Task ID: 2
+# Title: Integrate TaskCard Component with Backend and Design System
+# Status: pending
+# Dependencies: 12
+# Priority: high
+# Description: Connect the TaskCard component to display dynamic task data from the backend, using the design system and referencing the prototype. Ensure all styling uses Tailwind v4.1.
+# Details:
+
+
+# Test Strategy:
+

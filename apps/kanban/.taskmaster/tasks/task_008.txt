@@ -1,0 +1,11 @@
+# Task ID: 8
+# Title: Integrate Column Reordering with Backend and Dynamic State
+# Status: pending
+# Dependencies: 12, 4
+# Priority: low
+# Description: Enable column reordering using the backend and prototype logic, ensuring dynamic updates and persistence. Use the design system and Tailwind v4.1 for styling.
+# Details:
+
+
+# Test Strategy:
+
