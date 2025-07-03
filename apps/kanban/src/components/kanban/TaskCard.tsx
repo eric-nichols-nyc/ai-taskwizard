@@ -1,4 +1,3 @@
-import React from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
@@ -40,4 +39,4 @@ export function TaskCard({ id, title, dueDate, priority }: TaskCardProps) {
       {priority && <div className="text-xs text-blue-700">Priority: {priority}</div>}
     </div>
   );
-} 
+}

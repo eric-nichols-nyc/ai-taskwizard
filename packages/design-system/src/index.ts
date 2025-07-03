@@ -15,3 +15,5 @@ export * from './components/ui/select';
 export * from './components/ui/toggle';
 export * from './components/ui/badge';
 export * from './components/ui/popover';
+
+export * from './components/coming-soon';
