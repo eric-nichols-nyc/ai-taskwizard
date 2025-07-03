@@ -8,7 +8,7 @@ import { Plus } from 'lucide-react';
 
 // The root container component
 const TasksRoot = ({ children }: { children: React.ReactNode }) => {
-  return <div className="w-full max-w-2xl mx-auto p-4">{children}</div>;
+  return <div className="w-full mx-auto p-4">{children}</div>;
 };
 TasksRoot.displayName = 'Tasks';
 
@@ -68,4 +68,4 @@ export const Tasks = Object.assign(TasksRoot, {
   Input: TasksInput,
   List: TasksList,
   Item: TaskItem, // We'll attach the separate TaskItem component here
-}); 
+});

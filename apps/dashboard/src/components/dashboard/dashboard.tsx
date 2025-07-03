@@ -98,11 +98,11 @@ export function Dashboard() {
         <div className="flex flex-col items-center justify-center gap-4 w-full">
           <div className="w-full flex flex-col gap-4">
             <Greeting />
-            <div className="flex w-full gap-4 items-stretch min-h-[100px]">
-              <div className="w-1/2">
+            <div className="flex flex-col md:flex-row w-full gap-4 items-stretch min-h-[100px]">
+              <div className="md:w-1/2">
                 <Clock />
               </div>
-              <div className="w-1/2">
+              <div className="md:w-1/2">
                 <Weather />
               </div>
             </div>
