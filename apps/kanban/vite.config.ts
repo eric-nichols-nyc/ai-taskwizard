@@ -21,8 +21,7 @@ export default defineConfig({
   },
   optimizeDeps: {
     include: [
-      "@turbo-with-tailwind-v4/design-system",
-      "@turbo-with-tailwind-v4/ui"
+      "@turbo-with-tailwind-v4/design-system"
     ]
   },
   build: {
@@ -31,14 +30,14 @@ export default defineConfig({
     minify: false,
     cssCodeSplit: false,
     rollupOptions: {
-      external: [
-        "@turbo-with-tailwind-v4/design-system",
-        "@turbo-with-tailwind-v4/ui"
-      ]
+      // external: [
+      //   "@turbo-with-tailwind-v4/design-system",
+      //   "@turbo-with-tailwind-v4/ui"
+      // ]
     }
   },
   server: {
     port: 3006,
-    
+
   },
 })
