@@ -172,7 +172,7 @@ export const Kanban = () => {
     <div className="h-screen p-6 flex flex-col items-center">
       <div className="mb-6 w-full max-w-screen-lg mx-auto flex flex-col md:flex-row md:items-end md:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2 text-left">My Project Board</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2 text-left">My Pesonal Project Board</h1>
           <p className="text-gray-600 text-left">Manage your tasks with this Kanban board</p>
         </div>
       </div>
