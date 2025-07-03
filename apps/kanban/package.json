@@ -66,5 +66,9 @@
     "server": {
       "port": 3006
     }
+  },
+  "engines": {
+    "node": "20.x",
+    "pnpm": "9.4.0"
   }
 }
