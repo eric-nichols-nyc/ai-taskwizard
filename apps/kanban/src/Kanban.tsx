@@ -3,7 +3,7 @@ import { Column } from "./components/kanban/Column";
 import { TaskCard } from "./components/kanban/TaskCard";
 import { useKanbanStore, Column as ColumnType } from "./store/useKanbanStore";
 import { signInWithGoogle } from '@turbo-with-tailwind-v4/database';
-import { useGetTasks } from "@turbo-with-tailwind-v4/database/use-tasks"; // adjust import path as needed
+import { useFirstBoardKanban } from "@turbo-with-tailwind-v4/database/use-tasks"; // adjust import path as needed
 
 import {
   DndContext,
@@ -42,9 +42,9 @@ export const Kanban = () => {
     activeBoard,
   } = useKanbanStore();
 
-  const { data: userTasks, isLoading, error } = useGetTasks();
+  const { kanban, kanbanLoading, kanbanError } = useFirstBoardKanban();
 
-  console.log('Kanban - userTasks', userTasks);
+  console.log('Kanban - userTasks', kanban);
 
   const [userId, setUserId] = useState<string | undefined>(undefined);
 
@@ -158,6 +158,13 @@ export const Kanban = () => {
       }
     }
   };
+
+  if (kanbanLoading) {
+    return <div>Loading Kanban board...</div>;
+  }
+  if (kanbanError) {
+    return <div>Error loading Kanban board: {kanbanError.message}</div>;
+  }
 
   if (!userId) return <div>...loading</div>;
 

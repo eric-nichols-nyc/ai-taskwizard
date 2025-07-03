@@ -94,3 +94,45 @@ export function useKanbanBoard(boardId: string | undefined) {
     enabled: !!boardId && !!userId,
   });
 }
+
+export function useFirstBoardKanban() {
+  const { user } = useAuth();
+  const userId = user?.id;
+
+  // Get the user's first board
+  const {
+    data: board,
+    isLoading: boardLoading,
+    error: boardError,
+  } = useQuery({
+    queryKey: ['firstBoard', { userId }],
+    queryFn: () => {
+      if (!userId) throw new Error('No userId');
+      return taskService.getFirstBoardByUser(userId);
+    },
+    enabled: !!userId,
+  });
+
+  // Get the kanban data for that board
+  const {
+    data: kanban,
+    isLoading: kanbanLoading,
+    error: kanbanError,
+  } = useQuery({
+    queryKey: ['kanban', { boardId: board?.id, userId }],
+    queryFn: () => {
+      if (!board?.id || !userId) throw new Error('No boardId or userId');
+      return taskService.getKanbanBoard(board.id, userId);
+    },
+    enabled: !!board?.id && !!userId,
+  });
+
+  return {
+    board,
+    boardLoading,
+    boardError,
+    kanban,
+    kanbanLoading,
+    kanbanError,
+  };
+}

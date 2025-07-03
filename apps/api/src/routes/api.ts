@@ -361,4 +361,60 @@ router.get('/boards', authenticateUser, asyncHandler(async (req, res) => {
     res.json(data);
 }));
 
+// Get Kanban data for the user's first board
+router.get('/kanban/first', authenticateUser, asyncHandler(async (req, res) => {
+    const user = (req as any).user;
+    const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+// log user is
+  console.log('user ======== ', user.id);
+    // 1. Get the user's first board
+    const { data: board, error: boardError } = await supabase
+        .from('boards')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: true })
+        .limit(1)
+        .single();
+    if (boardError) {
+        return res.status(500).json({ error: boardError.message });
+    }
+    if (!board) {
+        return res.status(404).json({ error: 'No boards found for user' });
+    }
+    const boardId = board.id;
+
+    // 2. Get columns for the board
+    const { data: columns, error: columnsError } = await supabase
+        .from('columns')
+        .select('*')
+        .eq('board_id', boardId)
+        .order('position', { ascending: true });
+    if (columnsError) {
+        return res.status(500).json({ error: columnsError.message });
+    }
+    if (!columns || columns.length === 0) {
+        return res.json([]); // No columns, return empty array
+    }
+
+    // 3. Get all tasks for these columns and user
+    const columnIds = columns.map(col => col.id);
+    const { data: tasks, error: tasksError } = await supabase
+        .from('tasks')
+        .select('*')
+        .in('column_id', columnIds)
+        .eq('user_id', user.id)
+        .order('position', { ascending: true });
+    if (tasksError) {
+        return res.status(500).json({ error: tasksError.message });
+    }
+
+    // 4. Group tasks by column
+    const kanbanData = columns.map(column => ({
+        ...column,
+        tasks: (tasks ?? []).filter(task => task.column_id === column.id)
+    }));
+
+    res.json(kanbanData);
+}));
+
 export default router

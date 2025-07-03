@@ -13,6 +13,8 @@ export interface TaskService {
   createTaskWithDefaults(data: CreateTaskPayload): Promise<Task>;
   getTasksByUserId(userId: string): Promise<Task[]>;
   getKanbanBoard(boardId: string, userId: string): Promise<KanbanColumn[]>;
+  getFirstBoardByUser(userId: string): Promise<Board | null>;
+  getBoardsByUser(userId: string): Promise<Board[]>;
   // Add more methods as needed (e.g., getTasksByDate, getTasksByPriority)
 }
 
@@ -24,6 +26,14 @@ export interface KanbanColumn {
   color?: string | null;
   created_at?: string;
   tasks: Task[];
+}
+
+export interface Board {
+  id: string;
+  user_id: string;
+  name: string;
+  created_at?: string;
+  // Add other fields as needed
 }
 
 export function createTaskService(): TaskService {
@@ -134,16 +144,15 @@ export function createTaskService(): TaskService {
     },
 
     async getKanbanBoard(boardId: string, userId: string): Promise<KanbanColumn[]> {
-      // 1. Get columns for the board
       const { data: columns, error: columnsError } = await supabase
         .from('columns')
         .select('*')
         .eq('board_id', boardId)
         .order('position', { ascending: true });
+      console.log('getKanbanBoard - boardId:', boardId, 'userId:', userId, 'columns:', columns, 'columnsError:', columnsError);
       if (columnsError) throw new Error(columnsError.message);
       if (!columns || columns.length === 0) return [];
 
-      // 2. Get all tasks for these columns and user
       const columnIds = columns.map((col: KanbanColumn) => col.id);
       const { data: tasks, error: tasksError } = await supabase
         .from('tasks')
@@ -151,13 +160,45 @@ export function createTaskService(): TaskService {
         .in('column_id', columnIds)
         .eq('user_id', userId)
         .order('position', { ascending: true });
+      console.log('getKanbanBoard - columnIds:', columnIds, 'tasks:', tasks, 'tasksError:', tasksError);
       if (tasksError) throw new Error(tasksError.message);
 
-      // 3. Group tasks by column
-      return columns.map((column: KanbanColumn) => ({
+      const grouped = columns.map((column: KanbanColumn) => ({
         ...column,
         tasks: (tasks ?? []).filter((task: Task) => task.column_id === column.id),
       }));
+      console.log('getKanbanBoard - grouped Kanban:', grouped);
+      return grouped;
+    },
+
+    async getFirstBoardByUser(userId: string): Promise<Board | null> {
+      const { data, error } = await supabase
+        .from('boards')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: true })
+        .limit(1)
+        .maybeSingle();
+
+      console.log('getFirstBoardByUser - userId:', userId, 'data:', data, 'error:', error);
+
+      if (error) {
+        throw new Error(error.message);
+      }
+      return data as Board | null;
+    },
+
+    async getBoardsByUser(userId: string): Promise<Board[]> {
+      const { data, error } = await supabase
+        .from('boards')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: true });
+      console.log('getBoardsByUser - userId:', userId, 'data:', data, 'error:', error);
+      if (error) {
+        throw new Error(error.message);
+      }
+      return data as Board[];
     },
   };
 }
