@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
-import {
-  supabase,
-  useAuth,
-} from "@turbo-with-tailwind-v4/database";
-import {Greeting} from "../greeting/greeting";
-import type { Session } from '@supabase/supabase-js';
-import { Tasks } from '../tasks';
-import { useGetTasks } from '../../hooks/use-tasks';
+import { supabase, useAuth } from "@turbo-with-tailwind-v4/database";
+import { Greeting } from "../greeting/greeting";
+import type { Session } from "@supabase/supabase-js";
+import { Tasks } from "../tasks";
+import { useGetTasks } from "../../hooks/use-tasks";
 import { Card } from "@turbo-with-tailwind-v4/design-system/card";
+import { Clock } from "../clock";
+import { Weather } from "../weather";
 
 const IS_ISOLATED = window.location.href.includes(
   import.meta.env.VITE_ISOLATED_HOST
@@ -20,10 +19,10 @@ export function Dashboard() {
   const [loadingSession, setLoadingSession] = useState(true);
   const { data: tasks, isLoading: isLoadingTasks } = useGetTasks();
 
-  console.log('All tasks from hook:', tasks);
+  console.log("All tasks from hook:", tasks);
 
-  const filteredTasks = tasks?.filter(task => {
-    if (task.status !== 'todo') {
+  const filteredTasks = tasks?.filter((task) => {
+    if (task.status !== "todo") {
       return false;
     }
     if (!task.due_date) {
@@ -31,14 +30,14 @@ export function Dashboard() {
     }
     const today = new Date();
     const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
     const todayString = `${year}-${month}-${day}`;
 
     return task.due_date === todayString;
   });
 
-  console.log('Filtered tasks (due today and todo):', filteredTasks);
+  console.log("Filtered tasks (due today and todo):", filteredTasks);
 
   // Update local user if hostUser changes and is present
   useEffect(() => {
@@ -92,34 +91,44 @@ export function Dashboard() {
   }
 
   return (
-      <div className="dark flex flex-col items-center justify-center gap-4 w-full lg:w-[600px] mx-auto p-3">
-          {loadingSession ? (
-            "Loading..."
-          ) : user ? (
-            <div className="flex flex-col items-center justify-center gap-4 w-full">
-              <div className="w-full">
-                <Greeting />
+    <div className="dark flex flex-col items-center justify-center gap-4 w-full mx-auto p-3">
+      {loadingSession ? (
+        "Loading..."
+      ) : user ? (
+        <div className="flex flex-col items-center justify-center gap-4 w-full">
+          <div className="w-full flex flex-col gap-4">
+            <Greeting />
+            <div className="flex w-full gap-4 items-stretch min-h-[100px]">
+              <div className="w-1/2">
+                <Clock />
               </div>
-              <Card className="w-full min-h-[300px]">
-                {isLoadingTasks ? (
-                    <p>Loading tasks...</p>
-                ) : (
-                    <Tasks>
-                        <Tasks.Input />
-                        {filteredTasks && filteredTasks.length > 0 ? (
-                            <Tasks.List tasks={filteredTasks}>
-                                {(task) => <Tasks.Item key={task.id} task={task} />}
-                            </Tasks.List>
-                        ) : (
-                            <p className="text-center text-slate-500 mt-4">No tasks here yet... Add one above!</p>
-                        )}
-                    </Tasks>
-                )}
-              </Card>
+              <div className="w-1/2">
+                <Weather />
+              </div>
             </div>
-          ) : (
-            "No user found"
-          )}
-      </div>
+          </div>
+          <Card className="w-full min-h-[300px]">
+            {isLoadingTasks ? (
+              <p>Loading tasks...</p>
+            ) : (
+              <Tasks>
+                <Tasks.Input />
+                {filteredTasks && filteredTasks.length > 0 ? (
+                  <Tasks.List tasks={filteredTasks}>
+                    {(task) => <Tasks.Item key={task.id} task={task} />}
+                  </Tasks.List>
+                ) : (
+                  <p className="text-center text-slate-500 mt-4">
+                    No tasks here yet... Add one above!
+                  </p>
+                )}
+              </Tasks>
+            )}
+          </Card>
+        </div>
+      ) : (
+        "No user found"
+      )}
+    </div>
   );
 }
