@@ -15,6 +15,7 @@ export interface TaskService {
   getKanbanBoard(boardId: string, userId: string): Promise<KanbanColumn[]>;
   getFirstBoardByUser(userId: string): Promise<Board | null>;
   getBoardsByUser(userId: string): Promise<Board[]>;
+  getTasksByUserIdAndDate(userId: string, date: string): Promise<Task[]>;
   // Add more methods as needed (e.g., getTasksByDate, getTasksByPriority)
 }
 
@@ -199,6 +200,24 @@ export function createTaskService(): TaskService {
         throw new Error(error.message);
       }
       return data as Board[];
+    },
+
+    async getTasksByUserIdAndDate(userId, date) {
+      try {
+        const { data, error } = await supabase
+          .from('tasks')
+          .select('*')
+          .eq('user_id', userId)
+          .eq('due_date', date);
+        if (error) {
+          console.error('Error fetching tasks by user id and date:', error.message);
+          throw new Error('Failed to fetch tasks for the user and date.');
+        }
+        return data ? (data as Task[]) : [];
+      } catch (err) {
+        console.error('Unexpected error in getTasksByUserIdAndDate:', err);
+        throw err;
+      }
     },
   };
 }

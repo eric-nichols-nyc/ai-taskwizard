@@ -79,4 +79,21 @@ export function useDeleteTask() {
       queryClient.invalidateQueries({ queryKey: taskKeys.list(user?.id) });
     },
   });
-} 
+}
+
+/**
+ * Hook to fetch tasks for the current user for a specific date (YYYY-MM-DD).
+ */
+export function useGetTasksByDate(date: string) {
+  const { user } = useAuth();
+  const userId = user?.id;
+
+  return useQuery({
+    queryKey: [...taskKeys.list(userId), { date }],
+    queryFn: () => {
+      if (!userId) throw new Error('User not authenticated');
+      return taskService.getTasksByUserIdAndDate(userId, date);
+    },
+    enabled: !!userId && !!date,
+  });
+}
