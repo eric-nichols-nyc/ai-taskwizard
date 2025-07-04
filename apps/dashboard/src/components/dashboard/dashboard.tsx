@@ -1,3 +1,8 @@
+// Dashboard.tsx
+//
+// This component renders the main dashboard view, including user authentication, greeting, clock, weather, progress bar, and today's tasks.
+// It handles user session management, task filtering, and conditional rendering based on authentication state.
+
 import { useEffect, useState } from "react";
 import { supabase, useAuth } from "@turbo-with-tailwind-v4/database";
 import { Greeting } from "../greeting/greeting";
@@ -7,20 +12,33 @@ import { useGetTasks } from "../../hooks/use-tasks";
 import { Card } from "@turbo-with-tailwind-v4/design-system/card";
 import { Clock } from "../clock";
 import { Weather } from "../weather";
+import { ProgressBar } from "../progressbar/progressbar";
 
+// Check if the app is running in isolated mode (for local development/testing)
 const IS_ISOLATED = window.location.href.includes(
   import.meta.env.VITE_ISOLATED_HOST
 );
 
+/**
+ * Dashboard component
+ *
+ * Renders the main dashboard UI, including user authentication, greeting, clock, weather, progress bar, and today's tasks.
+ * Handles session management and task filtering for tasks due today.
+ */
 export function Dashboard() {
+  // Get the authenticated user from the host (if available)
   const { user: hostUser } = useAuth();
+  // Fetch all tasks using a custom hook
+  const { data: tasks, isLoading: isLoadingTasks } = useGetTasks();
+  // Local state for user and session
   const [user, setUser] = useState(hostUser);
   const [session, setSession] = useState<Session | null>(null);
   const [loadingSession, setLoadingSession] = useState(true);
-  const { data: tasks, isLoading: isLoadingTasks } = useGetTasks();
 
+  // Log all tasks for debugging
   console.log("All tasks from hook:", tasks);
 
+  // Filter tasks to only those that are 'todo' and due today
   const filteredTasks = tasks?.filter((task) => {
     if (task.status !== "todo") {
       return false;
@@ -49,6 +67,7 @@ export function Dashboard() {
     console.log("DashboardApp - session:", session);
   }, [hostUser, session]);
 
+  // Handle sign-in with Google if running in isolated mode
   useEffect(() => {
     async function maybeSignInWithGoogle() {
       if (IS_ISOLATED) {
@@ -78,6 +97,7 @@ export function Dashboard() {
     // Add hostUser as a dependency so we can set user if session is found after hostUser is null
   }, [hostUser]);
 
+  // On mount, get the current session and set user/session state
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
@@ -86,17 +106,15 @@ export function Dashboard() {
     });
   }, []);
 
-  if (loadingSession) {
-    return <div>Loading...</div>;
-  }
-
+  // Main dashboard UI rendering
   return (
     <div className="dark flex flex-col items-center justify-center gap-4 w-full mx-auto p-3">
       {loadingSession ? (
-        "Loading..."
+         <div>Loading...</div>
       ) : user ? (
         <div className="flex flex-col items-center justify-center gap-4 w-full">
           <div className="w-full flex flex-col gap-4">
+            {/* Greeting, Clock, and Weather widgets */}
             <Greeting />
             <div className="flex sm:flex-col md:flex-row w-full gap-4 items-stretch min-h-[100px]">
               <div className="w-full sm:w-full md:w-1/2">
@@ -107,6 +125,9 @@ export function Dashboard() {
               </div>
             </div>
           </div>
+          {/* Progress bar widget */}
+          <ProgressBar />
+          {/* Task list card */}
           <Card className="w-full min-h-[300px]">
             {isLoadingTasks ? (
               <p>Loading tasks...</p>
@@ -127,7 +148,7 @@ export function Dashboard() {
           </Card>
         </div>
       ) : (
-        "No user found"
+        <div>No user found</div>
       )}
     </div>
   );

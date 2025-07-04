@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@turbo-with-tailwind-v4/design-system/select';
+import { Card } from '@turbo-with-tailwind-v4/design-system/card';
 
 type Priority = 'Low' | 'Medium' | 'High';
 
@@ -53,7 +54,7 @@ export const TaskItem = ({ task }: TaskItemProps) => {
 
   if (isEditing) {
     return (
-      <div className="flex items-center gap-4 bg-slate-700 rounded-2xl p-4 transition-colors">
+      <Card className="flex items-center gap-4 bg-slate-700 rounded-2xl p-4 transition-colors">
         <Input
             value={editedTitle}
             onChange={(e) => setEditedTitle(e.target.value)}
@@ -79,14 +80,20 @@ export const TaskItem = ({ task }: TaskItemProps) => {
             Cancel
           </Button>
         </div>
-      </div>
+      </Card>
     );
   }
 
   return (
     <div
-      className="flex items-center gap-4 bg-slate-800/50 rounded-2xl p-4 hover:bg-slate-800/70 transition-colors"
+      className={
+        `flex items-center gap-4 rounded-2xl p-4 transition-colors relative ` +
+        `bg-slate-900/90 border-l-4 ` +
+        `${task.priority === 'High' ? 'border-red-500' : task.priority === 'Medium' ? 'border-orange-400' : 'border-green-500'} ` +
+        `shadow-2xl hover:shadow-[0_8px_32px_0_rgba(0,0,0,0.45)] hover:scale-[1.025] hover:bg-slate-900`
+      }
       data-pending={updateTaskMutation.isPending || deleteTaskMutation.isPending}
+      style={{ minHeight: '64px' }}
     >
       <Checkbox
         checked={task.status === 'done'}
@@ -95,7 +102,7 @@ export const TaskItem = ({ task }: TaskItemProps) => {
         className="w-6 h-6 rounded-full border-2 border-slate-500 data-[state=checked]:bg-indigo-600 data-[state=checked]:border-indigo-600"
       />
 
-      <span className={`text-lg flex-1 ${task.status === 'done' ? "text-slate-500 line-through" : "text-white"}`}>
+      <span className={`text-lg font-semibold flex-1 ${task.status === 'done' ? "text-slate-500 line-through" : "text-white"}`}>
         {task.title}
       </span>
 
@@ -103,7 +110,7 @@ export const TaskItem = ({ task }: TaskItemProps) => {
         <Flag className="w-4 h-4" />
         <span className="text-sm font-medium">{task.priority}</span>
       </div>
-      
+
       <div className="flex items-center gap-1">
         <Button variant="ghost" size="icon" className="text-slate-400 hover:text-white" onClick={() => setIsEditing(true)}>
           <Pencil className="w-4 h-4" />
@@ -116,4 +123,4 @@ export const TaskItem = ({ task }: TaskItemProps) => {
   );
 };
 
-TaskItem.displayName = 'TaskItem'; 
+TaskItem.displayName = 'TaskItem';

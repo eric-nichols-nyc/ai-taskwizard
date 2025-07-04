@@ -17,3 +17,4 @@ export * from './components/ui/badge';
 export * from './components/ui/popover';
 
 export * from './components/coming-soon';
+export * from './components/animated-progress-bar';
