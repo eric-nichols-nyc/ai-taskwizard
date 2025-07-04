@@ -26,7 +26,7 @@ export const Greeting = () => {
   const timeOfDay = getTimeOfDay(localtime)
 
   return (
-    <Card className="flex flex-col p-4">
+    <Card className="flex flex-col px-4 py-8 bg-hero-gradient">
       <div className="flex items-center mb-2 gap-2">
         {typeof weather?.weather_descriptions?.[0] === 'string' ? WeatherIcon(weather.weather_descriptions[0]) : <Cloud />}
         <h1 className="text-2xl md:text-3xl font-bold">

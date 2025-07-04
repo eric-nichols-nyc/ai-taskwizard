@@ -47,6 +47,7 @@
   --accent-green: oklch(0.75 0.15 140);
   --accent-yellow: oklch(0.95 0.18 100);
   --accent-pink: oklch(0.85 0.20 340);
+  --gradient-hero: linear-gradient(135deg, #6a85f1 0%, #8f6ed5 100%);
 }
 
 .dark {
@@ -186,4 +187,13 @@
   100% {
     background-position: 0% 50%;
   }
+}
+
+.bg-grad {
+  background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+}
+
+.bg-hero-gradient {
+  background: var(--gradient-hero);
+  border: 1px solid var(--border);
 }
