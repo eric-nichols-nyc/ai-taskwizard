@@ -13,6 +13,7 @@ import { Card } from "@turbo-with-tailwind-v4/design-system/card";
 import { Clock } from "../clock";
 import { Weather } from "../weather";
 import { ProgressBar } from "../progressbar/progressbar";
+import { Calendar } from "../calendar";
 
 // Check if the app is running in isolated mode (for local development/testing)
 const IS_ISOLATED = window.location.href.includes(
@@ -146,6 +147,7 @@ export function Dashboard() {
               </Tasks>
             )}
           </Card>
+          <Calendar />
         </div>
       ) : (
         <div>No user found</div>
