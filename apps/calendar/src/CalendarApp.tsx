@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Plus } from 'lucide-react';
 import { Button } from '@turbo-with-tailwind-v4/design-system/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@turbo-with-tailwind-v4/design-system/dialog';
+import { AddTaskSheet } from './components/add-task-sheet';
 import { supabase, useAuth, signInWithEmail } from '@turbo-with-tailwind-v4/database';
 import type { User } from '@supabase/supabase-js';
 import { useAddTask } from '@turbo-with-tailwind-v4/database/use-tasks';
@@ -60,12 +60,6 @@ const TaskForm: React.FC<{
         </div>
         {error && <p className="col-span-4 text-red-500 text-sm text-center py-2">{error}</p>}
       </div>
-      <DialogFooter>
-        <Button type="button" onClick={onCancel} className="px-4 py-2 bg-gray-200 rounded" disabled={isSubmitting}>Cancel</Button>
-        <Button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded" disabled={isSubmitting}>
-          {isSubmitting ? 'Adding...' : 'Add Task'}
-        </Button>
-      </DialogFooter>
     </form>
   );
 };
@@ -406,29 +400,11 @@ export const CalendarApp: React.FC = () => {
           </div>
         )}
       </ErrorBoundary>
-      <Dialog open={isAddTaskDialogOpen} onOpenChange={setIsAddTaskDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Add New Task</DialogTitle>
-            <DialogDescription>
-              Fill in the details below to add a new task to your calendar.
-            </DialogDescription>
-          </DialogHeader>
-          <TaskForm
-            onSubmit={(data) => {
-              addTaskMutation.mutate(data, {
-                onSuccess: () => {
-                  setIsAddTaskDialogOpen(false);
-                  fetchTasksForMonth();
-                }
-              });
-            }}
-            onCancel={() => setIsAddTaskDialogOpen(false)}
-            isSubmitting={addTaskMutation.isPending}
-            error={addTaskMutation.error?.message || null}
-          />
-        </DialogContent>
-      </Dialog>
+      <AddTaskSheet
+        onAddTask={() => {}}
+        open={isAddTaskDialogOpen}
+        onOpenChange={setIsAddTaskDialogOpen}
+      />
     </div>
   );
 };

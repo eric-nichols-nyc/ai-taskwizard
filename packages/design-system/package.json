@@ -91,6 +91,14 @@
     "./slider": {
       "types": "./src/components/ui/slider.tsx",
       "import": "./src/components/ui/slider.tsx"
+    },
+    "./sheet": {
+      "types": "./src/components/ui/sheet.tsx",
+      "import": "./src/components/ui/sheet.tsx"
+    },
+    "./textarea": {
+      "types": "./src/components/ui/textarea.tsx",
+      "import": "./src/components/ui/textarea.tsx"
     }
   },
   "scripts": {
