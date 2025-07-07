@@ -18,3 +18,5 @@ export * from './components/ui/popover';
 
 export * from './components/coming-soon';
 export * from './components/animated-progress-bar';
+export * from './components/ui/sheet';
+export * from './components/ui/textarea';

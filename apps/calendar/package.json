@@ -24,6 +24,7 @@
     "react": "^19.1.0",
     "react-dom": "^19.0.0",
     "tailwind-merge": "^3.0.2",
+    "zod": "^3.25.75",
     "zustand": "^5.0.4"
   },
   "devDependencies": {
@@ -46,11 +47,6 @@
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.26.1",
     "vite": "^6.3.1"
-  },
-  "vite": {
-    "server": {
-      "port": 3001
-    }
   },
   "engines": {
     "node": "20.x",

@@ -1,13 +1,12 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { Calendar, Clock, Tag } from "lucide-react"
-import { Button } from "@turbo-with-tailwind-v4/design-system/button"
-import { Input } from "@turbo-with-tailwind-v4/design-system/input"
-import { Label } from "@turbo-with-tailwind-v4/design-system/label"
-import { Textarea } from "@turbo-with-tailwind-v4/design-system/textarea"
+import { useState } from "react";
+import { Calendar } from "lucide-react";
+import { Button } from "@turbo-with-tailwind-v4/design-system/button";
+import { Input } from "@turbo-with-tailwind-v4/design-system/input";
+import { Label } from "@turbo-with-tailwind-v4/design-system/label";
 import {
   Sheet,
   SheetClose,
@@ -16,65 +15,88 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from "@turbo-with-tailwind-v4/design-system/sheet"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@turbo-with-tailwind-v4/design-system/select"
+} from "@turbo-with-tailwind-v4/design-system/sheet";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@turbo-with-tailwind-v4/design-system/select";
 
 interface Task {
-  id: string
-  title: string
-  description: string
-  time: string
-  priority: "low" | "medium" | "high"
-  category: string
+  id: string;
+  title: string;
+  description: string;
+  time: string;
+  priority: "low" | "medium" | "high";
+  category: string;
 }
 
 interface AddTaskSheetProps {
-  onAddTask: (task: Omit<Task, "id">) => void
-  open: boolean
-  onOpenChange: (open: boolean) => void
+  onAddTask: (task: Omit<Task, "id">) => Promise<void>;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  error?: string | null;
 }
 
-export function AddTaskSheet({ onAddTask, open, onOpenChange }: AddTaskSheetProps) {
-  const [title, setTitle] = useState("")
-  const [description, setDescription] = useState("")
-  const [time, setTime] = useState("")
-  const [priority, setPriority] = useState<"low" | "medium" | "high">("medium")
-  const [category, setCategory] = useState("")
+export function AddTaskSheet({
+  onAddTask,
+  open,
+  onOpenChange,
+  error: externalError,
+}: AddTaskSheetProps) {
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [priority, setPriority] = useState<"low" | "medium" | "high">("medium");
+  const [category, setCategory] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-
-    if (!title.trim()) return
-
-    onAddTask({
-      title: title.trim(),
-      description: description.trim(),
-      time: time || "09:00",
-      priority,
-      category: category || "General",
-    })
-
-    // Reset form
-    setTitle("")
-    setDescription("")
-    setTime("")
-    setPriority("medium")
-    setCategory("")
-  }
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!title.trim()) return;
+    setIsSubmitting(true);
+    setError(null);
+    try {
+      await onAddTask({
+        title: title.trim(),
+        description: description.trim(),
+        time: "09:00",
+        priority,
+        category: category || "General",
+      });
+      setTitle("");
+      setDescription("");
+      setPriority("medium");
+      setCategory("");
+    } catch (err: unknown) {
+      if (err && typeof err === 'object' && 'message' in err) {
+        setError((err as { message?: string }).message || "Failed to add task");
+      } else {
+        setError("Failed to add task");
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="bottom" className="h-[80vh] rounded-t-xl">
+      <SheetContent side="bottom" className="h-[50vh] rounded-t-xl">
         <SheetHeader className="text-left">
           <SheetTitle className="flex items-center gap-2">
             <Calendar className="h-5 w-5" />
             Add New Task
           </SheetTitle>
-          <SheetDescription>Create a new task for today. Fill in the details below.</SheetDescription>
+          <SheetDescription>
+            Create a new task for today. Fill in the details below.
+          </SheetDescription>
         </SheetHeader>
 
-        <form onSubmit={handleSubmit} className="flex flex-col h-full">
-          <div className="flex-1 space-y-6 py-6">
+        {externalError && <div className="text-red-500 text-sm mb-2">{externalError}</div>}
+        <form onSubmit={handleSubmit} className="flex flex-col h-full p-4">
+          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="task-title">Task Title</Label>
               <Input
@@ -85,68 +107,38 @@ export function AddTaskSheet({ onAddTask, open, onOpenChange }: AddTaskSheetProp
                 required
               />
             </div>
-
             <div className="space-y-2">
-              <Label htmlFor="task-description">Description</Label>
-              <Textarea
-                id="task-description"
-                placeholder="Add more details about your task..."
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                rows={3}
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="task-time" className="flex items-center gap-2">
-                  <Clock className="h-4 w-4" />
-                  Time
-                </Label>
-                <Input id="task-time" type="time" value={time} onChange={(e) => setTime(e.target.value)} />
-              </div>
-
-              <div className="space-y-2">
-                <Label>Priority</Label>
-                <Select value={priority} onValueChange={(value: "low" | "medium" | "high") => setPriority(value)}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="low">Low</SelectItem>
-                    <SelectItem value="medium">Medium</SelectItem>
-                    <SelectItem value="high">High</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="task-category" className="flex items-center gap-2">
-                <Tag className="h-4 w-4" />
-                Category
-              </Label>
-              <Input
-                id="task-category"
-                placeholder="Work, Personal, Health, etc."
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-              />
+              <Label>Priority</Label>
+              <Select
+                value={priority}
+                onValueChange={(value: "low" | "medium" | "high") =>
+                  setPriority(value)
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="low">Low</SelectItem>
+                  <SelectItem value="medium">Medium</SelectItem>
+                  <SelectItem value="high">High</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
-
-          <SheetFooter className="flex-shrink-0 gap-2">
+          {error && <div className="text-red-500 text-sm mt-2">{error}</div>}
+          <SheetFooter className="flex-shrink-0 gap-2 mt-4">
             <SheetClose asChild>
-              <Button variant="outline" type="button">
+              <Button variant="outline" type="button" disabled={isSubmitting}>
                 Cancel
               </Button>
             </SheetClose>
-            <Button type="submit" disabled={!title.trim()}>
-              Add Task
+            <Button type="submit" disabled={!title.trim() || isSubmitting}>
+              {isSubmitting ? "Adding..." : "Add Task"}
             </Button>
           </SheetFooter>
         </form>
       </SheetContent>
     </Sheet>
-  )
+  );
 }

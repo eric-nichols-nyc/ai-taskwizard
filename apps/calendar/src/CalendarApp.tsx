@@ -19,51 +19,6 @@ interface Task {
   // ...other fields as needed
 }
 
-const TaskForm: React.FC<{
-  onCancel: () => void;
-  onSubmit: (data: { title: string }) => void;
-  isSubmitting: boolean;
-  error: string | null;
-}> = ({ onCancel, onSubmit, isSubmitting, error }) => {
-  const [title, setTitle] = React.useState('');
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('Attempting to handle submit...');
-    try {
-      if (title.trim()) {
-        console.log('Submitting data:', { title });
-        onSubmit({ title });
-        console.log('onSubmit prop called successfully.');
-      } else {
-        console.warn('Submission prevented: title is empty.');
-      }
-    } catch (err) {
-      console.error('Error in handleSubmit:', err);
-    }
-  };
-
-  return (
-    <form onSubmit={handleSubmit}>
-      <div className="grid gap-4 py-4">
-        <div className="grid grid-cols-4 items-center gap-4">
-          <label htmlFor="title" className="text-right">
-            Title
-          </label>
-          <input
-            id="title"
-            placeholder="Enter task title"
-            className="col-span-3 p-2 border rounded"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-        </div>
-        {error && <p className="col-span-4 text-red-500 text-sm text-center py-2">{error}</p>}
-      </div>
-    </form>
-  );
-};
-
 export const CalendarApp: React.FC = () => {
 
   const auth = useAuth();
@@ -77,6 +32,7 @@ export const CalendarApp: React.FC = () => {
   const [isAddTaskDialogOpen, setIsAddTaskDialogOpen] = useState(false);
   const addTaskMutation = useAddTask();
   const [view, setView] = useState<'month' | 'week'>('week');
+  const [addTaskError, setAddTaskError] = useState<string | null>(null);
 
   useEffect(() => {
     if (user) {
@@ -108,6 +64,7 @@ export const CalendarApp: React.FC = () => {
       maybeSignIn();
     }
   }, []);
+
 
   // Fetch all tasks for the current month
   const fetchTasksForMonth = async (): Promise<void> => {
@@ -401,9 +358,36 @@ export const CalendarApp: React.FC = () => {
         )}
       </ErrorBoundary>
       <AddTaskSheet
-        onAddTask={() => {}}
+        onAddTask={async (task) => {
+          try {
+            setAddTaskError(null);
+            const priorityMap: Record<'low' | 'medium' | 'high', 'Low' | 'Medium' | 'High'> = {
+              low: 'Low',
+              medium: 'Medium',
+              high: 'High',
+            };
+            await addTaskMutation.mutateAsync({
+              ...task,
+              priority: priorityMap[task.priority],
+              due_date: currentDate.toISOString().split('T')[0],
+            });
+            setIsAddTaskDialogOpen(false);
+            fetchTasksForMonth();
+          } catch (err) {
+            if (err && typeof err === 'object' && 'message' in err) {
+              setAddTaskError((err as { message?: string }).message || 'Failed to add task');
+            } else {
+              setAddTaskError('Failed to add task');
+            }
+            throw err; // propagate to AddTaskSheet for local error display
+          }
+        }}
         open={isAddTaskDialogOpen}
-        onOpenChange={setIsAddTaskDialogOpen}
+        onOpenChange={(open) => {
+          setIsAddTaskDialogOpen(open);
+          if (!open) setAddTaskError(null);
+        }}
+        error={addTaskError}
       />
     </div>
   );
