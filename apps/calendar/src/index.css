@@ -38,10 +38,13 @@
 .calendar-grid-gap {
   background-color: var(--border);
 }
-
+/* Sticky header */
 .calendar-header {
   background-color: var(--card);
   color: var(--card);
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .calendar-header-day {
