@@ -161,16 +161,6 @@ export const CalendarApp: React.FC = () => {
 
   return (
     <div className="w-full mx-auto p-6">
-      {/* Header Component */}
-      {
-        user ? (
-          <div>
-            <div>Email: {user.email}</div>
-          </div>
-        ) : (
-          <div>Calendar - No User Found</div>
-        )
-      }
       <div className="flex items-center justify-between mb-6 pb-4 border-b">
         <div className="flex items-center space-x-4">
           <Calendar className="w-6 h-6 text-blue-600" />
@@ -264,12 +254,12 @@ export const CalendarApp: React.FC = () => {
                 return (
                   <Card
                     key={index}
-                    className={`min-h-[60px] sm:min-h-0 flex flex-col p-1 sm:p-2 cursor-pointer transition-colors ${
+                    className={`min-h-[220px] sm:min-h-0 flex flex-col p-1 sm:p-2 cursor-pointer transition-colors ${
                       isToday
                         ? 'calendar-today ring-2 ring-blue-500 border-blue-500'
                         : 'calendar-day'
                     }`}
-                    style={{height: '100%'}} // Ensure full height
+                    style={{height: '100%', minHeight: '220px'}}
                   >
                     {date && (
                       <>
@@ -321,7 +311,7 @@ export const CalendarApp: React.FC = () => {
                       className={`min-h-[100px] sm:min-h-0 flex flex-col p-2 cursor-pointer transition-colors ${
                         isToday ? 'calendar-today ring-2 ring-blue-500 border-blue-500' : 'calendar-day'
                       }`}
-                      style={{height: '100%'}}
+                      style={{height: '100%', minHeight: '180px'}}
                     >
                       <div className="flex items-center justify-between mb-2">
                         <span className="text-xs font-medium">{weekDays[index]}</span>
