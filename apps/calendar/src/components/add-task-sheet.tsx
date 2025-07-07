@@ -24,17 +24,14 @@ import {
   SelectValue,
 } from "@turbo-with-tailwind-v4/design-system/select";
 
-interface Task {
-  id: string;
+type CreateTaskPayload = {
   title: string;
   description: string;
-  time: string;
-  priority: "low" | "medium" | "high";
-  category: string;
-}
+  priority: "Low" | "Medium" | "High";
+};
 
 interface AddTaskSheetProps {
-  onAddTask: (task: Omit<Task, "id">) => Promise<void>;
+  onAddTask: (task: CreateTaskPayload) => Promise<void>;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   error?: string | null;
@@ -48,8 +45,7 @@ export function AddTaskSheet({
 }: AddTaskSheetProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [priority, setPriority] = useState<"low" | "medium" | "high">("medium");
-  const [category, setCategory] = useState("");
+  const [priority, setPriority] = useState<"Low" | "Medium" | "High">("Medium");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -62,14 +58,11 @@ export function AddTaskSheet({
       await onAddTask({
         title: title.trim(),
         description: description.trim(),
-        time: "09:00",
         priority,
-        category: category || "General",
       });
       setTitle("");
       setDescription("");
-      setPriority("medium");
-      setCategory("");
+      setPriority("Medium");
     } catch (err: unknown) {
       if (err && typeof err === 'object' && 'message' in err) {
         setError((err as { message?: string }).message || "Failed to add task");
@@ -111,17 +104,15 @@ export function AddTaskSheet({
               <Label>Priority</Label>
               <Select
                 value={priority}
-                onValueChange={(value: "low" | "medium" | "high") =>
-                  setPriority(value)
-                }
+                onValueChange={(value: "Low" | "Medium" | "High") => setPriority(value)}
               >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="low">Low</SelectItem>
-                  <SelectItem value="medium">Medium</SelectItem>
-                  <SelectItem value="high">High</SelectItem>
+                  <SelectItem value="Low">Low</SelectItem>
+                  <SelectItem value="Medium">Medium</SelectItem>
+                  <SelectItem value="High">High</SelectItem>
                 </SelectContent>
               </Select>
             </div>

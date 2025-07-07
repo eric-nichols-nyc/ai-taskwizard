@@ -361,14 +361,10 @@ export const CalendarApp: React.FC = () => {
         onAddTask={async (task) => {
           try {
             setAddTaskError(null);
-            const priorityMap: Record<'low' | 'medium' | 'high', 'Low' | 'Medium' | 'High'> = {
-              low: 'Low',
-              medium: 'Medium',
-              high: 'High',
-            };
+
             await addTaskMutation.mutateAsync({
               ...task,
-              priority: priorityMap[task.priority],
+              priority: task.priority,
               due_date: currentDate.toISOString().split('T')[0],
             });
             setIsAddTaskDialogOpen(false);
