@@ -6,6 +6,7 @@ import { supabase, useAuth, signInWithEmail } from '@turbo-with-tailwind-v4/data
 import type { User } from '@supabase/supabase-js';
 import { useAddTask } from '@turbo-with-tailwind-v4/database/use-tasks';
 import { ErrorBoundary } from '@turbo-with-tailwind-v4/design-system';
+import { Card } from '@turbo-with-tailwind-v4/design-system';
 
 console.log('[Calendar App] Environment:', import.meta.env);
 
@@ -179,9 +180,8 @@ export const CalendarApp: React.FC = () => {
                 ? `${['January', 'February', 'March', 'April', 'May', 'June',
                   'July', 'August', 'September', 'October', 'November', 'December'][currentDate.getMonth()]} ${currentDate.getFullYear()}`
                 : (() => {
-                    const weekDates = getWeekDates(currentDate);
-                    const start = weekDates[0];
-                    const end = weekDates[6];
+                    const start = getWeekDates(currentDate)[0];
+                    const end = getWeekDates(currentDate)[6];
                     return `${start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${end.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
                   })()
               }
@@ -262,15 +262,14 @@ export const CalendarApp: React.FC = () => {
                 const dayTasks: Task[] = getTasksForDate(date);
                 const isToday: boolean = !!date && date.toDateString() === new Date().toDateString();
                 return (
-                  <div
+                  <Card
                     key={index}
                     className={`min-h-[60px] sm:min-h-0 flex flex-col p-1 sm:p-2 cursor-pointer transition-colors ${
                       isToday
-                        ? 'calendar-today'
+                        ? 'calendar-today ring-2 ring-blue-500 border-blue-500'
                         : 'calendar-day'
                     }`}
                     style={{height: '100%'}} // Ensure full height
-                    onClick={() => {}} // Placeholder for event popover
                   >
                     {date && (
                       <>
@@ -301,7 +300,7 @@ export const CalendarApp: React.FC = () => {
                         </div>
                       </>
                     )}
-                  </div>
+                  </Card>
                 );
               })}
             </div>
@@ -309,50 +308,49 @@ export const CalendarApp: React.FC = () => {
         ) : (
           // Week view
           <div className="bg-card rounded-lg shadow h-full flex flex-col">
-            {/* Day headers - hidden on mobile */}
-            <div className="hidden sm:grid grid-cols-1 sm:grid-cols-7 gap-px calendar-header">
-              {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => (
-                <div key={day} className="px-3 py-2 text-center text-sm font-medium calendar-header-day">
-                  {day}
-                </div>
-              ))}
-            </div>
+            {/* Removed day headers row for week view */}
             <div className="grid grid-cols-1 sm:grid-cols-7 gap-px calendar-grid-gap flex-1 min-h-[400px]">
-              {getWeekDates(currentDate).map((date, index) => {
-                const dayTasks = getTasksForDate(date);
-                const isToday = date.toDateString() === new Date().toDateString();
-                return (
-                  <div
-                    key={index}
-                    className={`min-h-[100px] sm:min-h-0 flex flex-col p-2 cursor-pointer transition-colors ${
-                      isToday ? 'calendar-today' : 'calendar-day'
-                    }`}
-                    style={{height: '100%'}} // Ensure full height
-                  >
-                    <div className="text-xs sm:text-sm font-medium mb-1">{date.getDate()}</div>
-                    <div className="flex flex-col gap-1 flex-1">
-                      {dayTasks.slice(0, 3).map((task) => (
-                        <div
-                          key={task.id}
-                          className="calendar-event w-full block rounded-md border-l-4 px-3 py-1 text-xs font-medium mb-1 text-white"
-                          style={{
-                            borderLeftColor: '#3B82F6',
-                            backgroundColor: 'rgba(19,19,22,0.7)',
-                            color: '#fff'
-                          }}
-                        >
-                          {task.title}
-                        </div>
-                      ))}
-                      {dayTasks.length > 3 && (
-                        <div className="text-xs text-gray-500 px-2">
-                          +{dayTasks.length - 3} more
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
+              {(() => {
+                const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+                return getWeekDates(currentDate).map((date, index) => {
+                  const dayTasks = getTasksForDate(date);
+                  const isToday = date.toDateString() === new Date().toDateString();
+                  return (
+                    <Card
+                      key={index}
+                      className={`min-h-[100px] sm:min-h-0 flex flex-col p-2 cursor-pointer transition-colors ${
+                        isToday ? 'calendar-today ring-2 ring-blue-500 border-blue-500' : 'calendar-day'
+                      }`}
+                      style={{height: '100%'}}
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-xs font-medium">{weekDays[index]}</span>
+                        <span className="text-xs font-medium">{date.getDate()}</span>
+                      </div>
+                      <div className="flex flex-col gap-1 flex-1">
+                        {dayTasks.slice(0, 3).map((task) => (
+                          <div
+                            key={task.id}
+                            className="calendar-event w-full block rounded-md border-l-4 px-3 py-1 text-xs font-medium mb-1 text-white"
+                            style={{
+                              borderLeftColor: '#3B82F6',
+                              backgroundColor: 'rgba(19,19,22,0.7)',
+                              color: '#fff'
+                            }}
+                          >
+                            {task.title}
+                          </div>
+                        ))}
+                        {dayTasks.length > 3 && (
+                          <div className="text-xs text-gray-500 px-2">
+                            +{dayTasks.length - 3} more
+                          </div>
+                        )}
+                      </div>
+                    </Card>
+                  );
+                });
+              })()}
             </div>
           </div>
         )}
