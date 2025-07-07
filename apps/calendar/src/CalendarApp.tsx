@@ -216,7 +216,7 @@ export const CalendarApp: React.FC = () => {
             <div>Email: {user.email}</div>
           </div>
         ) : (
-          <div>No User Found</div>
+          <div>Calendar - No User Found</div>
         )
       }
       <div className="flex items-center justify-between mb-6 pb-4 border-b">

@@ -150,7 +150,7 @@ export function Dashboard() {
           <Calendar />
         </div>
       ) : (
-        <div>No user found</div>
+        <div>Dashboard - No user found</div>
       )}
     </div>
   );
