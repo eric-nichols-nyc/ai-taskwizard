@@ -1210,54 +1210,11 @@ importers:
         specifier: ^6.9.0
         version: 6.10.0(prisma@6.10.0(typescript@5.8.3))(typescript@5.8.3)
       '@supabase/supabase-js':
-        specifier: ^2.39.3
-        version: 2.50.0
-      '@turbo-with-tailwind-v4/design-system':
-        specifier: workspace:*
-        version: link:../design-system
-      lucide-react:
-        specifier: ^0.475.0
-        version: 0.475.0(react@19.1.0)
-      react:
-        specifier: ^19.1.0
-        version: 19.1.0
-      tailwindcss:
-        specifier: ^4.1.9
-        version: 4.1.10
+        specifier: ^2.50.3
+        version: 2.50.3
       zod:
-        specifier: ^3.25.63
-        version: 3.25.67
-    devDependencies:
-      '@prisma/extension-accelerate':
-        specifier: ^2.0.1
-        version: 2.0.1(@prisma/client@6.10.0(prisma@6.10.0(typescript@5.8.3))(typescript@5.8.3))
-      '@turbo-with-tailwind-v4/eslint-config':
-        specifier: workspace:*
-        version: link:../eslint-config
-      '@turbo-with-tailwind-v4/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
-      '@types/react':
-        specifier: ^19.0.10
-        version: 19.1.8
-      '@vitejs/plugin-react':
-        specifier: ^4.3.4
-        version: 4.5.2(vite@6.3.5(@types/node@24.0.3)(jiti@2.4.2)(lightningcss@1.30.1))
-      prisma:
-        specifier: ^6.9.0
-        version: 6.10.0(typescript@5.8.3)
-      typescript:
-        specifier: ^5.8.2
-        version: 5.8.3
-      vite:
-        specifier: ^6.3.1
-        version: 6.3.5(@types/node@24.0.3)(jiti@2.4.2)(lightningcss@1.30.1)
-      vite-tsconfig-paths:
-        specifier: ^5.1.4
-        version: 5.1.4(typescript@5.8.3)(vite@6.3.5(@types/node@24.0.3)(jiti@2.4.2)(lightningcss@1.30.1))
-      vitest:
-        specifier: ^1.4.0
-        version: 1.6.1(@types/node@24.0.3)(@vitest/ui@1.6.1)(jsdom@26.1.0)(lightningcss@1.30.1)
+        specifier: ^3.25.76
+        version: 3.25.76
 
   packages/typescript-config: {}
 
@@ -2461,12 +2418,6 @@ packages:
   '@prisma/engines@6.8.2':
     resolution: {integrity: sha512-XqAJ//LXjqYRQ1RRabs79KOY4+v6gZOGzbcwDQl0D6n9WBKjV7qdrbd042CwSK0v0lM9MSHsbcFnU2Yn7z8Zlw==}
 
-  '@prisma/extension-accelerate@2.0.1':
-    resolution: {integrity: sha512-KSQlLC5F1qxFQCqSP8SnCwhkv9SE40v8WR+UjHdRce0R7Fv/K3IfJJNANGFx5MNoOypK1VN6wfvRr6CNA/l+BQ==}
-    engines: {node: '>=18'}
-    peerDependencies:
-      '@prisma/client': '>=4.16.1'
-
   '@prisma/fetch-engine@6.10.0':
     resolution: {integrity: sha512-7An09F6Xe886gSwcj1HEY/0LBuD4IR0ZnKbNv4d0kMnmNzGCz+IK4XRnd/yOkiptIks0nF+igLEin5MEoBejfA==}
 
@@ -3261,6 +3212,9 @@ packages:
   '@supabase/functions-js@2.4.4':
     resolution: {integrity: sha512-WL2p6r4AXNGwop7iwvul2BvOtuJ1YQy8EbOd0dhG1oN1q8el/BIRSFCFnWAMM/vJJlHWLi4ad22sKbKr9mvjoA==}
 
+  '@supabase/functions-js@2.4.5':
+    resolution: {integrity: sha512-v5GSqb9zbosquTo6gBwIiq7W9eQ7rE5QazsK/ezNiQXdCbY+bH8D9qEaBIkhVvX4ZRW5rP03gEfw5yw9tiq4EQ==}
+
   '@supabase/node-fetch@2.6.15':
     resolution: {integrity: sha512-1ibVeYUacxWYi9i0cf5efil6adJ9WRyZBLivgjs+AUpewx1F3xPi7gLgaASI2SmIQxPoCEjAsLAzKPgMJVgOUQ==}
     engines: {node: 4.x || >=6.0.0}
@@ -3271,11 +3225,17 @@ packages:
   '@supabase/realtime-js@2.11.10':
     resolution: {integrity: sha512-SJKVa7EejnuyfImrbzx+HaD9i6T784khuw1zP+MBD7BmJYChegGxYigPzkKX8CK8nGuDntmeSD3fvriaH0EGZA==}
 
+  '@supabase/realtime-js@2.11.15':
+    resolution: {integrity: sha512-HQKRnwAqdVqJW/P9TjKVK+/ETpW4yQ8tyDPPtRMKOH4Uh3vQD74vmj353CYs8+YwVBKubeUOOEpI9CT8mT4obw==}
+
   '@supabase/storage-js@2.7.1':
     resolution: {integrity: sha512-asYHcyDR1fKqrMpytAS1zjyEfvxuOIp1CIXX7ji4lHHcJKqyk+sLl/Vxgm4sN6u8zvuUtae9e4kDxQP2qrwWBA==}
 
   '@supabase/supabase-js@2.50.0':
     resolution: {integrity: sha512-M1Gd5tPaaghYZ9OjeO1iORRqbTWFEz/cF3pPubRnMPzA+A8SiUsXXWDP+DWsASZcjEcVEcVQIAF38i5wrijYOg==}
+
+  '@supabase/supabase-js@2.50.3':
+    resolution: {integrity: sha512-Ld42AbfSXKnbCE2ObRvrGC5wj9OrfTOzswQZg0OcGQGx+QqcWYN/IqsLqrt4gCFrD57URbNRfGESSWzchzKAuQ==}
 
   '@tabler/icons-react@3.34.0':
     resolution: {integrity: sha512-OpEIR2iZsIXECtAIMbn1zfKfQ3zKJjXyIZlkgOGUL9UkMCFycEiF2Y8AVfEQsyre/3FnBdlWJvGr0NU47n2TbQ==}
@@ -5102,9 +5062,6 @@ packages:
     resolution: {integrity: sha512-jhIXaOzy1sb8IyocaruWSn1TjmnBVs8Ayhcy83rmxNJ8q2uWKCAj3CnJY+KpGSXCueAPc0i05kVvVKtP1t9S3g==}
     engines: {node: '>=10'}
 
-  globrex@0.1.2:
-    resolution: {integrity: sha512-uHJgbwAMwNFf5mLst7IWLNg14x1CkeqglJb/K3doi4dw6q2IvAAmM/Y81kevy83wP+Sst+nutFTYOGg3d1lsxg==}
-
   google-auth-library@9.15.1:
     resolution: {integrity: sha512-Jb6Z0+nvECVz+2lzSMt9u98UsoakXxA2HGHMCxh+so3n90XgYWkq5dur19JAJV7ONiJY22yBTyJB1TSkvPq9Ng==}
     engines: {node: '>=14'}
@@ -5436,6 +5393,11 @@ packages:
 
   isexe@2.0.0:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
+
+  isows@1.0.7:
+    resolution: {integrity: sha512-I1fSfDCZL5P0v33sVqeTDSpcstAg/N+wF5HS033mogOVIp4B+oHC7oOCsA3axAbBSGTJ8QubbNmnIRN/h8U7hg==}
+    peerDependencies:
+      ws: '*'
 
   iterator.prototype@1.1.5:
     resolution: {integrity: sha512-H0dkQoCa3b2VEeKQBOxFph+JAbcrQdE7KC0UkqwpLmv2EC4P41QXP+rqo9wYodACiG5/WM5s9oDApTU8utwj9g==}
@@ -6802,16 +6764,6 @@ packages:
       '@swc/wasm':
         optional: true
 
-  tsconfck@3.1.6:
-    resolution: {integrity: sha512-ks6Vjr/jEw0P1gmOVwutM3B7fWxoWBL2KRDb1JfqGVawBmO5UsvmWOQFGHBPl5yxYz4eERr19E6L7NMv+Fej4w==}
-    engines: {node: ^18 || >=20}
-    hasBin: true
-    peerDependencies:
-      typescript: ^5.0.0
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-
   tsconfig-paths@3.15.0:
     resolution: {integrity: sha512-2Ac2RgzDe/cn48GvOe3M+o82pEFewD3UPbyoUHHdKasHwJKjds4fLXWf/Ux5kATBKN20oaFGu+jbElp1pos0mg==}
 
@@ -7042,14 +6994,6 @@ packages:
     resolution: {integrity: sha512-YAXkfvGtuTzwWbDSACdJSg4A4DZiAqckWe90Zapc/sEX3XvHcw1NdurM/6od8J207tSDqNbSsgdCacBgvJKFuA==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
-
-  vite-tsconfig-paths@5.1.4:
-    resolution: {integrity: sha512-cYj0LRuLV2c2sMqhqhGpaO3LretdtMn/BVX4cPLanIZuwwrkVl+lK84E/miEXkCHWXuq65rhNN4rXsBcOB3S4w==}
-    peerDependencies:
-      vite: '*'
-    peerDependenciesMeta:
-      vite:
-        optional: true
 
   vite@5.4.19:
     resolution: {integrity: sha512-qO3aKv3HoQC8QKiNSTuUM1l9o/XX3+c+VTgLHbJWHZGeTPVAg2XwazI9UWzoxjIJCGCV2zU60uqMzjeLZuULqA==}
@@ -7342,6 +7286,9 @@ packages:
   zod@3.25.75:
     resolution: {integrity: sha512-OhpzAmVzabPOL6C3A3gpAifqr9MqihV/Msx3gor2b2kviCgcb+HM9SEOpMWwwNp9MRunWnhtAKUoo0AHhjyPPg==}
 
+  zod@3.25.76:
+    resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
+
   zustand@5.0.5:
     resolution: {integrity: sha512-mILtRfKW9xM47hqxGIxCv12gXusoY/xTSHBYApXozR0HmQv299whhBeeAcRy+KrPPybzosvJBCOmVjq6x12fCg==}
     engines: {node: '>=12.20.0'}
@@ -7364,85 +7311,85 @@ snapshots:
 
   '@adobe/css-tools@4.4.3': {}
 
-  '@ai-sdk/amazon-bedrock@2.2.10(zod@3.25.67)':
+  '@ai-sdk/amazon-bedrock@2.2.10(zod@3.25.75)':
     dependencies:
       '@ai-sdk/provider': 1.1.3
-      '@ai-sdk/provider-utils': 2.2.8(zod@3.25.67)
+      '@ai-sdk/provider-utils': 2.2.8(zod@3.25.75)
       '@smithy/eventstream-codec': 4.0.4
       '@smithy/util-utf8': 4.0.0
       aws4fetch: 1.0.20
-      zod: 3.25.67
+      zod: 3.25.75
 
-  '@ai-sdk/anthropic@1.2.12(zod@3.25.67)':
+  '@ai-sdk/anthropic@1.2.12(zod@3.25.75)':
     dependencies:
       '@ai-sdk/provider': 1.1.3
-      '@ai-sdk/provider-utils': 2.2.8(zod@3.25.67)
-      zod: 3.25.67
+      '@ai-sdk/provider-utils': 2.2.8(zod@3.25.75)
+      zod: 3.25.75
 
-  '@ai-sdk/azure@1.3.23(zod@3.25.67)':
+  '@ai-sdk/azure@1.3.23(zod@3.25.75)':
     dependencies:
-      '@ai-sdk/openai': 1.3.22(zod@3.25.67)
+      '@ai-sdk/openai': 1.3.22(zod@3.25.75)
       '@ai-sdk/provider': 1.1.3
-      '@ai-sdk/provider-utils': 2.2.8(zod@3.25.67)
-      zod: 3.25.67
+      '@ai-sdk/provider-utils': 2.2.8(zod@3.25.75)
+      zod: 3.25.75
 
-  '@ai-sdk/google-vertex@2.2.24(zod@3.25.67)':
+  '@ai-sdk/google-vertex@2.2.24(zod@3.25.75)':
     dependencies:
-      '@ai-sdk/anthropic': 1.2.12(zod@3.25.67)
-      '@ai-sdk/google': 1.2.19(zod@3.25.67)
+      '@ai-sdk/anthropic': 1.2.12(zod@3.25.75)
+      '@ai-sdk/google': 1.2.19(zod@3.25.75)
       '@ai-sdk/provider': 1.1.3
-      '@ai-sdk/provider-utils': 2.2.8(zod@3.25.67)
+      '@ai-sdk/provider-utils': 2.2.8(zod@3.25.75)
       google-auth-library: 9.15.1
-      zod: 3.25.67
+      zod: 3.25.75
     transitivePeerDependencies:
       - encoding
       - supports-color
 
-  '@ai-sdk/google@1.2.19(zod@3.25.67)':
+  '@ai-sdk/google@1.2.19(zod@3.25.75)':
     dependencies:
       '@ai-sdk/provider': 1.1.3
-      '@ai-sdk/provider-utils': 2.2.8(zod@3.25.67)
-      zod: 3.25.67
+      '@ai-sdk/provider-utils': 2.2.8(zod@3.25.75)
+      zod: 3.25.75
 
-  '@ai-sdk/mistral@1.2.8(zod@3.25.67)':
+  '@ai-sdk/mistral@1.2.8(zod@3.25.75)':
     dependencies:
       '@ai-sdk/provider': 1.1.3
-      '@ai-sdk/provider-utils': 2.2.8(zod@3.25.67)
-      zod: 3.25.67
+      '@ai-sdk/provider-utils': 2.2.8(zod@3.25.75)
+      zod: 3.25.75
 
-  '@ai-sdk/openai-compatible@0.2.14(zod@3.25.67)':
+  '@ai-sdk/openai-compatible@0.2.14(zod@3.25.75)':
     dependencies:
       '@ai-sdk/provider': 1.1.3
-      '@ai-sdk/provider-utils': 2.2.8(zod@3.25.67)
-      zod: 3.25.67
+      '@ai-sdk/provider-utils': 2.2.8(zod@3.25.75)
+      zod: 3.25.75
 
-  '@ai-sdk/openai@1.3.22(zod@3.25.67)':
+  '@ai-sdk/openai@1.3.22(zod@3.25.75)':
     dependencies:
       '@ai-sdk/provider': 1.1.3
-      '@ai-sdk/provider-utils': 2.2.8(zod@3.25.67)
-      zod: 3.25.67
+      '@ai-sdk/provider-utils': 2.2.8(zod@3.25.75)
+      zod: 3.25.75
 
-  '@ai-sdk/perplexity@1.1.9(zod@3.25.67)':
+  '@ai-sdk/perplexity@1.1.9(zod@3.25.75)':
     dependencies:
       '@ai-sdk/provider': 1.1.3
-      '@ai-sdk/provider-utils': 2.2.8(zod@3.25.67)
-      zod: 3.25.67
+      '@ai-sdk/provider-utils': 2.2.8(zod@3.25.75)
+      zod: 3.25.75
 
-  '@ai-sdk/provider-utils@2.1.10(zod@3.25.67)':
+  '@ai-sdk/provider-utils@2.1.10(zod@3.25.75)':
     dependencies:
       '@ai-sdk/provider': 1.0.9
       eventsource-parser: 3.0.2
       nanoid: 3.3.11
       secure-json-parse: 2.7.0
     optionalDependencies:
-      zod: 3.25.67
+      zod: 3.25.75
 
-  '@ai-sdk/provider-utils@2.2.8(zod@3.25.67)':
+  '@ai-sdk/provider-utils@2.2.8(zod@3.25.75)':
     dependencies:
       '@ai-sdk/provider': 1.1.3
       nanoid: 3.3.11
       secure-json-parse: 2.7.0
-      zod: 3.25.67
+      zod: 3.25.75
 
   '@ai-sdk/provider@1.0.9':
     dependencies:
@@ -7452,29 +7399,29 @@ snapshots:
     dependencies:
       json-schema: 0.4.0
 
-  '@ai-sdk/react@1.2.12(react@19.1.0)(zod@3.25.67)':
+  '@ai-sdk/react@1.2.12(react@19.1.0)(zod@3.25.75)':
     dependencies:
-      '@ai-sdk/provider-utils': 2.2.8(zod@3.25.67)
-      '@ai-sdk/ui-utils': 1.2.11(zod@3.25.67)
+      '@ai-sdk/provider-utils': 2.2.8(zod@3.25.75)
+      '@ai-sdk/ui-utils': 1.2.11(zod@3.25.75)
       react: 19.1.0
       swr: 2.3.3(react@19.1.0)
       throttleit: 2.1.0
     optionalDependencies:
-      zod: 3.25.67
+      zod: 3.25.75
 
-  '@ai-sdk/ui-utils@1.2.11(zod@3.25.67)':
+  '@ai-sdk/ui-utils@1.2.11(zod@3.25.75)':
     dependencies:
       '@ai-sdk/provider': 1.1.3
-      '@ai-sdk/provider-utils': 2.2.8(zod@3.25.67)
-      zod: 3.25.67
-      zod-to-json-schema: 3.24.5(zod@3.25.67)
+      '@ai-sdk/provider-utils': 2.2.8(zod@3.25.75)
+      zod: 3.25.75
+      zod-to-json-schema: 3.24.5(zod@3.25.75)
 
-  '@ai-sdk/xai@1.2.16(zod@3.25.67)':
+  '@ai-sdk/xai@1.2.16(zod@3.25.75)':
     dependencies:
-      '@ai-sdk/openai-compatible': 0.2.14(zod@3.25.67)
+      '@ai-sdk/openai-compatible': 0.2.14(zod@3.25.75)
       '@ai-sdk/provider': 1.1.3
-      '@ai-sdk/provider-utils': 2.2.8(zod@3.25.67)
-      zod: 3.25.67
+      '@ai-sdk/provider-utils': 2.2.8(zod@3.25.75)
+      zod: 3.25.75
 
   '@alloc/quick-lru@5.2.0': {}
 
@@ -8531,8 +8478,8 @@ snapshots:
       express-rate-limit: 7.5.0(express@5.1.0)
       pkce-challenge: 5.0.0
       raw-body: 3.0.0
-      zod: 3.25.67
-      zod-to-json-schema: 3.24.5(zod@3.25.67)
+      zod: 3.25.75
+      zod-to-json-schema: 3.24.5(zod@3.25.75)
     transitivePeerDependencies:
       - supports-color
 
@@ -8565,11 +8512,11 @@ snapshots:
     dependencies:
       flatbuffers: 25.2.10
 
-  '@openrouter/ai-sdk-provider@0.4.6(zod@3.25.67)':
+  '@openrouter/ai-sdk-provider@0.4.6(zod@3.25.75)':
     dependencies:
       '@ai-sdk/provider': 1.0.9
-      '@ai-sdk/provider-utils': 2.1.10(zod@3.25.67)
-      zod: 3.25.67
+      '@ai-sdk/provider-utils': 2.1.10(zod@3.25.75)
+      zod: 3.25.75
 
   '@opentelemetry/api@1.9.0': {}
 
@@ -8676,10 +8623,6 @@ snapshots:
       '@prisma/engines-version': 6.8.0-43.2060c79ba17c6bb9f5823312b6f6b7f4a845738e
       '@prisma/fetch-engine': 6.8.2
       '@prisma/get-platform': 6.8.2
-
-  '@prisma/extension-accelerate@2.0.1(@prisma/client@6.10.0(prisma@6.10.0(typescript@5.8.3))(typescript@5.8.3))':
-    dependencies:
-      '@prisma/client': 6.10.0(prisma@6.10.0(typescript@5.8.3))(typescript@5.8.3)
 
   '@prisma/fetch-engine@6.10.0':
     dependencies:
@@ -9547,6 +9490,10 @@ snapshots:
     dependencies:
       '@supabase/node-fetch': 2.6.15
 
+  '@supabase/functions-js@2.4.5':
+    dependencies:
+      '@supabase/node-fetch': 2.6.15
+
   '@supabase/node-fetch@2.6.15':
     dependencies:
       whatwg-url: 5.0.0
@@ -9565,6 +9512,17 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
+  '@supabase/realtime-js@2.11.15':
+    dependencies:
+      '@supabase/node-fetch': 2.6.15
+      '@types/phoenix': 1.6.6
+      '@types/ws': 8.18.1
+      isows: 1.0.7(ws@8.18.2)
+      ws: 8.18.2
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+
   '@supabase/storage-js@2.7.1':
     dependencies:
       '@supabase/node-fetch': 2.6.15
@@ -9576,6 +9534,18 @@ snapshots:
       '@supabase/node-fetch': 2.6.15
       '@supabase/postgrest-js': 1.19.4
       '@supabase/realtime-js': 2.11.10
+      '@supabase/storage-js': 2.7.1
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+
+  '@supabase/supabase-js@2.50.3':
+    dependencies:
+      '@supabase/auth-js': 2.70.0
+      '@supabase/functions-js': 2.4.5
+      '@supabase/node-fetch': 2.6.15
+      '@supabase/postgrest-js': 1.19.4
+      '@supabase/realtime-js': 2.11.15
       '@supabase/storage-js': 2.7.1
     transitivePeerDependencies:
       - bufferutil
@@ -10435,7 +10405,7 @@ snapshots:
       pathe: 1.1.2
       picocolors: 1.1.1
       sirv: 2.0.4
-      vitest: 1.6.1(@types/node@24.0.3)(@vitest/ui@1.6.1)(jsdom@26.1.0)(lightningcss@1.30.1)
+      vitest: 1.6.1(@types/node@22.15.32)(@vitest/ui@1.6.1)(jsdom@26.1.0)(lightningcss@1.30.1)
 
   '@vitest/utils@1.6.1':
     dependencies:
@@ -10474,15 +10444,15 @@ snapshots:
     dependencies:
       humanize-ms: 1.2.1
 
-  ai@4.3.16(react@19.1.0)(zod@3.25.67):
+  ai@4.3.16(react@19.1.0)(zod@3.25.75):
     dependencies:
       '@ai-sdk/provider': 1.1.3
-      '@ai-sdk/provider-utils': 2.2.8(zod@3.25.67)
-      '@ai-sdk/react': 1.2.12(react@19.1.0)(zod@3.25.67)
-      '@ai-sdk/ui-utils': 1.2.11(zod@3.25.67)
+      '@ai-sdk/provider-utils': 2.2.8(zod@3.25.75)
+      '@ai-sdk/react': 1.2.12(react@19.1.0)(zod@3.25.75)
+      '@ai-sdk/ui-utils': 1.2.11(zod@3.25.75)
       '@opentelemetry/api': 1.9.0
       jsondiffpatch: 0.6.0
-      zod: 3.25.67
+      zod: 3.25.75
     optionalDependencies:
       react: 19.1.0
 
@@ -11439,7 +11409,7 @@ snapshots:
       eslint: 9.29.0(jiti@2.4.2)
     optionalDependencies:
       '@typescript-eslint/eslint-plugin': 7.18.0(@typescript-eslint/parser@7.18.0(eslint@9.29.0(jiti@2.4.2))(typescript@5.8.3))(eslint@9.29.0(jiti@2.4.2))(typescript@5.8.3)
-      vitest: 1.6.1
+      vitest: 1.6.1(@types/node@22.15.32)(@vitest/ui@1.6.1)(jsdom@26.1.0)(lightningcss@1.30.1)
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -11730,10 +11700,10 @@ snapshots:
       strict-event-emitter-types: 2.0.0
       undici: 7.10.0
       uri-templates: 0.2.0
-      xsschema: 0.3.0-beta.3(zod-to-json-schema@3.24.5(zod@3.25.67))(zod@3.25.67)
+      xsschema: 0.3.0-beta.3(zod-to-json-schema@3.24.5(zod@3.25.75))(zod@3.25.75)
       yargs: 18.0.0
-      zod: 3.25.67
-      zod-to-json-schema: 3.24.5(zod@3.25.67)
+      zod: 3.25.75
+      zod-to-json-schema: 3.24.5(zod@3.25.75)
     transitivePeerDependencies:
       - '@valibot/to-json-schema'
       - arktype
@@ -11991,8 +11961,6 @@ snapshots:
       ignore: 5.3.2
       merge2: 1.4.1
       slash: 3.0.0
-
-  globrex@0.1.2: {}
 
   google-auth-library@9.15.1:
     dependencies:
@@ -12308,6 +12276,10 @@ snapshots:
   isarray@2.0.5: {}
 
   isexe@2.0.0: {}
+
+  isows@1.0.7(ws@8.18.2):
+    dependencies:
+      ws: 8.18.2
 
   iterator.prototype@1.1.5:
     dependencies:
@@ -12789,13 +12761,13 @@ snapshots:
       define-properties: 1.2.1
       es-object-atoms: 1.1.1
 
-  ollama-ai-provider@1.2.0(zod@3.25.67):
+  ollama-ai-provider@1.2.0(zod@3.25.75):
     dependencies:
       '@ai-sdk/provider': 1.1.3
-      '@ai-sdk/provider-utils': 2.2.8(zod@3.25.67)
+      '@ai-sdk/provider-utils': 2.2.8(zod@3.25.75)
       partial-json: 0.1.7
     optionalDependencies:
-      zod: 3.25.67
+      zod: 3.25.75
 
   on-finished@2.3.0:
     dependencies:
@@ -12823,7 +12795,7 @@ snapshots:
     dependencies:
       js-tiktoken: 1.0.20
 
-  openai@4.104.0(ws@8.18.2)(zod@3.25.67):
+  openai@4.104.0(ws@8.18.2)(zod@3.25.75):
     dependencies:
       '@types/node': 18.19.112
       '@types/node-fetch': 2.6.12
@@ -12834,7 +12806,7 @@ snapshots:
       node-fetch: 2.7.0
     optionalDependencies:
       ws: 8.18.2
-      zod: 3.25.67
+      zod: 3.25.75
     transitivePeerDependencies:
       - encoding
 
@@ -13593,19 +13565,19 @@ snapshots:
 
   task-master-ai@0.17.1(@types/node@22.15.32)(react@19.1.0)(ws@8.18.2):
     dependencies:
-      '@ai-sdk/amazon-bedrock': 2.2.10(zod@3.25.67)
-      '@ai-sdk/anthropic': 1.2.12(zod@3.25.67)
-      '@ai-sdk/azure': 1.3.23(zod@3.25.67)
-      '@ai-sdk/google': 1.2.19(zod@3.25.67)
-      '@ai-sdk/google-vertex': 2.2.24(zod@3.25.67)
-      '@ai-sdk/mistral': 1.2.8(zod@3.25.67)
-      '@ai-sdk/openai': 1.3.22(zod@3.25.67)
-      '@ai-sdk/perplexity': 1.1.9(zod@3.25.67)
-      '@ai-sdk/xai': 1.2.16(zod@3.25.67)
+      '@ai-sdk/amazon-bedrock': 2.2.10(zod@3.25.75)
+      '@ai-sdk/anthropic': 1.2.12(zod@3.25.75)
+      '@ai-sdk/azure': 1.3.23(zod@3.25.75)
+      '@ai-sdk/google': 1.2.19(zod@3.25.75)
+      '@ai-sdk/google-vertex': 2.2.24(zod@3.25.75)
+      '@ai-sdk/mistral': 1.2.8(zod@3.25.75)
+      '@ai-sdk/openai': 1.3.22(zod@3.25.75)
+      '@ai-sdk/perplexity': 1.1.9(zod@3.25.75)
+      '@ai-sdk/xai': 1.2.16(zod@3.25.75)
       '@anthropic-ai/sdk': 0.39.0
       '@aws-sdk/credential-providers': 3.830.0
-      '@openrouter/ai-sdk-provider': 0.4.6(zod@3.25.67)
-      ai: 4.3.16(react@19.1.0)(zod@3.25.67)
+      '@openrouter/ai-sdk-provider': 0.4.6(zod@3.25.75)
+      ai: 4.3.16(react@19.1.0)(zod@3.25.75)
       boxen: 8.0.1
       chalk: 5.4.1
       cli-highlight: 2.1.11
@@ -13623,11 +13595,11 @@ snapshots:
       inquirer: 12.6.3(@types/node@22.15.32)
       jsonwebtoken: 9.0.2
       lru-cache: 10.4.3
-      ollama-ai-provider: 1.2.0(zod@3.25.67)
-      openai: 4.104.0(ws@8.18.2)(zod@3.25.67)
+      ollama-ai-provider: 1.2.0(zod@3.25.75)
+      openai: 4.104.0(ws@8.18.2)(zod@3.25.75)
       ora: 8.2.0
       uuid: 11.1.0
-      zod: 3.25.67
+      zod: 3.25.75
     transitivePeerDependencies:
       - '@types/node'
       - '@valibot/to-json-schema'
@@ -13776,10 +13748,6 @@ snapshots:
       typescript: 5.8.3
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
-
-  tsconfck@3.1.6(typescript@5.8.3):
-    optionalDependencies:
-      typescript: 5.8.3
 
   tsconfig-paths@3.15.0:
     dependencies:
@@ -14014,25 +13982,6 @@ snapshots:
 
   vary@1.1.2: {}
 
-  vite-node@1.6.1:
-    dependencies:
-      cac: 6.7.14
-      debug: 4.4.1(supports-color@5.5.0)
-      pathe: 1.1.2
-      picocolors: 1.1.1
-      vite: 5.4.19(@types/node@22.15.32)(lightningcss@1.30.1)
-    transitivePeerDependencies:
-      - '@types/node'
-      - less
-      - lightningcss
-      - sass
-      - sass-embedded
-      - stylus
-      - sugarss
-      - supports-color
-      - terser
-    optional: true
-
   vite-node@1.6.1(@types/node@22.15.32)(lightningcss@1.30.1):
     dependencies:
       cac: 6.7.14
@@ -14051,35 +14000,6 @@ snapshots:
       - supports-color
       - terser
 
-  vite-node@1.6.1(@types/node@24.0.3)(lightningcss@1.30.1):
-    dependencies:
-      cac: 6.7.14
-      debug: 4.4.1(supports-color@5.5.0)
-      pathe: 1.1.2
-      picocolors: 1.1.1
-      vite: 5.4.19(@types/node@24.0.3)(lightningcss@1.30.1)
-    transitivePeerDependencies:
-      - '@types/node'
-      - less
-      - lightningcss
-      - sass
-      - sass-embedded
-      - stylus
-      - sugarss
-      - supports-color
-      - terser
-
-  vite-tsconfig-paths@5.1.4(typescript@5.8.3)(vite@6.3.5(@types/node@24.0.3)(jiti@2.4.2)(lightningcss@1.30.1)):
-    dependencies:
-      debug: 4.4.1(supports-color@5.5.0)
-      globrex: 0.1.2
-      tsconfck: 3.1.6(typescript@5.8.3)
-    optionalDependencies:
-      vite: 6.3.5(@types/node@24.0.3)(jiti@2.4.2)(lightningcss@1.30.1)
-    transitivePeerDependencies:
-      - supports-color
-      - typescript
-
   vite@5.4.19(@types/node@22.15.32)(lightningcss@1.30.1):
     dependencies:
       esbuild: 0.21.5
@@ -14087,16 +14007,6 @@ snapshots:
       rollup: 4.43.0
     optionalDependencies:
       '@types/node': 22.15.32
-      fsevents: 2.3.3
-      lightningcss: 1.30.1
-
-  vite@5.4.19(@types/node@24.0.3)(lightningcss@1.30.1):
-    dependencies:
-      esbuild: 0.21.5
-      postcss: 8.5.6
-      rollup: 4.43.0
-    optionalDependencies:
-      '@types/node': 24.0.3
       fsevents: 2.3.3
       lightningcss: 1.30.1
 
@@ -14128,39 +14038,6 @@ snapshots:
       jiti: 2.4.2
       lightningcss: 1.30.1
 
-  vitest@1.6.1:
-    dependencies:
-      '@vitest/expect': 1.6.1
-      '@vitest/runner': 1.6.1
-      '@vitest/snapshot': 1.6.1
-      '@vitest/spy': 1.6.1
-      '@vitest/utils': 1.6.1
-      acorn-walk: 8.3.4
-      chai: 4.5.0
-      debug: 4.4.1(supports-color@5.5.0)
-      execa: 8.0.1
-      local-pkg: 0.5.1
-      magic-string: 0.30.17
-      pathe: 1.1.2
-      picocolors: 1.1.1
-      std-env: 3.9.0
-      strip-literal: 2.1.1
-      tinybench: 2.9.0
-      tinypool: 0.8.4
-      vite: 5.4.19(@types/node@22.15.32)(lightningcss@1.30.1)
-      vite-node: 1.6.1
-      why-is-node-running: 2.3.0
-    transitivePeerDependencies:
-      - less
-      - lightningcss
-      - sass
-      - sass-embedded
-      - stylus
-      - sugarss
-      - supports-color
-      - terser
-    optional: true
-
   vitest@1.6.1(@types/node@22.15.32)(@vitest/ui@1.6.1)(jsdom@26.1.0)(lightningcss@1.30.1):
     dependencies:
       '@vitest/expect': 1.6.1
@@ -14185,42 +14062,6 @@ snapshots:
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 22.15.32
-      '@vitest/ui': 1.6.1(vitest@1.6.1)
-      jsdom: 26.1.0
-    transitivePeerDependencies:
-      - less
-      - lightningcss
-      - sass
-      - sass-embedded
-      - stylus
-      - sugarss
-      - supports-color
-      - terser
-
-  vitest@1.6.1(@types/node@24.0.3)(@vitest/ui@1.6.1)(jsdom@26.1.0)(lightningcss@1.30.1):
-    dependencies:
-      '@vitest/expect': 1.6.1
-      '@vitest/runner': 1.6.1
-      '@vitest/snapshot': 1.6.1
-      '@vitest/spy': 1.6.1
-      '@vitest/utils': 1.6.1
-      acorn-walk: 8.3.4
-      chai: 4.5.0
-      debug: 4.4.1(supports-color@5.5.0)
-      execa: 8.0.1
-      local-pkg: 0.5.1
-      magic-string: 0.30.17
-      pathe: 1.1.2
-      picocolors: 1.1.1
-      std-env: 3.9.0
-      strip-literal: 2.1.1
-      tinybench: 2.9.0
-      tinypool: 0.8.4
-      vite: 5.4.19(@types/node@24.0.3)(lightningcss@1.30.1)
-      vite-node: 1.6.1(@types/node@24.0.3)(lightningcss@1.30.1)
-      why-is-node-running: 2.3.0
-    optionalDependencies:
-      '@types/node': 24.0.3
       '@vitest/ui': 1.6.1(vitest@1.6.1)
       jsdom: 26.1.0
     transitivePeerDependencies:
@@ -14343,10 +14184,10 @@ snapshots:
 
   xmlhttprequest@1.8.0: {}
 
-  xsschema@0.3.0-beta.3(zod-to-json-schema@3.24.5(zod@3.25.67))(zod@3.25.67):
+  xsschema@0.3.0-beta.3(zod-to-json-schema@3.24.5(zod@3.25.75))(zod@3.25.75):
     optionalDependencies:
-      zod: 3.25.67
-      zod-to-json-schema: 3.24.5(zod@3.25.67)
+      zod: 3.25.75
+      zod-to-json-schema: 3.24.5(zod@3.25.75)
 
   xtend@4.0.2: {}
 
@@ -14401,13 +14242,15 @@ snapshots:
 
   yoctocolors@2.1.1: {}
 
-  zod-to-json-schema@3.24.5(zod@3.25.67):
+  zod-to-json-schema@3.24.5(zod@3.25.75):
     dependencies:
-      zod: 3.25.67
+      zod: 3.25.75
 
   zod@3.25.67: {}
 
   zod@3.25.75: {}
+
+  zod@3.25.76: {}
 
   zustand@5.0.5(@types/react@19.1.8)(react@19.1.0)(use-sync-external-store@1.5.0(react@19.1.0)):
     optionalDependencies:
