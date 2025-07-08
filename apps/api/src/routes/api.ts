@@ -3,7 +3,6 @@ import { asyncHandler } from '../middleware/asyncHandler';
 import { authenticateUser } from '../middleware/authenticateUser';
 import { z } from 'zod';
 import { createClient } from '@supabase/supabase-js';
-//import { supabaseClient } from '@turbo-with-tailwind-v4/supabase';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -110,10 +109,11 @@ router.post('/tasks', authenticateUser, asyncHandler(async (req, res) => {
     const user = (req as any).user;
 
 
-    const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+    //const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+    const { supabaseClient } = await import('@turbo-with-tailwind-v4/supabase/clients');
 
     try {
-        const { data: inserted, error } = await supabase
+        const { data: inserted, error } = await supabaseClient
             .from('tasks')
             .insert({
                 ...data,

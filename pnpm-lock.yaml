@@ -33,9 +33,6 @@ importers:
       '@supabase/supabase-js':
         specifier: ^2.39.3
         version: 2.50.0
-      '@turbo-with-tailwind-v4/database':
-        specifier: workspace:*
-        version: link:../../packages/database
       '@turbo-with-tailwind-v4/supabase':
         specifier: workspace:*
         version: link:../../packages/supabase
