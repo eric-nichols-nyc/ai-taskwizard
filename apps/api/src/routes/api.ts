@@ -109,7 +109,6 @@ router.post('/tasks', authenticateUser, asyncHandler(async (req, res) => {
     const user = (req as any).user;
 
 
-    //const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
     const { supabaseClient } = await import('@turbo-with-tailwind-v4/supabase/clients');
 
     try {
