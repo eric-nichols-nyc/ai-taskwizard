@@ -2,9 +2,40 @@
   "name": "@turbo-with-tailwind-v4/supabase",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./clients": {
+      "import": "./dist/clients/index.js",
+      "types": "./dist/clients/index.d.ts"
+    },
+    "./schemas": {
+      "import": "./dist/schemas/index.js",
+      "types": "./dist/schemas/index.d.ts"
+    },
+    "./services": {
+      "import": "./dist/services/index.js",
+      "types": "./dist/services/index.d.ts"
+    },
+    "./types": {
+      "import": "./dist/types/index.js",
+      "types": "./dist/types/index.d.ts"
+    },
+    "./utils": {
+      "import": "./dist/utils/index.js",
+      "types": "./dist/utils/index.d.ts"
+    }
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist"
   },
   "keywords": [],
   "author": "",
@@ -13,5 +44,11 @@
     "@prisma/client": "^6.9.0",
     "@supabase/supabase-js": "^2.50.3",
     "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@turbo-with-tailwind-v4/eslint-config": "workspace:*",
+    "@turbo-with-tailwind-v4/typescript-config": "workspace:*",
+    "@types/node": "^24.0.3",
+    "typescript": "~5.8.3"
   }
 }
