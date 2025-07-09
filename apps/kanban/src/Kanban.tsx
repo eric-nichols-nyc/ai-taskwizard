@@ -17,7 +17,7 @@ import {
   DragOverEvent,
   DragEndEvent,
 } from "@dnd-kit/core";
-import { SortableContext, verticalListSortingStrategy, horizontalListSortingStrategy, useSortable, arrayMove } from "@dnd-kit/sortable";
+import { SortableContext, verticalListSortingStrategy, horizontalListSortingStrategy, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
 function SortableColumn({ column, children }: { column: KanbanColumn; children: React.ReactNode }) {
@@ -37,7 +37,7 @@ function SortableColumn({ column, children }: { column: KanbanColumn; children: 
 export const Kanban = () => {
   const {
     tasks,
-    updateColumnPositions,
+    //updateColumnPositions,
     updateTaskPositions,
   } = useKanbanStore();
 
@@ -160,39 +160,39 @@ export const Kanban = () => {
     setActiveId(null);
     setActiveType(null);
     if (!event.active || !event.over) return;
-    if (activeType === 'column') {
-      const oldIndex = activeColumns.findIndex((c) => c.id === event.active.id);
-      const newIndex = activeColumns.findIndex((c) => c.id === event.over?.id);
-      if (oldIndex !== -1 && newIndex !== -1 && oldIndex !== newIndex) {
-        const newColumns = arrayMove(activeColumns, oldIndex, newIndex).map((col, idx) => ({ ...col, position: idx }));
-        updateColumnPositions(
-          (columns ?? []).map((col) => {
-            const nc = newColumns.find((nc) => nc.id === col.id) || col;
-            return {
-              ...nc,
-              column_id: nc.id,
-              title: nc.name
-            };
-          })
-        );
-      }
-    } else if (activeType === 'task') {
-      const activeTask = tasks.find((t) => t.id === event.active.id);
-      const overTask = tasks.find((t) => t.id === event.over?.id);
-      if (activeTask && overTask && activeTask.column_id === overTask.column_id) {
-        const columnTasks = getColumnTasks(activeTask.column_id);
-        const oldIndex = columnTasks.findIndex((t) => t.id === activeTask.id);
-        const newIndex = columnTasks.findIndex((t) => t.id === overTask.id);
-        if (oldIndex !== -1 && newIndex !== -1 && oldIndex !== newIndex) {
-          const reordered = arrayMove(columnTasks, oldIndex, newIndex).map((task, idx) => ({ ...task, position: idx }));
-          const updatedTasks = [
-            ...tasks.filter((t) => t.column_id !== activeTask.column_id),
-            ...reordered,
-          ];
-          updateTaskPositions(updatedTasks);
-        }
-      }
-    }
+    // if (activeType === 'column') {
+    //   const oldIndex = activeColumns.findIndex((c) => c.id === event.active.id);
+    //   const newIndex = activeColumns.findIndex((c) => c.id === event.over?.id);
+    //   if (oldIndex !== -1 && newIndex !== -1 && oldIndex !== newIndex) {
+    //     const newColumns = arrayMove(activeColumns, oldIndex, newIndex).map((col, idx) => ({ ...col, position: idx }));
+    //     updateColumnPositions(
+    //       (columns ?? []).map((col) => {
+    //         const nc = newColumns.find((nc) => nc.id === col.id) || col;
+    //         return {
+    //           ...nc,
+    //           column_id: nc.id,
+    //           title: nc.name
+    //         };
+    //       })
+    //     );
+    //   }
+    // } else if (activeType === 'task') {
+    //   const activeTask = tasks.find((t) => t.id === event.active.id);
+    //   const overTask = tasks.find((t) => t.id === event.over?.id);
+    //   if (activeTask && overTask && activeTask.column_id === overTask.column_id) {
+    //     const columnTasks = getColumnTasks(activeTask.column_id);
+    //     const oldIndex = columnTasks.findIndex((t) => t.id === activeTask.id);
+    //     const newIndex = columnTasks.findIndex((t) => t.id === overTask.id);
+    //     if (oldIndex !== -1 && newIndex !== -1 && oldIndex !== newIndex) {
+    //       const reordered = arrayMove(columnTasks, oldIndex, newIndex).map((task, idx) => ({ ...task, position: idx }));
+    //       const updatedTasks = [
+    //         ...tasks.filter((t) => t.column_id !== activeTask.column_id),
+    //         ...reordered,
+    //       ];
+    //       updateTaskPositions(updatedTasks);
+    //     }
+    //   }
+    // }
   };
 
   if (kanbanLoading) {
