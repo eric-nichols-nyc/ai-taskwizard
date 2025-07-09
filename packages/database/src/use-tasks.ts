@@ -94,7 +94,7 @@ export function useKanbanBoard(boardId: string | undefined) {
     enabled: !!boardId && !!userId,
   });
 }
-
+// returns the default board columns and tasks for the user
 export function useDefaultKanban() {
   const { user } = useAuth();
   const userId = user?.id;

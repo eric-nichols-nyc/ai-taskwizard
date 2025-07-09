@@ -13,8 +13,7 @@ export interface Column {
   id: string;
   board_id: string;
   column_id: string;
-  title: string;
-  description: string;
+  name: string;
   position: number;
 }
 
@@ -52,7 +51,7 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
       id: 'col-1',
       board_id: 'board-1',
       column_id: 'col-1',
-      title: 'To Do',
+      name: 'To Do',
       description: 'Tasks to be started',
       position: 0,
     },
@@ -60,7 +59,7 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
       id: 'col-2',
       board_id: 'board-1',
       column_id: 'col-2',
-      title: 'In Progress',
+      name: 'In Progress',
       description: 'Currently working on',
       position: 1,
     },
@@ -68,7 +67,7 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
       id: 'col-3',
       board_id: 'board-1',
       column_id: 'col-3',
-      title: 'Done',
+      name: 'Done',
       description: 'Completed tasks',
       position: 2,
     },
@@ -109,15 +108,14 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
   ],
   activeBoard: 'board-1',
   setActiveBoard: (boardId) => set({ activeBoard: boardId }),
-  addColumn: (boardId, title, description) => {
+  addColumn: (boardId, title) => {
     const { columns } = get();
     const boardColumns = columns.filter(col => col.board_id === boardId);
     const newColumn: Column = {
       id: `col-${Date.now()}`,
       board_id: boardId,
       column_id: `col-${Date.now()}`,
-      title,
-      description,
+      name: title,
       position: boardColumns.length,
     };
     set(state => ({ columns: [...state.columns, newColumn] }));
@@ -147,4 +145,4 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
     });
     set({ tasks: updatedTasks });
   },
-})); 
+}));

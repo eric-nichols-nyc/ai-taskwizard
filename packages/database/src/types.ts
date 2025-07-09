@@ -32,5 +32,15 @@ export interface Task {
   updated_at: string; // ISO timestamp
 }
 
+export interface KanbanColumn {
+  id: string;
+  board_id: string;
+  name: string;
+  position: number;
+  color?: string | null;
+  created_at?: string;
+  tasks: Task[];
+}
+
 // Card type inferred from Zod schema (see schemas.ts)
 // export type Card = z.infer<typeof CardSchema>;

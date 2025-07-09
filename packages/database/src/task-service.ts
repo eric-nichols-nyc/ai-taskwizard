@@ -180,7 +180,7 @@ export function createTaskService(): TaskService {
         .eq('name', 'Personal')
         .maybeSingle();
 
-      console.log('getUserDefaultBoard - userId:', userId, 'data:', data, 'error:', error);
+      console.log('getUserDefaultBoard - data:', data, 'error:', error);
 
       if (error) {
         throw new Error(error.message);

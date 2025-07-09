@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Column } from "./components/kanban/Column";
 import { TaskCard } from "./components/kanban/TaskCard";
-import { useKanbanStore, Column as ColumnType } from "./store/useKanbanStore";
+import { useKanbanStore } from "./store/useKanbanStore";
 import { signInWithGoogle } from '@turbo-with-tailwind-v4/database';
 import { useDefaultKanban } from "@turbo-with-tailwind-v4/database/use-tasks"; // adjust import path as needed
+import { KanbanColumn } from "@turbo-with-tailwind-v4/database/types";
 
 import {
   DndContext,
@@ -19,7 +20,7 @@ import {
 import { SortableContext, verticalListSortingStrategy, horizontalListSortingStrategy, useSortable, arrayMove } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
-function SortableColumn({ column, children }: { column: ColumnType; children: React.ReactNode }) {
+function SortableColumn({ column, children }: { column: KanbanColumn; children: React.ReactNode }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: column.id });
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -35,16 +36,14 @@ function SortableColumn({ column, children }: { column: ColumnType; children: Re
 
 export const Kanban = () => {
   const {
-    columns,
     tasks,
     updateColumnPositions,
     updateTaskPositions,
-    activeBoard,
   } = useKanbanStore();
 
-  const { kanban, kanbanLoading, kanbanError } = useDefaultKanban();
+  const { kanban: columns, kanbanLoading, kanbanError } = useDefaultKanban();
 
-  console.log('Kanban - userTasks', kanban);
+  console.log('Kanban - kanban', columns);
 
   const [userId, setUserId] = useState<string | undefined>(undefined);
 
@@ -80,14 +79,11 @@ export const Kanban = () => {
     })
   );
 
-  const activeColumns = columns
-    .filter((col) => col.board_id === activeBoard)
+  const activeColumns = (columns ?? [])
     .sort((a, b) => a.position - b.position);
 
   const getColumnTasks = (columnId: string) =>
-    tasks
-      .filter((task) => task.column_id === columnId)
-      .sort((a, b) => a.position - b.position);
+    (columns ?? []).find((col) => col.id === columnId)?.tasks ?? [];
 
   // DnD Handlers
   const handleDragStart = (event: DragStartEvent) => {
@@ -101,7 +97,7 @@ export const Kanban = () => {
     if (activeType === 'task') {
       const activeTask = tasks.find((t) => t.id === event.active.id);
       const overTask = tasks.find((t) => t.id === event.over?.id);
-      const overColumn = columns.find((c) => c.id === event.over?.id);
+      const overColumn = (columns ?? []).find((c) => c.id === event.over?.id);
       if (!activeTask) return;
       // If dropped over a task
       if (overTask && activeTask.column_id !== overTask.column_id) {
@@ -137,7 +133,14 @@ export const Kanban = () => {
       if (oldIndex !== -1 && newIndex !== -1 && oldIndex !== newIndex) {
         const newColumns = arrayMove(activeColumns, oldIndex, newIndex).map((col, idx) => ({ ...col, position: idx }));
         updateColumnPositions(
-          columns.map((col) => newColumns.find((nc) => nc.id === col.id) || col)
+          (columns ?? []).map((col) => {
+            const nc = newColumns.find((nc) => nc.id === col.id) || col;
+            return {
+              ...nc,
+              column_id: nc.id,
+              title: nc.name
+            };
+          })
         );
       }
     } else if (activeType === 'task') {
@@ -187,7 +190,7 @@ export const Kanban = () => {
           <SortableContext items={activeColumns.map((c) => c.id)} strategy={horizontalListSortingStrategy}>
             {activeColumns.map((column) => (
               <SortableColumn key={column.id} column={column}>
-                <Column title={column.title}>
+                <Column {...column}>
                   <SortableContext items={getColumnTasks(column.id).map((t) => t.id)} strategy={verticalListSortingStrategy}>
                     <div className="flex flex-col gap-2 w-80">
                       {getColumnTasks(column.id).map((task) => (
@@ -254,8 +257,8 @@ export const Kanban = () => {
               })()
             ) : activeType === 'column' && activeId ? (
               (() => {
-                const column = columns.find((c) => c.id === activeId);
-                return column ? <Column title={column.title} /> : null;
+                const column = columns?.find((c) => c.id === activeId);
+                return column ? <Column {...column} /> : null;
               })()
             ) : null}
           </DragOverlay>
