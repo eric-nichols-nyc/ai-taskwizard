@@ -52,14 +52,35 @@ export function createTaskService(): TaskService {
     },
 
     async createTask(taskData) {
-      // Validate input using TaskCreateSchema
-      const parseResult = TaskCreateSchema.safeParse(taskData);
-      if (!parseResult.success) {
-        throw parseResult.error;
+      console.log('service: createTask', taskData);
+      try {
+        // Validate input using TaskCreateSchema
+        const parseResult = TaskCreateSchema.safeParse(taskData);
+        if (!parseResult.success) {
+          throw new Error(`Invalid task data: ${parseResult.error.message}`);
+        }
+
+        const { data, error } = await supabase.from('tasks').insert([parseResult.data]).select().single();
+
+        if (error) {
+          if (error.code === '23505') { // Unique constraint violation
+            throw new Error('A task with these details already exists');
+          }
+          throw new Error(`Failed to create task: ${error.message}`);
+        }
+
+        if (!data) {
+          throw new Error('No task data returned after creation');
+        }
+
+        return data as Task;
+
+      } catch (err) {
+        if (err instanceof Error) {
+          throw err;
+        }
+        throw new Error('An unexpected error occurred while creating the task');
       }
-      const { data, error } = await supabase.from('tasks').insert([parseResult.data]).select().single();
-      if (error) throw error;
-      return data as Task;
     },
 
     async updateTask(id, updates) {

@@ -92,12 +92,21 @@ export const Kanban = () => {
 
   // Add Task Handler
   const handleAddTask = (columnId: string) => {
+    const column = columns?.find(col => col.id === columnId);
+    let status = "todo"; // default
+
+    if (column) {
+      if (column.name === "Todo") status = "todo";
+      else if (column.name === "In Progress") status = "inprogress";
+      else if (column.name === "Done") status = "done";
+    }
     if (newTaskTitle.trim()) {
       //useKanbanStore.getState().addTask(columnId, newTaskTitle, newTaskDesc);
       addKanbanTaskMutation.mutate({
         title: newTaskTitle,
         column_id: columnId,
-        status: 'inprogress',
+        status,
+        position: 3000,
       });
       setNewTaskTitle("");
       setShowAddTask(null);

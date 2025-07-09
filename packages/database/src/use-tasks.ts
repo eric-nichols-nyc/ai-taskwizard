@@ -69,12 +69,18 @@ export function useAddKanbanTask() {
   const { user } = useAuth();
 
   return useMutation({
-    mutationFn: (newTask: Partial<Task> & { title: string; column_id: string; status: string; description?: string }) => {
-      console.log('useAddKanbanTask', newTask);
-        return taskService.createTask(newTask);
-    },
+      mutationFn: (newTask: Partial<Task> & { title: string; column_id: string; status: string; description?: string; position: number }) => {
+          return taskService.createTask({
+            ...newTask,
+            user_id: user?.id ?? '',
+          });
+        },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: taskKeys.list(user?.id) });
+      queryClient.invalidateQueries({ queryKey: ['kanban'] });
+    },
+    onError: (error) => {
+      console.error('Error adding kanban task:', error);
     },
   });
 }
