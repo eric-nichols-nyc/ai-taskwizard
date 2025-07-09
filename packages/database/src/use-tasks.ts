@@ -50,6 +50,35 @@ export function useAddTask() {
   });
 }
 
+export function useAddDefaultTask() {
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
+
+  return useMutation({
+    mutationFn: (newTask: CreateTaskPayload) => {
+        return taskService.createTaskWithDefaults(newTask);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: taskKeys.list(user?.id) });
+    },
+  });
+}
+
+export function useAddKanbanTask() {
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
+
+  return useMutation({
+    mutationFn: (newTask: Partial<Task> & { title: string; column_id: string; status: string; description?: string }) => {
+      console.log('useAddKanbanTask', newTask);
+        return taskService.createTask(newTask);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: taskKeys.list(user?.id) });
+    },
+  });
+}
+
 /**
  * Hook to update an existing task.
  */

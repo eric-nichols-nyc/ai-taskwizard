@@ -3,7 +3,7 @@ import { Column } from "./components/kanban/Column";
 import { TaskCard } from "./components/kanban/TaskCard";
 import { useKanbanStore } from "./store/useKanbanStore";
 import { signInWithGoogle } from '@turbo-with-tailwind-v4/database';
-import { useDefaultKanban } from "@turbo-with-tailwind-v4/database/use-tasks"; // adjust import path as needed
+import { useDefaultKanban, useAddKanbanTask } from "@turbo-with-tailwind-v4/database/use-tasks"; // adjust import path as needed
 import { KanbanColumn } from "@turbo-with-tailwind-v4/database/types";
 
 import {
@@ -48,6 +48,8 @@ export const Kanban = () => {
   const [userId, setUserId] = useState<string | undefined>(undefined);
   const [accessToken, setAccessToken] = useState<string | null>(null);
 
+  const addKanbanTaskMutation = useAddKanbanTask();
+
   useEffect(() => {
     if (import.meta.env.MODE === 'development') {
       async function maybeSignIn() {
@@ -72,7 +74,6 @@ export const Kanban = () => {
 
   const [showAddTask, setShowAddTask] = useState<string | null>(null);
   const [newTaskTitle, setNewTaskTitle] = useState("");
-  const [newTaskDesc, setNewTaskDesc] = useState("");
 
   // DnD state
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -88,6 +89,20 @@ export const Kanban = () => {
     .sort((a, b) => a.position - b.position);
 
   const today = new Date().toISOString().slice(0, 10);
+
+  // Add Task Handler
+  const handleAddTask = (columnId: string) => {
+    if (newTaskTitle.trim()) {
+      //useKanbanStore.getState().addTask(columnId, newTaskTitle, newTaskDesc);
+      addKanbanTaskMutation.mutate({
+        title: newTaskTitle,
+        column_id: columnId,
+        status: 'inprogress',
+      });
+      setNewTaskTitle("");
+      setShowAddTask(null);
+    }
+  };
 
   const getColumnTasks = (columnId: string) =>
     (columns ?? [])
@@ -216,7 +231,7 @@ export const Kanban = () => {
                         <TaskCard key={task.id} id={task.id} title={task.title} dueDate={undefined} priority={undefined} />
                       ))}
                       {showAddTask === column.id ? (
-                        <div className="bg-white rounded-lg p-3 shadow-sm border border-gray-200 mt-2 w-70">
+                        <div className="bg-white text-black rounded-lg p-3 shadow-sm border border-gray-200 mt-2 w-70">
                           <input
                             type="text"
                             placeholder="Task title"
@@ -225,22 +240,10 @@ export const Kanban = () => {
                             className="w-full p-2 mb-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                             autoFocus
                           />
-                          <textarea
-                            placeholder="Task description"
-                            value={newTaskDesc}
-                            onChange={(e) => setNewTaskDesc(e.target.value)}
-                            className="w-full p-2 mb-2 border border-gray-300 rounded text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            rows={2}
-                          />
                           <div className="flex gap-2">
                             <button
                               onClick={() => {
-                                if (newTaskTitle.trim()) {
-                                  useKanbanStore.getState().addTask(column.id, newTaskTitle, newTaskDesc);
-                                  setNewTaskTitle("");
-                                  setNewTaskDesc("");
-                                  setShowAddTask(null);
-                                }
+                                handleAddTask(column.id);
                               }}
                               className="px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600"
                             >
