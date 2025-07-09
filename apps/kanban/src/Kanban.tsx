@@ -5,7 +5,6 @@ import { useKanbanStore } from "./store/useKanbanStore";
 import { signInWithGoogle } from '@turbo-with-tailwind-v4/database';
 import { useDefaultKanban, useAddKanbanTask } from "@turbo-with-tailwind-v4/database/use-tasks"; // adjust import path as needed
 import { KanbanColumn } from "@turbo-with-tailwind-v4/database/types";
-import { KanbanTester } from "./components/kanban-tester";
 import {
   DndContext,
   DragOverlay,
@@ -297,7 +296,6 @@ export const Kanban = () => {
           </DragOverlay>
         </div>
       </DndContext>
-      <KanbanTester />
     </div>
   );
 };
