@@ -3,7 +3,7 @@ import { Column } from "./components/kanban/Column";
 import { TaskCard } from "./components/kanban/TaskCard";
 import { useKanbanStore, Column as ColumnType } from "./store/useKanbanStore";
 import { signInWithGoogle } from '@turbo-with-tailwind-v4/database';
-import { useFirstBoardKanban } from "@turbo-with-tailwind-v4/database/use-tasks"; // adjust import path as needed
+import { useDefaultKanban } from "@turbo-with-tailwind-v4/database/use-tasks"; // adjust import path as needed
 
 import {
   DndContext,
@@ -42,7 +42,7 @@ export const Kanban = () => {
     activeBoard,
   } = useKanbanStore();
 
-  const { kanban, kanbanLoading, kanbanError } = useFirstBoardKanban();
+  const { kanban, kanbanLoading, kanbanError } = useDefaultKanban();
 
   console.log('Kanban - userTasks', kanban);
 

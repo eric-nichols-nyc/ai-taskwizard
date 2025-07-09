@@ -13,7 +13,7 @@ export interface TaskService {
   createTaskWithDefaults(data: CreateTaskPayload): Promise<Task>;
   getTasksByUserId(userId: string): Promise<Task[]>;
   getKanbanBoard(boardId: string, userId: string): Promise<KanbanColumn[]>;
-  getFirstBoardByUser(userId: string): Promise<Board | null>;
+  getUserDefaultBoard(userId: string): Promise<Board | null>;
   getBoardsByUser(userId: string): Promise<Board[]>;
   getTasksByUserIdAndDate(userId: string, date: string): Promise<Task[]>;
   // Add more methods as needed (e.g., getTasksByDate, getTasksByPriority)
@@ -150,7 +150,7 @@ export function createTaskService(): TaskService {
         .select('*')
         .eq('board_id', boardId)
         .order('position', { ascending: true });
-      console.log('getKanbanBoard - boardId:', boardId, 'userId:', userId, 'columns:', columns, 'columnsError:', columnsError);
+      //console.log('getKanbanBoard - boardId:', boardId, 'userId:', userId, 'columns:', columns, 'columnsError:', columnsError);
       if (columnsError) throw new Error(columnsError.message);
       if (!columns || columns.length === 0) return [];
 
@@ -161,7 +161,7 @@ export function createTaskService(): TaskService {
         .in('column_id', columnIds)
         .eq('user_id', userId)
         .order('position', { ascending: true });
-      console.log('getKanbanBoard - columnIds:', columnIds, 'tasks:', tasks, 'tasksError:', tasksError);
+      //console.log('getKanbanBoard - columnIds:', columnIds, 'tasks:', tasks, 'tasksError:', tasksError);
       if (tasksError) throw new Error(tasksError.message);
 
       const grouped = columns.map((column: KanbanColumn) => ({
@@ -172,16 +172,15 @@ export function createTaskService(): TaskService {
       return grouped;
     },
 
-    async getFirstBoardByUser(userId: string): Promise<Board | null> {
+    async getUserDefaultBoard(userId: string): Promise<Board | null> {
       const { data, error } = await supabase
         .from('boards')
         .select('*')
         .eq('user_id', userId)
-        .order('created_at', { ascending: true })
-        .limit(1)
+        .eq('name', 'Personal')
         .maybeSingle();
 
-      console.log('getFirstBoardByUser - userId:', userId, 'data:', data, 'error:', error);
+      console.log('getUserDefaultBoard - userId:', userId, 'data:', data, 'error:', error);
 
       if (error) {
         throw new Error(error.message);

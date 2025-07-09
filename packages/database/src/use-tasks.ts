@@ -95,7 +95,7 @@ export function useKanbanBoard(boardId: string | undefined) {
   });
 }
 
-export function useFirstBoardKanban() {
+export function useDefaultKanban() {
   const { user } = useAuth();
   const userId = user?.id;
 
@@ -108,7 +108,7 @@ export function useFirstBoardKanban() {
     queryKey: ['firstBoard', { userId }],
     queryFn: () => {
       if (!userId) throw new Error('No userId');
-      return taskService.getFirstBoardByUser(userId);
+      return taskService.getUserDefaultBoard(userId);
     },
     enabled: !!userId,
   });
