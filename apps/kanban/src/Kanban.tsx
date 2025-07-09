@@ -43,9 +43,10 @@ export const Kanban = () => {
 
   const { kanban: columns, kanbanLoading, kanbanError } = useDefaultKanban();
 
-  console.log('Kanban - kanban', columns);
+  console.log('Kanban - kanban columns', columns);
 
   const [userId, setUserId] = useState<string | undefined>(undefined);
+  const [accessToken, setAccessToken] = useState<string | null>(null);
 
   useEffect(() => {
     if (import.meta.env.MODE === 'development') {
@@ -53,16 +54,20 @@ export const Kanban = () => {
         try {
           const sessionData = await signInWithGoogle();
           setUserId(sessionData?.user?.id);
-          console.log('Dev sign-in successful, user from session data:', sessionData?.user?.id);
+          setAccessToken(sessionData?.access_token ?? null);
+          console.log('Dev sign-in successful, user from session data:', sessionData);
         } catch (error) {
           console.error('Error during dev sign-in:', error);
         }
       }
       maybeSignIn();
+      // Get access token from localStorage
+
     } else {
       setUserId('prod-user'); // Placeholder for production, replace as needed
     }
   }, []);
+
 
 
   const [showAddTask, setShowAddTask] = useState<string | null>(null);
@@ -82,8 +87,12 @@ export const Kanban = () => {
   const activeColumns = (columns ?? [])
     .sort((a, b) => a.position - b.position);
 
+  const today = new Date().toISOString().slice(0, 10);
+
   const getColumnTasks = (columnId: string) =>
-    (columns ?? []).find((col) => col.id === columnId)?.tasks ?? [];
+    (columns ?? [])
+      .find((col) => col.id === columnId)?.tasks
+      ?.filter((task) => task.due_date === today) ?? [];
 
   // DnD Handlers
   const handleDragStart = (event: DragStartEvent) => {
@@ -172,12 +181,22 @@ export const Kanban = () => {
   if (!userId) return <div>...loading</div>;
 
   return (
-    <div className="h-screen p-6 flex flex-col items-center">
+    <div className="h-screen max-w-screen-xl mx-auto p-6 flex flex-col items-center">
+          {
+          process.env.NODE_ENV === 'development' && (
+            // show user id and access token
+            <div className="text-gray-600 text-left flex flex-col w-full">
+              <div>User ID: {userId}</div>
+              <div>Access Token: {accessToken ?? '(none found)'}</div>
+            </div>
+          )
+        }
       <div className="mb-6 w-full max-w-screen-lg mx-auto flex flex-col md:flex-row md:items-end md:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2 text-left">My Pesonal Project Board</h1>
+          <h1 className="text-3xl font-bold mb-2 text-left">My Pesonal Board</h1>
           <p className="text-gray-600 text-left">Manage your tasks with this Kanban board</p>
         </div>
+
       </div>
       <DndContext
         sensors={sensors}
