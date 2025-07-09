@@ -5,7 +5,7 @@ import { useKanbanStore } from "./store/useKanbanStore";
 import { signInWithGoogle } from '@turbo-with-tailwind-v4/database';
 import { useDefaultKanban, useAddKanbanTask } from "@turbo-with-tailwind-v4/database/use-tasks"; // adjust import path as needed
 import { KanbanColumn } from "@turbo-with-tailwind-v4/database/types";
-
+import { KanbanTester } from "./components/kanban-tester";
 import {
   DndContext,
   DragOverlay,
@@ -128,37 +128,39 @@ export const Kanban = () => {
   const handleDragOver = (event: DragOverEvent) => {
     if (!event.active || !event.over) return;
     if (activeType === 'task') {
-      const activeTask = tasks.find((t) => t.id === event.active.id);
-      const overTask = tasks.find((t) => t.id === event.over?.id);
-      const overColumn = (columns ?? []).find((c) => c.id === event.over?.id);
-      if (!activeTask) return;
-      // If dropped over a task
-      if (overTask && activeTask.column_id !== overTask.column_id) {
-        // Move to new column
-        updateTaskPositions(
-          tasks.map((task) =>
-            task.id === activeTask.id
-              ? { ...task, column_id: overTask.column_id, position: 0 }
-              : task
-          )
-        );
-      }
-      // If dropped over a column
-      if (overColumn && activeTask.column_id !== overColumn.id) {
-        updateTaskPositions(
-          tasks.map((task) =>
-            task.id === activeTask.id
-              ? { ...task, column_id: overColumn.id, position: 0 }
-              : task
-          )
-        );
-      }
+      console.log('handleDragOver', event);
+      // const activeTask = tasks.find((t) => t.id === event.active.id);
+      // const overTask = tasks.find((t) => t.id === event.over?.id);
+      // const overColumn = (columns ?? []).find((c) => c.id === event.over?.id);
+      // if (!activeTask) return;
+      // // If dropped over a task
+      // if (overTask && activeTask.column_id !== overTask.column_id) {
+      //   // Move to new column
+      //   updateTaskPositions(
+      //     tasks.map((task) =>
+      //       task.id === activeTask.id
+      //         ? { ...task, column_id: overTask.column_id, position: 0 }
+      //         : task
+      //     )
+      //   );
+      // }
+      // // If dropped over a column
+      // if (overColumn && activeTask.column_id !== overColumn.id) {
+      //   updateTaskPositions(
+      //     tasks.map((task) =>
+      //       task.id === activeTask.id
+      //         ? { ...task, column_id: overColumn.id, position: 0 }
+      //         : task
+      //     )
+      //   );
+      // }
     }
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
     setActiveId(null);
     setActiveType(null);
+    console.log('handleDragEnd', event);
     if (!event.active || !event.over) return;
     // if (activeType === 'column') {
     //   const oldIndex = activeColumns.findIndex((c) => c.id === event.active.id);
@@ -211,7 +213,7 @@ export const Kanban = () => {
             // show user id and access token
             <div className="text-gray-600 text-left flex flex-col w-full">
               <div>User ID: {userId}</div>
-              <div>Access Token: {accessToken ?? '(none found)'}</div>
+              <div className="text-xs w-80 overflow-hidden text-ellipsis whitespace-nowrap">Access Token: {accessToken ?? '(none found)'}</div>
             </div>
           )
         }
@@ -229,15 +231,15 @@ export const Kanban = () => {
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
       >
-        <div className="flex flex-row gap-3 overflow-x-auto pb-6 justify-start items-start w-full max-w-screen-lg">
+        <div className="border-2 border-red-500 flex flex-row overflow-x-auto pb-6 justify-between items-start w-full max-w-screen-lg">
           <SortableContext items={activeColumns.map((c) => c.id)} strategy={horizontalListSortingStrategy}>
             {activeColumns.map((column) => (
               <SortableColumn key={column.id} column={column}>
                 <Column {...column}>
                   <SortableContext items={getColumnTasks(column.id).map((t) => t.id)} strategy={verticalListSortingStrategy}>
-                    <div className="flex flex-col gap-2 w-80">
+                    <div className="flex flex-col gap-2 w-70">
                       {getColumnTasks(column.id).map((task) => (
-                        <TaskCard key={task.id} id={task.id} title={task.title} dueDate={undefined} priority={undefined} />
+                        <TaskCard key={task.id} {...task} />
                       ))}
                       {showAddTask === column.id ? (
                         <div className="bg-white text-black rounded-lg p-3 shadow-sm border border-gray-200 mt-2 w-70">
@@ -295,6 +297,7 @@ export const Kanban = () => {
           </DragOverlay>
         </div>
       </DndContext>
+      <KanbanTester />
     </div>
   );
 };
