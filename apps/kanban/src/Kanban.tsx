@@ -181,7 +181,7 @@ export const Kanban = () => {
   if (!userId) return <div>...loading</div>;
 
   return (
-    <div className="h-screen max-w-screen-xl mx-auto p-6 flex flex-col items-center">
+    <div className="h-screen max-w-screen-xl mx-auto overflow-y-auto p-6 flex flex-col items-center">
           {
           process.env.NODE_ENV === 'development' && (
             // show user id and access token
@@ -205,7 +205,7 @@ export const Kanban = () => {
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
       >
-        <div className="flex flex-row gap-6 overflow-x-auto pb-6 justify-start items-start w-full max-w-screen-lg">
+        <div className="flex flex-row gap-3 overflow-x-auto pb-6 justify-start items-start w-full max-w-screen-lg">
           <SortableContext items={activeColumns.map((c) => c.id)} strategy={horizontalListSortingStrategy}>
             {activeColumns.map((column) => (
               <SortableColumn key={column.id} column={column}>
@@ -216,7 +216,7 @@ export const Kanban = () => {
                         <TaskCard key={task.id} id={task.id} title={task.title} dueDate={undefined} priority={undefined} />
                       ))}
                       {showAddTask === column.id ? (
-                        <div className="bg-white rounded-lg p-3 shadow-sm border border-gray-200 mt-2">
+                        <div className="bg-white rounded-lg p-3 shadow-sm border border-gray-200 mt-2 w-70">
                           <input
                             type="text"
                             placeholder="Task title"
@@ -257,7 +257,7 @@ export const Kanban = () => {
                       ) : (
                         <button
                           onClick={() => setShowAddTask(column.id)}
-                          className="w-full p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-200 rounded-lg border-2 border-dashed border-gray-300 hover:border-gray-400 transition-colors flex items-center justify-center gap-2 mt-2"
+                          className="w-70 p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-200 rounded-lg border-2 border-dashed border-gray-300 hover:border-gray-400 transition-colors flex items-center justify-center gap-2 mt-2"
                         >
                           + Add a card
                         </button>
