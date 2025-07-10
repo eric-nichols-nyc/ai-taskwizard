@@ -28,8 +28,8 @@ export interface Task {
   priority?: 'Low' | 'Medium' | 'High' | null;
   due_date?: string | null; // ISO date string
   user_id?: string | null;
-  created_at: string; // ISO timestamp
-  updated_at: string; // ISO timestamp
+  created_at?: string; // ISO timestamp
+  updated_at?: string; // ISO timestamp
 }
 
 export interface KanbanColumn {
