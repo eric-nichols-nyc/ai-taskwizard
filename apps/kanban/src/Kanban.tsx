@@ -37,7 +37,7 @@ export const Kanban = () => {
   const {
     tasks,
     //updateColumnPositions,
-    updateTaskPositions,
+   // updateTaskPositions,
   } = useKanbanStore();
 
   const { kanban: columns, kanbanLoading, kanbanError } = useDefaultKanban();

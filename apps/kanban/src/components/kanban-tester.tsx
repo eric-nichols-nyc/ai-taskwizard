@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Play, Plus, RotateCcw, Zap, CheckCircle, XCircle } from 'lucide-react';
 import { KanbanPositionCalculator } from '../lib/kanban-position-calculator';
-import { Task } from '@turbo-with-tailwind-v4/database';
+import { Task, KanbanColumn } from '@turbo-with-tailwind-v4/database';
 
 // React Component
 interface Column {
@@ -84,7 +84,7 @@ export const KanbanPositionTester: React.FC = () => {
   const addTask = () => {
     const columnId = selectedColumn || 'todo';
     const taskId = `task${taskCounter}`;
-    const position = KanbanPositionCalculator.getNewTaskPosition(tasks, columnId);
+    const position = KanbanPositionCalculator.getNewTaskPosition(tasks as Task[], columnId);
 
     const newTask: Omit<Task, 'created_at' | 'updated_at'> = {
       id: taskId,
