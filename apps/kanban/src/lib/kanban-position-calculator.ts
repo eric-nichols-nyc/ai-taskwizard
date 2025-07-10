@@ -5,7 +5,7 @@ import { Task } from "@turbo-with-tailwind-v4/database";
  * Parameters for calculating new task positions in the kanban board
  */
 interface PositionCalculatorParams {
-    tasks: Omit<Task, 'created_at' | 'updated_at'>[];
+    tasks: Task[];
     taskId: string;
     targetColumnId: string;
     dropPosition: 'first' | 'last' | 'before' | 'after';
@@ -18,7 +18,7 @@ interface PositionCalculatorParams {
 interface PositionResult {
     newPosition: number;
     needsRebalancing: boolean;
-    updatedTasks: Omit<Task, 'created_at' | 'updated_at'>[];
+    updatedTasks: Task[];
 }
 
 /**
@@ -127,7 +127,7 @@ export class KanbanPositionCalculator {
      * @param columnTasks - Sorted array of tasks in the target column
      * @returns Position value for the first position
      */
-    private static calculateFirstPosition(columnTasks: Omit<Task, 'created_at' | 'updated_at'>[]): number {
+    private static calculateFirstPosition(columnTasks: Task[]): number {
       // If column is empty, use the default initial position
       if (columnTasks.length === 0) return this.INITIAL_POSITION_GAP;
 
@@ -144,7 +144,7 @@ export class KanbanPositionCalculator {
      * @param columnTasks - Sorted array of tasks in the target column
      * @returns Position value for the last position
      */
-    private static calculateLastPosition(columnTasks: Omit<Task, 'created_at' | 'updated_at'>[]): number {
+    private static calculateLastPosition(columnTasks:Task[]): number {
       // If column is empty, use the default initial position
       if (columnTasks.length === 0) return this.INITIAL_POSITION_GAP;
 
@@ -164,7 +164,7 @@ export class KanbanPositionCalculator {
      * @returns Object containing the new position and whether rebalancing is needed
      */
     private static calculateBeforePosition(
-      columnTasks: Omit<Task, 'created_at' | 'updated_at'>[],
+      columnTasks: Task[],
       targetTaskId: string
     ): { position: number; needsRebalancing: boolean } {
       const targetIndex = columnTasks.findIndex(task => task.id === targetTaskId);
@@ -202,7 +202,7 @@ export class KanbanPositionCalculator {
      * @returns Object containing the new position and whether rebalancing is needed
      */
     private static calculateAfterPosition(
-      columnTasks: Omit<Task, 'created_at' | 'updated_at'>[],
+      columnTasks: Task[],
       targetTaskId: string
     ): { position: number; needsRebalancing: boolean } {
       const targetIndex = columnTasks.findIndex(task => task.id === targetTaskId);
@@ -244,7 +244,7 @@ export class KanbanPositionCalculator {
      * @returns Complete position result with rebalanced tasks
      */
     private static rebalanceColumn(
-      tasks: Omit<Task, 'created_at' | 'updated_at'>[],
+      tasks: Task[],
       columnId: string,
       excludeTaskId?: string
     ): PositionResult {
