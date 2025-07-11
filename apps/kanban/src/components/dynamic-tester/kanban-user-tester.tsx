@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Play, Plus, RotateCcw, Zap, CheckCircle, XCircle } from "lucide-react";
+import { Play, Plus, Zap, CheckCircle, XCircle } from "lucide-react";
 import { KanbanPositionCalculator } from "../../lib/kanban-position-calculator";
 import { Task } from "@turbo-with-tailwind-v4/database/types";
 import toast from "react-hot-toast";
 // get user from auth provider
 import { useAuth } from "@turbo-with-tailwind-v4/database";
+import { useDefaultKanban } from "@turbo-with-tailwind-v4/database/use-tasks";
 
 // React Component
 interface Column {
@@ -21,6 +22,10 @@ interface TestResult {
 
 export const KanbanUserTester: React.FC = () => {
   const { session } = useAuth();
+  const { data, isLoading, error } = useDefaultKanban();
+  console.log('KanbanUserTester - data', data);
+
+ // const columns = data?.columns ?? [];
   // Simulate realistic database data (tasks already exist with positions)
   const generateDatabaseData = useCallback(() => {
     const columns: Column[] = [
@@ -319,20 +324,6 @@ export const KanbanUserTester: React.FC = () => {
     );
   };
 
-  const reset = () => {
-    const {
-      columns: newColumns,
-      tasks: newTasks,
-      nextTaskId: newCounter,
-    } = generateDatabaseData();
-    setColumns(newColumns);
-    setTasks(newTasks);
-    setNextTaskId(newCounter);
-    setSelectedTask("");
-    setSelectedColumn("");
-    setSelectedTargetTask("");
-    addTestResult("🔄 Generated fresh dummy data", "info");
-  };
 
   const stressTest = () => {
     addTestResult("🏃‍♂️ Running stress test...", "info");
@@ -483,6 +474,13 @@ export const KanbanUserTester: React.FC = () => {
     setTimeout(() => runAutomatedTests(), 1000);
   }, []);
 
+  if (isLoading) {
+    return <div>Loading Kanban board...</div>;
+  }
+  if (error) {
+    return <div>Error loading Kanban board: {error.message}</div>;
+  }
+
   return (
     <div className="max-w-7xl mx-auto p-6 bg-gray-50 min-h-screen text-black">
       <div className="mb-8 flex items-center gap-2">
@@ -598,13 +596,6 @@ export const KanbanUserTester: React.FC = () => {
           >
             <Plus size={16} />
             Add Task
-          </button>
-          <button
-            onClick={reset}
-            className="flex items-center gap-2 bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition-colors"
-          >
-            <RotateCcw size={16} />
-            Reset
           </button>
           <button
             onClick={stressTest}

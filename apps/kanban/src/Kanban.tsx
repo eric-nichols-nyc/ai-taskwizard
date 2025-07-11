@@ -16,7 +16,7 @@ import {
   DragOverEvent,
   DragEndEvent,
 } from "@dnd-kit/core";
-import { SortableContext, verticalListSortingStrategy, horizontalListSortingStrategy, useSortable } from "@dnd-kit/sortable";
+import { SortableContext, verticalListSortingStrategy, horizontalListSortingStrategy, useSortable, arrayMove } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
 function SortableColumn({ column, children }: { column: KanbanColumn; children: React.ReactNode }) {
@@ -35,15 +35,14 @@ function SortableColumn({ column, children }: { column: KanbanColumn; children: 
 
 export const Kanban = () => {
   const {
-    tasks,
-    //updateColumnPositions,
-   // updateTaskPositions,
+    updateColumnPositions,
+   updateTaskPositions,
   } = useKanbanStore();
 
-  const { kanban: columns, kanbanLoading, kanbanError } = useDefaultKanban();
+  const { data, isLoading, error } = useDefaultKanban();
 
-  console.log('Kanban - kanban columns', columns);
-
+  console.log('Kanban - kanban columns', data);
+  const columns = data?.columns ?? [];
   const [userId, setUserId] = useState<string | undefined>(undefined);
   const [accessToken, setAccessToken] = useState<string | null>(null);
 
@@ -128,31 +127,31 @@ export const Kanban = () => {
     if (!event.active || !event.over) return;
     if (activeType === 'task') {
       console.log('handleDragOver', event);
-      // const activeTask = tasks.find((t) => t.id === event.active.id);
-      // const overTask = tasks.find((t) => t.id === event.over?.id);
-      // const overColumn = (columns ?? []).find((c) => c.id === event.over?.id);
-      // if (!activeTask) return;
-      // // If dropped over a task
-      // if (overTask && activeTask.column_id !== overTask.column_id) {
-      //   // Move to new column
-      //   updateTaskPositions(
-      //     tasks.map((task) =>
-      //       task.id === activeTask.id
-      //         ? { ...task, column_id: overTask.column_id, position: 0 }
-      //         : task
-      //     )
-      //   );
-      // }
-      // // If dropped over a column
-      // if (overColumn && activeTask.column_id !== overColumn.id) {
-      //   updateTaskPositions(
-      //     tasks.map((task) =>
-      //       task.id === activeTask.id
-      //         ? { ...task, column_id: overColumn.id, position: 0 }
-      //         : task
-      //     )
-      //   );
-      // }
+      const activeTask = tasks.find((t) => t.id === event.active.id);
+      const overTask = tasks.find((t) => t.id === event.over?.id);
+      const overColumn = (columns ?? []).find((c) => c.id === event.over?.id);
+      if (!activeTask) return;
+      // If dropped over a task
+      if (overTask && activeTask.column_id !== overTask.column_id) {
+        // Move to new column
+        updateTaskPositions(
+          tasks.map((task) =>
+            task.id === activeTask.id
+              ? { ...task, column_id: overTask.column_id, position: 0 }
+              : task
+          )
+        );
+      }
+      // If dropped over a column
+      if (overColumn && activeTask.column_id !== overColumn.id) {
+        updateTaskPositions(
+          tasks.map((task) =>
+            task.id === activeTask.id
+              ? { ...task, column_id: overColumn.id, position: 0 }
+              : task
+          )
+        );
+      }
     }
   };
 
@@ -161,46 +160,46 @@ export const Kanban = () => {
     setActiveType(null);
     console.log('handleDragEnd', event);
     if (!event.active || !event.over) return;
-    // if (activeType === 'column') {
-    //   const oldIndex = activeColumns.findIndex((c) => c.id === event.active.id);
-    //   const newIndex = activeColumns.findIndex((c) => c.id === event.over?.id);
-    //   if (oldIndex !== -1 && newIndex !== -1 && oldIndex !== newIndex) {
-    //     const newColumns = arrayMove(activeColumns, oldIndex, newIndex).map((col, idx) => ({ ...col, position: idx }));
-    //     updateColumnPositions(
-    //       (columns ?? []).map((col) => {
-    //         const nc = newColumns.find((nc) => nc.id === col.id) || col;
-    //         return {
-    //           ...nc,
-    //           column_id: nc.id,
-    //           title: nc.name
-    //         };
-    //       })
-    //     );
-    //   }
-    // } else if (activeType === 'task') {
-    //   const activeTask = tasks.find((t) => t.id === event.active.id);
-    //   const overTask = tasks.find((t) => t.id === event.over?.id);
-    //   if (activeTask && overTask && activeTask.column_id === overTask.column_id) {
-    //     const columnTasks = getColumnTasks(activeTask.column_id);
-    //     const oldIndex = columnTasks.findIndex((t) => t.id === activeTask.id);
-    //     const newIndex = columnTasks.findIndex((t) => t.id === overTask.id);
-    //     if (oldIndex !== -1 && newIndex !== -1 && oldIndex !== newIndex) {
-    //       const reordered = arrayMove(columnTasks, oldIndex, newIndex).map((task, idx) => ({ ...task, position: idx }));
-    //       const updatedTasks = [
-    //         ...tasks.filter((t) => t.column_id !== activeTask.column_id),
-    //         ...reordered,
-    //       ];
-    //       updateTaskPositions(updatedTasks);
-    //     }
-    //   }
-    // }
+    if (activeType === 'column') {
+      const oldIndex = activeColumns.findIndex((c) => c.id === event.active.id);
+      const newIndex = activeColumns.findIndex((c) => c.id === event.over?.id);
+      if (oldIndex !== -1 && newIndex !== -1 && oldIndex !== newIndex) {
+        const newColumns = arrayMove(activeColumns, oldIndex, newIndex).map((col, idx) => ({ ...col, position: idx }));
+        updateColumnPositions(
+          (columns ?? []).map((col) => {
+            const nc = newColumns.find((nc) => nc.id === col.id) || col;
+            return {
+              ...nc,
+              column_id: nc.id,
+              title: nc.name
+            };
+          })
+        );
+      }
+    } else if (activeType === 'task') {
+      const activeTask = tasks.find((t) => t.id === event.active.id);
+      const overTask = tasks.find((t) => t.id === event.over?.id);
+      if (activeTask && overTask && activeTask.column_id === overTask.column_id) {
+        const columnTasks = getColumnTasks(activeTask.column_id);
+        const oldIndex = columnTasks.findIndex((t) => t.id === activeTask.id);
+        const newIndex = columnTasks.findIndex((t) => t.id === overTask.id);
+        if (oldIndex !== -1 && newIndex !== -1 && oldIndex !== newIndex) {
+          const reordered = arrayMove(columnTasks, oldIndex, newIndex).map((task, idx) => ({ ...task, position: idx }));
+          const updatedTasks = [
+            ...tasks.filter((t) => t.column_id !== activeTask.column_id),
+            ...reordered,
+          ];
+          updateTaskPositions(updatedTasks);
+        }
+      }
+    }
   };
 
-  if (kanbanLoading) {
+  if (isLoading) {
     return <div>Loading Kanban board...</div>;
   }
-  if (kanbanError) {
-    return <div>Error loading Kanban board: {kanbanError.message}</div>;
+  if (error) {
+    return <div>Error loading Kanban board: {error.message}</div>;
   }
 
   if (!userId) return <div>...loading</div>;

@@ -1,4 +1,4 @@
-//import { Kanban } from "./Kanban";
+import { Kanban } from "./Kanban";
 import { KanbanUserTester } from "./components/dynamic-tester/kanban-user-tester";
 import { AuthProvider, QueryProvider } from "@turbo-with-tailwind-v4/database";
 import { ComingSoon } from "@turbo-with-tailwind-v4/design-system/components/coming-soon";
