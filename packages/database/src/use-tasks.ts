@@ -5,6 +5,7 @@ import {
   type Task,
   type CreateTaskPayload,
 } from '@turbo-with-tailwind-v4/database';
+import { type KanbanBoardData, type Board, type KanbanColumn, type Task } from './types';
 
 // Initialize the task service
 const taskService = createTaskService();
@@ -134,13 +135,13 @@ export function useDefaultKanban() {
   const { user } = useAuth();
   const userId = user?.id;
 
-  // Get the user's first board
+  // Fetch the kanban board data
   const {
-    data: board,
-    isLoading: boardLoading,
-    error: boardError,
+    data: kanban,
+    isLoading: kanbanLoading,
+    error: kanbanError,
   } = useQuery({
-    queryKey: ['firstBoard', { userId }],
+    queryKey: ['kanban', { userId }],
     queryFn: () => {
       if (!userId) throw new Error('No userId');
       return taskService.getUserDefaultBoard(userId);
@@ -148,26 +149,10 @@ export function useDefaultKanban() {
     enabled: !!userId,
   });
 
-  // Get the kanban data for that board
-  const {
-    data: kanban,
-    isLoading: kanbanLoading,
-    error: kanbanError,
-  } = useQuery({
-    queryKey: ['kanban', { boardId: board?.id, userId }],
-    queryFn: () => {
-      if (!board?.id || !userId) throw new Error('No boardId or userId');
-      return taskService.getKanbanBoard(board.id, userId);
-    },
-    enabled: !!board?.id && !!userId,
-  });
-
+  // Return all three values in an object
   return {
-    board,
-    boardLoading,
-    boardError,
-    kanban,
-    kanbanLoading,
-    kanbanError,
+    kanban,         // The actual data (KanbanBoardData | null)
+    kanbanLoading,  // true if loading, false otherwise
+    kanbanError,    // error object if there was an error, otherwise undefined
   };
 }
