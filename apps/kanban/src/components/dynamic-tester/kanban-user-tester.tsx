@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { Play, Plus, Zap, CheckCircle, XCircle } from "lucide-react";
 import { KanbanPositionCalculator } from "../../lib/kanban-position-calculator";
 import { Task } from "@turbo-with-tailwind-v4/database/types";
@@ -6,13 +6,6 @@ import toast from "react-hot-toast";
 // get user from auth provider
 import { useAuth } from "@turbo-with-tailwind-v4/database";
 import { useDefaultKanban } from "@turbo-with-tailwind-v4/database/use-tasks";
-
-// React Component
-interface Column {
-  id: string;
-  title: string;
-  color: string;
-}
 
 interface TestResult {
   timestamp: string;
@@ -23,186 +16,15 @@ interface TestResult {
 export const KanbanUserTester: React.FC = () => {
   const { session } = useAuth();
   const { data, isLoading, error } = useDefaultKanban();
+  const columns = data?.columns ?? [];
+  const tasks = data?.tasks ?? [];
   console.log('KanbanUserTester - data', data);
-
- // const columns = data?.columns ?? [];
-  // Simulate realistic database data (tasks already exist with positions)
-  const generateDatabaseData = useCallback(() => {
-    const columns: Column[] = [
-      { id: "backlog", title: "Backlog", color: "border-gray-300 bg-gray-50" },
-      { id: "todo", title: "To Do", color: "border-red-300 bg-red-50" },
-      {
-        id: "progress",
-        title: "In Progress",
-        color: "border-yellow-300 bg-yellow-50",
-      },
-      { id: "review", title: "In Review", color: "border-blue-300 bg-blue-50" },
-      { id: "done", title: "Done", color: "border-green-300 bg-green-50" },
-    ];
-
-    // ✅ SIMULATE DATABASE: Pre-existing tasks with realistic positions
-    const existingTasks: Task[] = [
-      // Backlog tasks
-      {
-        id: "task_001",
-        column_id: "backlog",
-        title: "Design user dashboard",
-        description:
-          "Create wireframes and high-fidelity mockups for the main dashboard",
-        position: 1000,
-        priority: "Medium",
-      },
-      {
-        id: "task_002",
-        column_id: "backlog",
-        title: "Market analysis report",
-        description: "Competitive analysis and pricing strategy research",
-        position: 2000,
-        priority: "Medium",
-      },
-      {
-        id: "task_003",
-        column_id: "backlog",
-        title: "Setup Storybook",
-        position: 3000,
-        priority: "Low",
-      },
-
-      // Todo tasks
-      {
-        id: "task_004",
-        column_id: "todo",
-        title: "Implement dark mode",
-        description:
-          "Add theme switching functionality with system preference detection",
-        position: 1000,
-        priority: "Medium",
-      },
-      {
-        id: "task_005",
-        column_id: "todo",
-        title: "Build responsive navbar",
-        position: 1500,
-        priority: "Medium",
-      }, // Fractional position from previous move
-      {
-        id: "task_006",
-        column_id: "todo",
-        title: "Add form validation",
-        description: "Implement client-side validation with error messaging",
-        position: 2000,
-        priority: "Medium",
-      },
-      {
-        id: "task_007",
-        column_id: "todo",
-        title: "Database migrations",
-        position: 3000,
-        priority: "Low",
-      },
-
-      // In Progress tasks
-      {
-        id: "task_008",
-        column_id: "progress",
-        title: "Implement JWT auth",
-        description: "Secure authentication with refresh token rotation",
-        position: 750,
-        priority: "Medium",
-      }, // Moved to first position
-      {
-        id: "task_009",
-        column_id: "progress",
-        title: "Build REST API",
-        description: "Create RESTful endpoints with OpenAPI documentation",
-        position: 1000,
-        priority: "Medium",
-      },
-      {
-        id: "task_010",
-        column_id: "progress",
-        title: "Configure monitoring",
-        position: 2000,
-        priority: "Medium",
-      },
-
-      // In Review tasks
-      {
-        id: "task_011",
-        column_id: "review",
-        title: "SSL certificate setup",
-        description: "Implement HTTPS with automatic certificate renewal",
-        position: 1000,
-        priority: "Medium",
-      },
-      {
-        id: "task_012",
-        column_id: "review",
-        title: "Load balancer config",
-        position: 1250,
-        priority: "Low",
-      }, // Inserted between tasks
-      {
-        id: "task_013",
-        column_id: "review",
-        title: "User research interviews",
-        description:
-          "Conduct 10 user interviews to validate feature requirements",
-        position: 1500,
-        priority: "Medium",
-      },
-      {
-        id: "task_014",
-        column_id: "review",
-        title: "Add rate limiting",
-        position: 2000,
-        priority: "Medium",
-      },
-
-      // Done tasks
-      {
-        id: "task_015",
-        column_id: "done",
-        title: "Setup CI/CD pipeline",
-        description: "Automated testing and deployment with GitHub Actions",
-        position: 1000,
-        priority: "Medium",
-      },
-      {
-        id: "task_016",
-        column_id: "done",
-        title: "Design database schema",
-        description: "Plan relational structure with proper indexing strategy",
-        position: 2000,
-        priority: "Medium",
-      },
-      {
-        id: "task_017",
-        column_id: "done",
-        title: "Backup strategy",
-        position: 3000,
-        priority: "Medium",
-      },
-    ];
-
-    // ✅ REALISTIC: Some positions show evidence of previous drag operations
-    // (fractional positions, gaps from rebalancing, etc.)
-
-    return {
-      columns,
-      tasks: existingTasks,
-      nextTaskId: 18, // Next ID to use when adding new tasks
-    };
-  }, []);
 
   const copyToken = () => {
     navigator.clipboard.writeText(token);
     toast.success("Token copied to clipboard");
   };
 
-  const [columns, setColumns] = useState<Column[]>([]);
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [nextTaskId, setNextTaskId] = useState(18);
   const [selectedTask, setSelectedTask] = useState("");
   const [selectedColumn, setSelectedColumn] = useState("");
   const [selectedPosition, setSelectedPosition] = useState<
@@ -217,18 +39,6 @@ export const KanbanUserTester: React.FC = () => {
       setToken(session.access_token || "");
     }
   }, [session]);
-
-  // Initialize with database-like data
-  useEffect(() => {
-    const {
-      columns: newColumns,
-      tasks: newTasks,
-      nextTaskId: newNextId,
-    } = generateDatabaseData();
-    setColumns(newColumns);
-    setTasks(newTasks);
-    setNextTaskId(newNextId);
-  }, [generateDatabaseData]);
 
   const addTestResult = (
     message: string,
@@ -267,7 +77,7 @@ export const KanbanUserTester: React.FC = () => {
       });
       const endTime = performance.now();
 
-      setTasks(result.updatedTasks);
+      // setTasks(result.updatedTasks); // This line is removed as tasks are now fetched directly
 
       const task = result.updatedTasks.find((t) => t.id === selectedTask);
       addTestResult(
@@ -281,7 +91,7 @@ export const KanbanUserTester: React.FC = () => {
 
   const addTask = () => {
     const columnId = selectedColumn || columns[0]?.id || "todo";
-    const taskId = `task_${nextTaskId.toString().padStart(3, "0")}`; // Database-style ID
+    const taskId = `task_${Math.random().toString().padStart(3, "0")}`; // Database-style ID
     const position = KanbanPositionCalculator.getNewTaskPosition(
       tasks,
       columnId
@@ -316,8 +126,8 @@ export const KanbanUserTester: React.FC = () => {
         | "High",
     };
 
-    setTasks((prev) => [...prev, newTask]);
-    setNextTaskId((prev) => prev + 1);
+    // setTasks((prev) => [...prev, newTask]); // This line is removed as tasks are now fetched directly
+   // setNextTaskId((prev) => prev + 1);
     addTestResult(
       `➕ Added task: ${newTask.title} (ID: ${taskId}, position: ${position.toFixed(3)})`,
       "success"
@@ -357,7 +167,7 @@ export const KanbanUserTester: React.FC = () => {
     }
 
     const endTime = performance.now();
-    setTasks(currentTasks);
+    // setTasks(currentTasks); // This line is removed as tasks are now fetched directly
 
     addTestResult(
       `🎯 Stress test completed: ${operations} operations, Total: ${(endTime - startTime).toFixed(2)}ms, Avg: ${((endTime - startTime) / operations).toFixed(3)}ms per operation`,
@@ -532,7 +342,7 @@ export const KanbanUserTester: React.FC = () => {
               <option value="">Select Column</option>
               {columns.map((col) => (
                 <option key={col.id} value={col.id}>
-                  {col.title}
+                  {col.name}
                 </option>
               ))}
             </select>
@@ -628,7 +438,7 @@ export const KanbanUserTester: React.FC = () => {
                 className={`flex-1 min-w-80 ${column.color} border-2 rounded-lg p-4`}
               >
                 <h3 className="font-semibold text-gray-700 mb-3 flex justify-between items-center">
-                  <span>{column.title}</span>
+                  <span>{column.name}</span>
                   <span className="text-sm font-normal bg-white px-2 py-1 rounded">
                     {columnTasks.length} tasks
                   </span>
