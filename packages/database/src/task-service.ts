@@ -1,5 +1,5 @@
 import { supabase } from './supabaseClient';
-import type { Task } from './types';
+import type { Task, Board, KanbanColumn, KanbanBoardData } from './types';
 import { TaskCreateSchema } from './schemas';
 
 export type CreateTaskPayload = Partial<Omit<Task, 'id' | 'created_at' | 'updated_at' | 'column_id' | 'position' | 'user_id'>> & { title: string };
@@ -13,28 +13,10 @@ export interface TaskService {
   createTaskWithDefaults(data: CreateTaskPayload): Promise<Task>;
   getTasksByUserId(userId: string): Promise<Task[]>;
   getKanbanBoard(boardId: string, userId: string): Promise<KanbanColumn[]>;
-  getUserDefaultBoard(userId: string): Promise<Board | null>;
+  getUserDefaultBoard(userId: string): Promise<KanbanBoardData | null>;
   getBoardsByUser(userId: string): Promise<Board[]>;
   getTasksByUserIdAndDate(userId: string, date: string): Promise<Task[]>;
   // Add more methods as needed (e.g., getTasksByDate, getTasksByPriority)
-}
-
-export interface KanbanColumn {
-  id: string;
-  board_id: string;
-  name: string;
-  position: number;
-  color?: string | null;
-  created_at?: string;
-  tasks: Task[];
-}
-
-export interface Board {
-  id: string;
-  user_id: string;
-  name: string;
-  created_at?: string;
-  // Add other fields as needed
 }
 
 export function createTaskService(): TaskService {
@@ -192,23 +174,42 @@ export function createTaskService(): TaskService {
       console.log('getKanbanBoard - grouped Kanban:', grouped);
       return grouped;
     },
-
-    async getUserDefaultBoard(userId: string): Promise<Board | null> {
+// return the default board for the user (Personal)
+    async getUserDefaultBoard(userId: string): Promise<KanbanBoardData | null> {
+      const boardName = 'Personal';
       const { data, error } = await supabase
         .from('boards')
-        .select('*')
+        .select(`
+          id,
+          name,
+          description,
+          columns!inner (
+            id,
+            name,
+            position,
+            board_id,
+            tasks (
+              id,
+              title,
+              description,
+              position,
+              column_id
+            )
+          )
+        `)
         .eq('user_id', userId)
-        .eq('name', 'Personal')
-        .maybeSingle();
+        .eq('name', boardName)
+        .order('position', { referencedTable: 'columns', ascending: true })
+        .order('position', { referencedTable: 'columns.tasks', ascending: true });
 
       console.log('getUserDefaultBoard - data:', data, 'error:', error);
 
       if (error) {
         throw new Error(error.message);
       }
-      return data as Board | null;
+      return transformNestedToFlat(data[0]);
     },
-
+// return all boards for the user
     async getBoardsByUser(userId: string): Promise<Board[]> {
       const { data, error } = await supabase
         .from('boards')
@@ -239,5 +240,40 @@ export function createTaskService(): TaskService {
         throw err;
       }
     },
+
   };
+
+}
+
+/**
+ * Transform nested Supabase result to flat structure
+ */
+export function transformNestedToFlat(boardData: any): KanbanBoardData {
+  const board: Board = {
+    id: boardData.id,
+    name: boardData.name,
+    description: boardData.description,
+    user_id: boardData.user_id
+  };
+
+  const columns: KanbanColumn[] = boardData.columns.map((col: KanbanColumn) => ({
+    id: col.id,
+    board_id: col.board_id,
+    name: col.name,
+    position: col.position,
+    user_id: boardData.user_id
+  }));
+
+  const tasks: Task[] = boardData.columns.flatMap((col: KanbanColumn) =>
+    col.tasks.map((task: Task) => ({
+      id: task.id,
+      column_id: task.column_id,
+      title: task.title,
+      description: task.description,
+      position: task.position,
+      user_id: boardData.user_id
+    }))
+  );
+
+  return { board, columns, tasks };
 }
