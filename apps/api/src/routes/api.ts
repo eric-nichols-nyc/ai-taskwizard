@@ -4,8 +4,40 @@ import { authenticateUser } from '../middleware/authenticateUser';
 import { z } from 'zod';
 import { createClient } from '@supabase/supabase-js';
 import dotenv from 'dotenv';
+//import { Task } from '@turbo-with-tailwind-v4/supabase/types';
 
 dotenv.config();
+
+interface KanbanBoardData {
+    board: Board;
+    columns: KanbanColumn[];
+    tasks: Task[];
+  }
+
+  interface Board {
+    id: string;
+    title: string;
+    description?: string;
+    user_id: string;
+  }
+
+  interface KanbanColumn {
+    id: string;
+    board_id: string;
+    title: string;
+    position: number;
+    user_id: string;
+  }
+
+  interface Task {
+    id: string;
+    column_id: string;
+    title: string;
+    description?: string;
+    position: number;
+    user_id: string;
+  }
+
 
 const router: Router = Router();
 
@@ -231,157 +263,75 @@ router.delete('/tasks/:taskId', authenticateUser, asyncHandler(async (req, res) 
             .from('tasks')
             .delete()
             .eq('id', taskId)
-            .eq('user_id', user.id); // Ensure user owns the task
+            .eq('user_id', user.id);
 
         if (error) {
             return res.status(500).json({ error: error.message });
         }
-
-        res.status(204).send(); // No content response for successful deletion
+        res.status(204).send();
     } catch (err: any) {
         res.status(500).json({ error: err.message || 'Internal server error' });
     }
 }));
 
-// ==================== COLUMN ROUTES ====================
-
-// Get all columns for a board
-router.get('/boards/:boardId/columns', authenticateUser, asyncHandler(async (req, res) => {
-    const { boardId } = req.params;
+router.get('/kanban/by-id', authenticateUser, asyncHandler(async (req, res) => {
     const user = (req as any).user;
-
-    // Validate boardId is UUID
-    if (!z.string().uuid().safeParse(boardId).success) {
-        return res.status(400).json({ error: 'Invalid board ID' });
-    }
-
+    const userId = user.id;
     const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+    const boardId = (req.query.id as string) || 'Personal';
 
     const { data, error } = await supabase
-        .from('columns')
-        .select('*')
-        .eq('board_id', boardId)
-        .order('position', { ascending: true });
+      .from('boards')
+      .select(`
+        id,
+        name,
+        description,
+        columns!inner (
+          id,
+          name,
+          position,
+          board_id,
+          tasks (
+            id,
+            title,
+            description,
+            position,
+            column_id
+          )
+        )
+      `)
+      .eq('name', boardId)
+      .eq('user_id', userId)
+      .order('position', { referencedTable: 'columns', ascending: true })
+      .order('position', { referencedTable: 'columns.tasks', ascending: true });
 
-    if (error) {
-        return res.status(500).json({ error: error.message });
+    if (error) throw new Error(error.message);
+    if (!data || data.length === 0) {
+      throw new Error(`Board ${boardId} not found or access denied`);
     }
-    res.json(data);
+
+    res.json(transformNestedToFlat(data[0]));
 }));
 
-// Get Kanban data (columns with their tasks) - RECOMMENDED ENDPOINT
-router.get('/boards/:boardId/kanban', authenticateUser, asyncHandler(async (req, res) => {
-    const { boardId } = req.params;
-    const user = (req as any).user;
-
-    // Validate boardId is UUID
-    if (!z.string().uuid().safeParse(boardId).success) {
-        return res.status(400).json({ error: 'Invalid board ID' });
-    }
-
-    const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
-
-    try {
-        // Get columns for the board
-        const { data: columns, error: columnsError } = await supabase
-            .from('columns')
-            .select('*')
-            .eq('board_id', boardId)
-            .order('position', { ascending: true });
-
-        if (columnsError) {
-            return res.status(500).json({ error: columnsError.message });
-        }
-
-        // Get all tasks for this board's columns that belong to the user
-        const columnIds = columns.map(col => col.id);
-
-        const { data: tasks, error: tasksError } = await supabase
-            .from('tasks')
-            .select('*')
-            .in('column_id', columnIds)
-            .eq('user_id', user.id)
-            .order('position', { ascending: true });
-
-        if (tasksError) {
-            return res.status(500).json({ error: tasksError.message });
-        }
-
-        // Group tasks by column
-        const kanbanData = columns.map(column => ({
-            ...column,
-            tasks: tasks.filter(task => task.column_id === column.id)
-        }));
-
-        res.json(kanbanData);
-    } catch (err: any) {
-        res.status(500).json({ error: err.message || 'Internal server error' });
-    }
-}));
-
-// Create a new column
-router.post('/columns', authenticateUser, asyncHandler(async (req, res) => {
-    const parsedReq = ColumnSchema.safeParse(req.body);
-    if (!parsedReq.success) {
-        return res.status(400).json({ error: 'Invalid request body', details: parsedReq.error });
-    }
-
-    const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
-
-    try {
-        const { data: inserted, error } = await supabase
-            .from('columns')
-            .insert(parsedReq.data)
-            .select()
-            .single();
-
-        if (error) {
-            return res.status(500).json({ error: error.message });
-        }
-        res.status(201).json(inserted);
-    } catch (err: any) {
-        res.status(500).json({ error: err.message || 'Internal server error' });
-    }
-}));
-
-// ==================== BOARD ROUTES ====================
-
-// Get user's boards
-router.get('/boards', authenticateUser, asyncHandler(async (req, res) => {
+// Get Kanban data for a board by name (e.g., 'Personal')
+router.get('/kanban/by-name', authenticateUser, asyncHandler(async (req, res) => {
     const user = (req as any).user;
     const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+    const boardName = (req.query.name as string) || 'Personal';
 
-    const { data, error } = await supabase
-        .from('boards')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
-
-    if (error) {
-        return res.status(500).json({ error: error.message });
-    }
-    res.json(data);
-}));
-
-// Get Kanban data for the user's first board
-router.get('/kanban/first', authenticateUser, asyncHandler(async (req, res) => {
-    const user = (req as any).user;
-    const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
-// log user is
-  console.log('user ======== ', user.id);
-    // 1. Get the user's first board
+    // 1. Get the user's board by name
     const { data: board, error: boardError } = await supabase
         .from('boards')
         .select('*')
         .eq('user_id', user.id)
-        .order('created_at', { ascending: true })
+        .eq('name', boardName)
         .limit(1)
         .single();
     if (boardError) {
         return res.status(500).json({ error: boardError.message });
     }
     if (!board) {
-        return res.status(404).json({ error: 'No boards found for user' });
+        return res.status(404).json({ error: `No board named '${boardName}' found for user` });
     }
     const boardId = board.id;
 
@@ -395,7 +345,7 @@ router.get('/kanban/first', authenticateUser, asyncHandler(async (req, res) => {
         return res.status(500).json({ error: columnsError.message });
     }
     if (!columns || columns.length === 0) {
-        return res.json([]); // No columns, return empty array
+        return res.json({ ...board, columns: [] }); // No columns, return board with empty columns
     }
 
     // 3. Get all tasks for these columns and user
@@ -411,12 +361,49 @@ router.get('/kanban/first', authenticateUser, asyncHandler(async (req, res) => {
     }
 
     // 4. Group tasks by column
-    const kanbanData = columns.map(column => ({
+    const columnsWithTasks = columns.map(column => ({
         ...column,
         tasks: (tasks ?? []).filter(task => task.column_id === column.id)
     }));
 
-    res.json(kanbanData);
+    // 5. Return board with nested columns and tasks
+    res.json({
+        ...board,
+        columns: columnsWithTasks
+    });
 }));
 
-export default router
+/**
+   * Transform nested Supabase result to flat structure
+   */
+function transformNestedToFlat(boardData: any): KanbanBoardData {
+    const board: Board = {
+      id: boardData.id,
+      title: boardData.title,
+      description: boardData.description,
+      user_id: boardData.user_id
+    };
+
+    const columns: KanbanColumn[] = boardData.columns.map((col: any) => ({
+      id: col.id,
+      board_id: col.board_id,
+      title: col.title,
+      position: col.position,
+      user_id: boardData.user_id
+    }));
+
+    const tasks: Task[] = boardData.columns.flatMap((col: any) =>
+      col.tasks.map((task: any) => ({
+        id: task.id,
+        column_id: task.column_id,
+        title: task.title,
+        description: task.description,
+        position: task.position,
+        user_id: boardData.user_id
+      }))
+    );
+
+    return { board, columns, tasks };
+  }
+
+export default router;

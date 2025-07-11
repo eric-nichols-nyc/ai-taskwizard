@@ -8,10 +8,10 @@ import { type AuthContextType } from './types'
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-export function AuthProvider({ 
-    children, 
+export function AuthProvider({
+    children,
     isHost = false,
-  }: { 
+  }: {
     children: React.ReactNode
     isHost?: boolean
   }) {
@@ -36,7 +36,7 @@ export function AuthProvider({
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('Auth state changed:', event, session?.user?.id)
+      console.log('Auth state changed:', event, session?.access_token)
       setSession(session)
       setUser(session?.user ?? null)
       setLoading(false)
@@ -83,8 +83,8 @@ export function AuthProvider({
 
   // Helper function to broadcast auth state
   const broadcastAuthState = (
-    user: User | null, 
-    session: Session | null, 
+    user: User | null,
+    session: Session | null,
     event?: string,
     targetWindow?: Window
   ) => {
@@ -115,8 +115,8 @@ export function AuthProvider({
       event,
       timestamp: Date.now()
     }
-    
-    
+
+
     if (targetWindow) {
       // Send to specific window
       targetWindow.postMessage(message, '*')
@@ -126,10 +126,10 @@ export function AuthProvider({
       iframes.forEach(iframe => {
         iframe.contentWindow?.postMessage(message, '*')
       })
-      
+
       // Also post to current window for other listeners
       window.postMessage(message, '*')
-      
+
       // Try to broadcast to all windows
       try {
         window.parent.postMessage(message, '*')
@@ -146,12 +146,12 @@ export function AuthProvider({
         email,
         password,
       })
-      
+
       if (error) {
         console.error("Sign in error:", error)
         return { error: error.message }
       }
-      
+
       return {}
     } catch (error) {
       return { error: 'An unexpected error occurred' }
@@ -167,11 +167,11 @@ export function AuthProvider({
         email,
         password,
       })
-      
+
       if (error) {
         return { error: error.message }
       }
-      
+
       return {}
     } catch (error) {
       return { error: 'An unexpected error occurred' }
@@ -195,11 +195,11 @@ export function AuthProvider({
           redirectTo: `${window.location.origin}/auth/callback`,
         },
       })
-      
+
       if (error) {
         return { error: error.message }
       }
-      
+
       return {}
     } catch (error) {
       return { error: 'An unexpected error occurred' }
@@ -213,11 +213,11 @@ export function AuthProvider({
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/auth/reset-password`,
       })
-      
+
       if (error) {
         return { error: error.message }
       }
-      
+
       return {}
     } catch (error) {
       return { error: 'An unexpected error occurred' }
@@ -228,11 +228,11 @@ export function AuthProvider({
     try {
       setLoading(true)
       const { error } = await supabase.auth.updateUser(updates)
-      
+
       if (error) {
         return { error: error.message }
       }
-      
+
       return {}
     } catch (error) {
       return { error: 'An unexpected error occurred' }
