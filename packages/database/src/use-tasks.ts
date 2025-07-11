@@ -2,10 +2,10 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   createTaskService,
   useAuth, // Import from the correct package
-  type Task,
   type CreateTaskPayload,
 } from '@turbo-with-tailwind-v4/database';
-import { type KanbanBoardData, type Board, type KanbanColumn, type Task } from './types';
+import { type KanbanBoardData, type Task } from './types';
+import type { UseQueryResult, UseMutationResult } from '@tanstack/react-query';
 
 // Initialize the task service
 const taskService = createTaskService();
@@ -20,7 +20,7 @@ export const taskKeys = {
 /**
  * Hook to fetch tasks for the current user.
  */
-export function useGetTasks() {
+export function useGetTasks(): UseQueryResult<Task[], Error> {
   const { user } = useAuth();
   const userId = user?.id;
 
@@ -37,7 +37,7 @@ export function useGetTasks() {
 /**
  * Hook to add a new task.
  */
-export function useAddTask() {
+export function useAddTask(): UseMutationResult<Task, Error, CreateTaskPayload> {
   const queryClient = useQueryClient();
   const { user } = useAuth();
 
@@ -46,7 +46,8 @@ export function useAddTask() {
         return taskService.createTaskWithDefaults(newTask);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: taskKeys.list(user?.id) });
+      queryClient.invalidateQueries({ queryKey: taskKeys.list(user?.id) }); // updates the dashboard task list
+      queryClient.invalidateQueries({ queryKey: ['kanban', { userId: user?.id }] }); // updates the Kanban board
     },
   });
 }
@@ -131,16 +132,11 @@ export function useKanbanBoard(boardId: string | undefined) {
   });
 }
 // returns the default board columns and tasks for the user
-export function useDefaultKanban() {
+export function useDefaultKanban(): UseQueryResult<KanbanBoardData | null, Error> {
   const { user } = useAuth();
   const userId = user?.id;
 
-  // Fetch the kanban board data
-  const {
-    data: kanban,
-    isLoading: kanbanLoading,
-    error: kanbanError,
-  } = useQuery({
+  return useQuery({
     queryKey: ['kanban', { userId }],
     queryFn: () => {
       if (!userId) throw new Error('No userId');
@@ -149,10 +145,4 @@ export function useDefaultKanban() {
     enabled: !!userId,
   });
 
-  // Return all three values in an object
-  return {
-    kanban,         // The actual data (KanbanBoardData | null)
-    kanbanLoading,  // true if loading, false otherwise
-    kanbanError,    // error object if there was an error, otherwise undefined
-  };
 }

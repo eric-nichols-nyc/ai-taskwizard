@@ -134,6 +134,7 @@ export function AuthProvider({
       try {
         window.parent.postMessage(message, '*')
       } catch (e) {
+        console.error("Broadcast auth state error:", e)
         // Ignore errors for cross-origin frames
       }
     }
@@ -154,6 +155,7 @@ export function AuthProvider({
 
       return {}
     } catch (error) {
+      console.error("Sign in error:", error)
       return { error: 'An unexpected error occurred' }
     } finally {
       setLoading(false)
@@ -174,6 +176,7 @@ export function AuthProvider({
 
       return {}
     } catch (error) {
+      console.error("Sign up error:", error)
       return { error: 'An unexpected error occurred' }
     } finally {
       setLoading(false)
@@ -202,6 +205,7 @@ export function AuthProvider({
 
       return {}
     } catch (error) {
+      console.error("Sign in with provider error:", error)
       return { error: 'An unexpected error occurred' }
     } finally {
       setLoading(false)
@@ -220,6 +224,7 @@ export function AuthProvider({
 
       return {}
     } catch (error) {
+      console.error("Reset password error:", error)
       return { error: 'An unexpected error occurred' }
     }
   }
@@ -235,6 +240,7 @@ export function AuthProvider({
 
       return {}
     } catch (error) {
+      console.error("Update profile error:", error)
       return { error: 'An unexpected error occurred' }
     } finally {
       setLoading(false)
