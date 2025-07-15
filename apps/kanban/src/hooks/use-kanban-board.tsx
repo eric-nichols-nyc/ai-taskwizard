@@ -31,6 +31,17 @@ export function useKanbanBoardState() {
     });
   };
 
+  const updateTask = (task: Task, onSuccess?: () => void) => {
+    updateTaskMutation.mutate({id: task.id, updates: task}, {
+      onSuccess: () => {
+        setKanbanBoard(prev => prev ? { ...prev, tasks: [...(prev.tasks ?? []), task] } : prev);
+        if (onSuccess) {
+          onSuccess();
+        }
+      }
+    });
+  };
+
   return {
     board: kanbanBoard?.board ?? null,
     columns: kanbanBoard?.columns ?? [],
@@ -40,5 +51,6 @@ export function useKanbanBoardState() {
     addTaskMutation,
     updateTaskMutation,
     addTask,
+    updateTask,
   };
 }

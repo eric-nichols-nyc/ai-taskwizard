@@ -18,12 +18,12 @@ export const KanbanUserTester= () => {
     board,
     columns,
     tasks,
-    updateTaskMutation,
     isLoading,
     error,
-    addTask
+    addTask,
+    updateTask,
   } = useKanbanBoardState();
-  console.log('kanbanboard hook - kanbanBoard', board);
+  // console.log('kanbanboard hook - kanbanBoard', board);
 
   const [simulationMode, setSimulationMode] = useState(false);
   const { session } = useAuth();
@@ -56,21 +56,21 @@ export const KanbanUserTester= () => {
   }, [session]);
 
   // update task in database
-  const updateTaskInDatabase = (task: Task) => {
-    console.log("updateTaskInDatabase", task);
-    updateTaskMutation.mutate(
-      { id: task.id, updates: task },
-      {
-        onSuccess: () => {
-          console.log("updateTaskInDatabase success", task);
-          addTestResult(`✅ Updated task: ${task.title} (ID: ${task.id}, position: ${task.position.toFixed(3)})`, "success");
-        },
-        onError: (error) => {
-          addTestResult(`❌ Error: ${(error as Error).message}`, "error");
-        }
-      }
-    );
-  }
+  // const updateTaskInDatabase = (task: Task) => {
+  //   console.log("updateTaskInDatabase", task);
+  //   updateTaskMutation.mutate(
+  //     { id: task.id, updates: task },
+  //     {
+  //       onSuccess: () => {
+  //         console.log("updateTaskInDatabase success", task);
+  //         addTestResult(`✅ Updated task: ${task.title} (ID: ${task.id}, position: ${task.position.toFixed(3)})`, "success");
+  //       },
+  //       onError: (error) => {
+  //         addTestResult(`❌ Error: ${(error as Error).message}`, "error");
+  //       }
+  //     }
+  //   );
+  // }
 
   const addTestResult = (
     message: string,
@@ -129,7 +129,9 @@ export const KanbanUserTester= () => {
       } else {
         const task = updatedTasks.find(t => t.id === selectedTask);
         if (task) {
-          updateTaskInDatabase(task);
+          updateTask(task, () => {
+            addTestResult(`✅ Updated task: ${task.title} (ID: ${task.id}, position: ${task.position.toFixed(3)})`, "success");
+          });
         }
       }
 
@@ -197,12 +199,11 @@ export const KanbanUserTester= () => {
         "success"
       );
    } else {
+    // add task to database
     addTask(newTask, () => {
       addTestResult(`➕ Added task: ${newTask.title} (ID: ${newTask.id}, position: ${newTask.position.toFixed(3)})`, "success");
     });
-    // addTaskToDatabase(newTask);
    }
-
   };
 
 
