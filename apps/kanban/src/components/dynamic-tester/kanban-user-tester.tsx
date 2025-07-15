@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Play, Plus, Zap, CheckCircle, XCircle } from "lucide-react";
 import { KanbanPositionCalculator } from "../../lib/kanban-position-calculator";
 import { Task } from "@turbo-with-tailwind-v4/database/types";
@@ -16,8 +16,8 @@ interface TestResult {
 export const KanbanUserTester: React.FC = () => {
   const { session } = useAuth();
   const { data, isLoading, error } = useDefaultKanban();
-  const columns = data?.columns ?? [];
-  const tasks = data?.tasks ?? [];
+  const columns = useMemo(() => data?.columns ?? [], [data?.columns]);
+  const tasks = useMemo(() => data?.tasks ?? [], [data?.tasks]);
   console.log('KanbanUserTester - data', data);
 
   const copyToken = () => {
@@ -75,7 +75,7 @@ export const KanbanUserTester: React.FC = () => {
 
       const startTime = performance.now();
       const result = KanbanPositionCalculator.calculatePosition({
-        tasks,
+        tasks: localTasks,
         taskId: selectedTask,
         targetColumnId: selectedColumn,
         dropPosition: selectedPosition,
@@ -434,7 +434,7 @@ export const KanbanUserTester: React.FC = () => {
         <h2 className="text-xl font-semibold mb-4">Visual Board State</h2>
         <div className="flex gap-6 overflow-x-auto pb-4">
           {columns.map((column) => {
-            const columnTasks = tasks
+            const columnTasks = localTasks
               .filter((task) => task.column_id === column.id)
               .sort((a, b) => a.position - b.position);
 
