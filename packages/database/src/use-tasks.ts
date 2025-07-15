@@ -99,6 +99,7 @@ export function useUpdateTask() {
       taskService.updateTask(id, updates),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: taskKeys.list(user?.id) });
+      queryClient.invalidateQueries({ queryKey: ['kanban', { userId: user?.id }] });
     },
   });
 }

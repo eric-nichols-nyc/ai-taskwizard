@@ -193,6 +193,9 @@ export function createTaskService(): TaskService {
               title,
               description,
               position,
+              status,
+              priority,
+              due_date,
               column_id
             )
           )
@@ -272,6 +275,9 @@ export function transformNestedToFlat(boardData: any): KanbanBoardData {
       title: task.title,
       description: task.description,
       position: task.position,
+      status: task.status,
+      priority: task.priority,
+      due_date: task.due_date,
       user_id: boardData.user_id
     }))
   );

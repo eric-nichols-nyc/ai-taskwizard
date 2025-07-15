@@ -5,7 +5,7 @@ import { Task } from "@turbo-with-tailwind-v4/database/types";
 import toast from "react-hot-toast";
 // get user from auth provider
 import { useAuth } from "@turbo-with-tailwind-v4/database";
-import { useDefaultKanban, useAddTask } from "@turbo-with-tailwind-v4/database/use-tasks";
+import { useDefaultKanban, useAddTask, useUpdateTask } from "@turbo-with-tailwind-v4/database/use-tasks";
 
 interface TestResult {
   timestamp: string;
@@ -15,6 +15,7 @@ interface TestResult {
 
 export const KanbanUserTester: React.FC = () => {
   const addTaskMutation = useAddTask();
+  const updateTaskMutation = useUpdateTask();
   const [simulationMode, setSimulationMode] = useState(false);
   const { session } = useAuth();
   const { data, isLoading, error } = useDefaultKanban();
@@ -68,6 +69,23 @@ export const KanbanUserTester: React.FC = () => {
     );
   }
 
+  // update task in database
+  const updateTaskInDatabase = (task: Task) => {
+    console.log("updateTaskInDatabase", task);
+    updateTaskMutation.mutate(
+      { id: task.id, updates: task },
+      {
+        onSuccess: () => {
+          console.log("updateTaskInDatabase success", task);
+          addTestResult(`✅ Updated task: ${task.title} (ID: ${task.id}, position: ${task.position.toFixed(3)})`, "success");
+        },
+        onError: (error) => {
+          addTestResult(`❌ Error: ${(error as Error).message}`, "error");
+        }
+      }
+    );
+  }
+
   const addTestResult = (
     message: string,
     type: "success" | "error" | "info" = "info"
@@ -105,7 +123,29 @@ export const KanbanUserTester: React.FC = () => {
       });
       const endTime = performance.now();
 
-      setLocalTasks(result.updatedTasks); // This line is removed as tasks are now fetched directly
+      const columnStatusMap: Record<string, "todo" | "in-progress" | "done"> = {
+        [columns[0].id]: "todo",
+        [columns[1].id]: "in-progress",
+        [columns[2].id]: "done",
+        // ...add more as needed
+      };
+
+      const newStatus = columnStatusMap[selectedColumn] || "todo";
+
+      const updatedTasks = result.updatedTasks.map(task =>
+        task.id === selectedTask
+          ? { ...task, status: newStatus }
+          : task
+      );
+
+      if (simulationMode) {
+        setLocalTasks(updatedTasks);
+      } else {
+        const task = updatedTasks.find(t => t.id === selectedTask);
+        if (task) {
+          updateTaskInDatabase(task);
+        }
+      }
 
       const task = result.updatedTasks.find((t) => t.id === selectedTask);
       addTestResult(
@@ -139,6 +179,14 @@ export const KanbanUserTester: React.FC = () => {
     const template =
       taskTemplates[Math.floor(Math.random() * taskTemplates.length)];
 
+    const columnStatusMap: Record<string, "todo" | "in-progress" | "done"> = {
+      "col-1": "todo",
+      "col-2": "in-progress",
+      "col-3": "done",
+      // ...add more as needed
+    };
+
+    const status = columnStatusMap[columnId] || "todo"; // fallback to "todo"
     const newTask: Task = {
       id: taskId,
       column_id: columnId,
@@ -152,6 +200,7 @@ export const KanbanUserTester: React.FC = () => {
         | "Low"
         | "Medium"
         | "High",
+      status, // <-- set status here!
     };
 
     setLocalTasks((prev) => [...prev, newTask]); // This line is removed as tasks are now fetched directly
@@ -506,7 +555,8 @@ export const KanbanUserTester: React.FC = () => {
                         </div>
                       )}
                       <div className="text-xs text-gray-500 mt-2 flex justify-between items-center">
-                        <span>ID: {task.id}</span>
+                        {/* <span>ID: {task.id}</span> */}
+                        <span>Status: {task.status}</span>
                         <span>Pos: {task.position.toFixed(3)}</span>
                       </div>
                       <div className="text-xs text-gray-400 flex justify-between items-center">
