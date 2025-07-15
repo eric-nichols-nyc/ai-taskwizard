@@ -5,7 +5,7 @@ import { Task } from "@turbo-with-tailwind-v4/database/types";
 import toast from "react-hot-toast";
 // get user from auth provider
 import { useAuth } from "@turbo-with-tailwind-v4/database";
-import { useDefaultKanban } from "@turbo-with-tailwind-v4/database/use-tasks";
+import { useDefaultKanban, useAddTask } from "@turbo-with-tailwind-v4/database/use-tasks";
 
 interface TestResult {
   timestamp: string;
@@ -14,7 +14,8 @@ interface TestResult {
 }
 
 export const KanbanUserTester: React.FC = () => {
-  const [simulationMode, setSimulationMode] = useState(true);
+  const addTaskMutation = useAddTask();
+  const [simulationMode, setSimulationMode] = useState(false);
   const { session } = useAuth();
   const { data, isLoading, error } = useDefaultKanban();
   const columns = useMemo(() => data?.columns ?? [], [data?.columns]);
@@ -46,6 +47,26 @@ export const KanbanUserTester: React.FC = () => {
       setToken(session.access_token || "");
     }
   }, [session]);
+
+  // add task to database
+  const addTaskToDatabase = (task: Task) => {
+    console.log("addTaskToDatabase", task);
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { id, ...rest } = task;
+    addTaskMutation.mutate(
+      { ...rest }, // Only task fields here!
+      {
+        onSuccess: () => {
+          console.log("addTaskToDatabase success", task);
+          addTestResult(`➕ Added task: ${task.title} (ID: ${task.id}, position: ${task.position.toFixed(3)})`, "success");
+        },
+        onError: (error) => {
+          addTestResult(`❌ Error: ${(error as Error).message}`, "error");
+        }
+      }
+    );
+  }
 
   const addTestResult = (
     message: string,
@@ -133,12 +154,16 @@ export const KanbanUserTester: React.FC = () => {
         | "High",
     };
 
-    // setTasks((prev) => [...prev, newTask]); // This line is removed as tasks are now fetched directly
-   // setNextTaskId((prev) => prev + 1);
-    addTestResult(
-      `➕ Added task: ${newTask.title} (ID: ${taskId}, position: ${position.toFixed(3)})`,
-      "success"
-    );
+    setLocalTasks((prev) => [...prev, newTask]); // This line is removed as tasks are now fetched directly
+   if (simulationMode) {
+      addTestResult(
+        `➕ Added task: ${newTask.title} (ID: ${taskId}, position: ${position.toFixed(3)})`,
+        "success"
+      );
+   } else {
+    addTaskToDatabase(newTask);
+   }
+
   };
 
 
@@ -429,13 +454,17 @@ export const KanbanUserTester: React.FC = () => {
             <CheckCircle size={16} />
             Run Tests
           </button>
-          <button
-            onClick={() => setLocalTasks(tasks)}
-            className="flex items-center gap-2 bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition-colors"
-          >
-            <RefreshCcw size={16} />
-            Reset Tasks
-          </button>
+          {
+            simulationMode && (
+              <button
+                onClick={() => setLocalTasks(tasks)}
+                className="flex items-center gap-2 bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition-colors"
+              >
+                <RefreshCcw size={16} />
+                Reset Tasks
+              </button>
+            )
+          }
         </div>
       </div>
       {/* Visual Board */}
