@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { Play, Plus, Zap, CheckCircle, XCircle, RefreshCcw } from "lucide-react";
 import { KanbanPositionCalculator } from "../../lib/kanban-position-calculator";
 import { Task } from "@turbo-with-tailwind-v4/database/types";
 import toast from "react-hot-toast";
 // get user from auth provider
 import { useAuth } from "@turbo-with-tailwind-v4/database";
-import { useDefaultKanban, useAddTask, useUpdateTask } from "@turbo-with-tailwind-v4/database/use-tasks";
+import { useDefaultKanban } from "@turbo-with-tailwind-v4/database/use-tasks";
+import { useKanbanBoardState } from "../../hooks/use-kanban-board";
 
 interface TestResult {
   timestamp: string;
@@ -13,15 +14,14 @@ interface TestResult {
   type: "success" | "error" | "info";
 }
 
-export const KanbanUserTester: React.FC = () => {
-  const addTaskMutation = useAddTask();
-  const updateTaskMutation = useUpdateTask();
+export const KanbanUserTester= () => {
+  const { data, isLoading, error } = useDefaultKanban();
+  const { board, columns, tasks, addTaskMutation, updateTaskMutation } = useKanbanBoardState(data || null);
+  console.log('kanbanboard hook - kanbanBoard', board);
+
   const [simulationMode, setSimulationMode] = useState(false);
   const { session } = useAuth();
-  const { data, isLoading, error } = useDefaultKanban();
-  const columns = useMemo(() => data?.columns ?? [], [data?.columns]);
-  const tasks = useMemo(() => data?.tasks ?? [], [data?.tasks]);
-  console.log('KanbanUserTester - data', data);
+  console.log('KanbanUserTester - board', board);
 
   const copyToken = () => {
     navigator.clipboard.writeText(token);
@@ -157,7 +157,7 @@ export const KanbanUserTester: React.FC = () => {
     }
   };
 
-  const addTask = () => {
+  const addTestTask = () => {
     const columnId = selectedColumn || columns[0]?.id || "todo";
     const taskId = `task_${Math.random().toString().padStart(3, "0")}`; // Database-style ID
     const position = KanbanPositionCalculator.getNewTaskPosition(
@@ -203,8 +203,9 @@ export const KanbanUserTester: React.FC = () => {
       status, // <-- set status here!
     };
 
-    setLocalTasks((prev) => [...prev, newTask]); // This line is removed as tasks are now fetched directly
+     // This line is removed as tasks are now fetched directly
    if (simulationMode) {
+      setLocalTasks((prev) => [...prev, newTask]);
       addTestResult(
         `➕ Added task: ${newTask.title} (ID: ${taskId}, position: ${position.toFixed(3)})`,
         "success"
@@ -365,6 +366,8 @@ export const KanbanUserTester: React.FC = () => {
     setTimeout(() => runAutomatedTests(), 1000);
   }, []);
 
+
+
   if (isLoading) {
     return <div>Loading Kanban board...</div>;
   }
@@ -483,7 +486,7 @@ export const KanbanUserTester: React.FC = () => {
             Move Task
           </button>
           <button
-            onClick={addTask}
+            onClick={addTestTask}
             className="flex items-center gap-2 bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition-colors"
           >
             <Plus size={16} />
