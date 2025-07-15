@@ -5,7 +5,6 @@ import { Task } from "@turbo-with-tailwind-v4/database/types";
 import toast from "react-hot-toast";
 // get user from auth provider
 import { useAuth } from "@turbo-with-tailwind-v4/database";
-import { useDefaultKanban } from "@turbo-with-tailwind-v4/database/use-tasks";
 import { useKanbanBoardState } from "../../hooks/use-kanban-board";
 
 interface TestResult {
@@ -15,8 +14,15 @@ interface TestResult {
 }
 
 export const KanbanUserTester= () => {
-  const { data, isLoading, error } = useDefaultKanban();
-  const { board, columns, tasks, addTaskMutation, updateTaskMutation } = useKanbanBoardState(data || null);
+  const {
+    board,
+    columns,
+    tasks,
+    updateTaskMutation,
+    isLoading,
+    error,
+    addTask
+  } = useKanbanBoardState();
   console.log('kanbanboard hook - kanbanBoard', board);
 
   const [simulationMode, setSimulationMode] = useState(false);
@@ -48,26 +54,6 @@ export const KanbanUserTester= () => {
       setToken(session.access_token || "");
     }
   }, [session]);
-
-  // add task to database
-  const addTaskToDatabase = (task: Task) => {
-    console.log("addTaskToDatabase", task);
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { id, ...rest } = task;
-    addTaskMutation.mutate(
-      { ...rest }, // Only task fields here!
-      {
-        onSuccess: () => {
-          console.log("addTaskToDatabase success", task);
-          addTestResult(`➕ Added task: ${task.title} (ID: ${task.id}, position: ${task.position.toFixed(3)})`, "success");
-        },
-        onError: (error) => {
-          addTestResult(`❌ Error: ${(error as Error).message}`, "error");
-        }
-      }
-    );
-  }
 
   // update task in database
   const updateTaskInDatabase = (task: Task) => {
@@ -211,7 +197,10 @@ export const KanbanUserTester= () => {
         "success"
       );
    } else {
-    addTaskToDatabase(newTask);
+    addTask(newTask, () => {
+      addTestResult(`➕ Added task: ${newTask.title} (ID: ${newTask.id}, position: ${newTask.position.toFixed(3)})`, "success");
+    });
+    // addTaskToDatabase(newTask);
    }
 
   };
