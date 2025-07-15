@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { KanbanState, Board, Column, Task } from './task-types';
+import type { KanbanState, Column, Task } from './task-types';
 
 export const useKanbanStore = create<KanbanState>((set, get) => ({
   boards: [

@@ -32,7 +32,13 @@ export const KanbanUserTester: React.FC = () => {
   >("first");
   const [selectedTargetTask, setSelectedTargetTask] = useState("");
   const [testResults, setTestResults] = useState<TestResult[]>([]);
+  const [localTasks, setLocalTasks] = useState<Task[]>([]);
+
   const [token, setToken] = useState("");
+
+  useEffect(() => {
+    setLocalTasks(tasks);
+  }, [tasks]);
 
   useEffect(() => {
     if (session) {
@@ -77,7 +83,7 @@ export const KanbanUserTester: React.FC = () => {
       });
       const endTime = performance.now();
 
-      // setTasks(result.updatedTasks); // This line is removed as tasks are now fetched directly
+      setLocalTasks(result.updatedTasks); // This line is removed as tasks are now fetched directly
 
       const task = result.updatedTasks.find((t) => t.id === selectedTask);
       addTestResult(
@@ -322,7 +328,7 @@ export const KanbanUserTester: React.FC = () => {
               className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="">Select Task</option>
-              {tasks.map((task) => (
+              {localTasks.map((task) => (
                 <option key={task.id} value={task.id}>
                   {task.title} ({task.column_id})
                 </option>
@@ -435,7 +441,7 @@ export const KanbanUserTester: React.FC = () => {
             return (
               <div
                 key={column.id}
-                className={`flex-1 min-w-80 ${column.color} border-2 rounded-lg p-4`}
+                className={`column flex-1 min-w-80 ${column.color} border-2 rounded-lg p-4 h-[500px] overflow-y-auto`}
               >
                 <h3 className="font-semibold text-gray-700 mb-3 flex justify-between items-center">
                   <span>{column.name}</span>

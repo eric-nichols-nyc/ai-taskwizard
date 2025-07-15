@@ -5,7 +5,7 @@ import { ComingSoon } from "@turbo-with-tailwind-v4/design-system/components/com
 import { ErrorBoundary } from "@turbo-with-tailwind-v4/design-system";
 import {Toaster} from "react-hot-toast"
 
-const USE_KANBAN_TESTER = false; // Toggle this for dev
+const USE_KANBAN_TESTER = true; // Toggle this for dev
 
 export function App() {
   return (
