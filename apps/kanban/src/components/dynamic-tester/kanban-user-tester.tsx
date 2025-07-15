@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Play, Plus, Zap, CheckCircle, XCircle } from "lucide-react";
+import { Play, Plus, Zap, CheckCircle, XCircle, RefreshCcw } from "lucide-react";
 import { KanbanPositionCalculator } from "../../lib/kanban-position-calculator";
 import { Task } from "@turbo-with-tailwind-v4/database/types";
 import toast from "react-hot-toast";
@@ -14,6 +14,7 @@ interface TestResult {
 }
 
 export const KanbanUserTester: React.FC = () => {
+  const [simulationMode, setSimulationMode] = useState(true);
   const { session } = useAuth();
   const { data, isLoading, error } = useDefaultKanban();
   const columns = useMemo(() => data?.columns ?? [], [data?.columns]);
@@ -312,6 +313,7 @@ export const KanbanUserTester: React.FC = () => {
           </button>
         )}{" "}
       </div>
+      <div className="mb-8 flex items-center gap-2 bg-blue-100 rounded-lg p-4"><button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors" onClick={() => setSimulationMode(!simulationMode)}>Simulation Mode: {simulationMode ? "On: No database writes" : "Off: Database writes"}</button></div>
 
       {/* Test Controls */}
       <div className="bg-white rounded-lg shadow-md p-6 mb-6">
@@ -426,6 +428,13 @@ export const KanbanUserTester: React.FC = () => {
           >
             <CheckCircle size={16} />
             Run Tests
+          </button>
+          <button
+            onClick={() => setLocalTasks(tasks)}
+            className="flex items-center gap-2 bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition-colors"
+          >
+            <RefreshCcw size={16} />
+            Reset Tasks
           </button>
         </div>
       </div>
