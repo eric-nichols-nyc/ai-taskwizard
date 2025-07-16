@@ -7,6 +7,7 @@ export { CardSchema } from './schemas'
 export { supabase } from './supabaseClient'
 export { QueryProvider } from './QueryProvider'
 export { createTaskService, type CreateTaskPayload } from './task-service'
+export { User } from "./User";
 export type { AuthContextType, AuthGuardProps, Task } from './types'
 import type { SupabaseClient } from '@supabase/supabase-js';
 
