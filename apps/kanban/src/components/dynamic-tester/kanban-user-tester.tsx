@@ -74,15 +74,10 @@ export const KanbanUserTester = () => {
   }, [user]);
 
   useEffect(() => {
-    if (tasks) {
+    if (tasks && tasks.length > 0) {
       setLocalTasks(tasks);
     }
-  }, [tasks]);
-
-  useEffect(() => {
-    // Run automated tests on component mount
-    setTimeout(() => runAutomatedTests(), 1000);
-  }, []);
+  }, [tasks]);;
 
   // Now all hooks are at the top, so early returns are safe
   if (loading) {
