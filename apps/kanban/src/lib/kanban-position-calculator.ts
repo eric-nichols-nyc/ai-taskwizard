@@ -33,8 +33,6 @@ interface PositionResult {
  */
 export class KanbanPositionCalculator {
     /** Minimum gap between positions to prevent precision issues */
-    private static readonly MIN_GAP = 0.000001;
-
     /** When position gaps get smaller than this, trigger rebalancing */
     private static readonly REBALANCE_THRESHOLD = 0.001;
 

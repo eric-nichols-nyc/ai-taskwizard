@@ -3,7 +3,7 @@ import { useDroppable } from '@dnd-kit/core';
 import { useSortable } from '@dnd-kit/sortable';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { Plus, MoreHorizontal } from 'lucide-react';
-import type { Column, Task } from './task-types';
+import type { Column } from './task-types';
 import { useKanbanStore } from './kanban-state';
 import { TaskCard } from './task-card';
 import { AddTaskForm } from './add-task-form';

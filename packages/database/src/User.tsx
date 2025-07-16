@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { Button } from "@turbo-with-tailwind-v4/design-system/button";
+import { Button } from "@turbo-with-tailwind-v4/design-system/components/ui/button";
 import { toast } from "react-hot-toast";
 import { useAuth } from "./useAuth";
 
