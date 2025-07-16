@@ -35,9 +35,9 @@ export const KanbanUserTester = () => {
   const [token, setToken] = useState("");
 
   // All useEffect hooks must be called before any early return
-  useEffect(() => {
-    console.log('KanbanUserTester - columns', columns);
-  }, [columns]);
+  // useEffect(() => {
+  //   console.log('KanbanUserTester - columns', columns);
+  // }, [columns]);
 
   useEffect(() => {
     let isMounted = true;
