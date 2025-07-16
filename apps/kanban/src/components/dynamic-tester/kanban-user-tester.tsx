@@ -1,11 +1,10 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from 'react';
 import { Play, Plus, Zap, CheckCircle, XCircle, RefreshCcw } from "lucide-react";
 import { KanbanPositionCalculator } from "../../lib/kanban-position-calculator";
-import { Task } from "@turbo-with-tailwind-v4/database/types";
-import toast from "react-hot-toast";
-// get user from auth provider
-import { useAuth } from "@turbo-with-tailwind-v4/database";
 import { useKanbanBoardState } from "../../hooks/use-kanban-board";
+import { signInWithGoogle } from '@turbo-with-tailwind-v4/database';
+import { type User as SupabaseUser } from '@supabase/supabase-js';
+import { type Task } from '@turbo-with-tailwind-v4/database/types';
 
 interface TestResult {
   timestamp: string;
@@ -13,64 +12,106 @@ interface TestResult {
   type: "success" | "error" | "info";
 }
 
-export const KanbanUserTester= () => {
+export const KanbanUserTester = () => {
+  // All hooks must be called unconditionally at the top
   const {
-    board,
     columns,
     tasks,
     isLoading,
-    error,
+    error: boardError,
     addTask,
     updateTask,
   } = useKanbanBoardState();
-  // console.log('kanbanboard hook - kanbanBoard', board);
-
+  const [user, setUser] = useState<SupabaseUser | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [simulationMode, setSimulationMode] = useState(false);
-  const { session } = useAuth();
-  console.log('KanbanUserTester - board', board);
-
-  const copyToken = () => {
-    navigator.clipboard.writeText(token);
-    toast.success("Token copied to clipboard");
-  };
-
+  const [testResults, setTestResults] = useState<TestResult[]>([]);
   const [selectedTask, setSelectedTask] = useState("");
   const [selectedColumn, setSelectedColumn] = useState("");
-  const [selectedPosition, setSelectedPosition] = useState<
-    "first" | "last" | "before" | "after"
-  >("first");
+  const [selectedPosition, setSelectedPosition] = useState<"first" | "last" | "before" | "after">("first");
   const [selectedTargetTask, setSelectedTargetTask] = useState("");
-  const [testResults, setTestResults] = useState<TestResult[]>([]);
   const [localTasks, setLocalTasks] = useState<Task[]>([]);
-
   const [token, setToken] = useState("");
 
+  // All useEffect hooks must be called before any early return
   useEffect(() => {
-    setLocalTasks(tasks);
+    console.log('KanbanUserTester - columns', columns);
+  }, [columns]);
+
+  useEffect(() => {
+    let isMounted = true;
+    async function checkOrSignIn() {
+      setLoading(true);
+      setError(null);
+      try {
+        const session = await signInWithGoogle();
+        if (isMounted) {
+          if (session && session.user) {
+            setUser(session.user);
+          } else {
+            setUser(null);
+            setError('Sign in required to use Kanban Tester.');
+          }
+        }
+      } catch {
+        if (isMounted) {
+          setError('Sign in failed.');
+          setUser(null);
+        }
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    }
+    checkOrSignIn();
+    return () => { isMounted = false; };
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      setToken(""); // Or fetch the session and set the token if needed
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (tasks) {
+      setLocalTasks(tasks);
+    }
   }, [tasks]);
 
   useEffect(() => {
-    if (session) {
-      setToken(session.access_token || "");
-    }
-  }, [session]);
+    // Run automated tests on component mount
+    setTimeout(() => runAutomatedTests(), 1000);
+  }, []);
 
-  // update task in database
-  // const updateTaskInDatabase = (task: Task) => {
-  //   console.log("updateTaskInDatabase", task);
-  //   updateTaskMutation.mutate(
-  //     { id: task.id, updates: task },
-  //     {
-  //       onSuccess: () => {
-  //         console.log("updateTaskInDatabase success", task);
-  //         addTestResult(`✅ Updated task: ${task.title} (ID: ${task.id}, position: ${task.position.toFixed(3)})`, "success");
-  //       },
-  //       onError: (error) => {
-  //         addTestResult(`❌ Error: ${(error as Error).message}`, "error");
-  //       }
-  //     }
-  //   );
-  // }
+  // Now all hooks are at the top, so early returns are safe
+  if (loading) {
+    return <div>Loading user...</div>;
+  }
+  if (error) {
+    return <div>{error}</div>;
+  }
+  if (!user) {
+    return <div>Sign in required to use Kanban Tester.</div>;
+  }
+  if (isLoading) {
+    return <div>Loading board...</div>;
+  }
+  if (boardError) {
+    return <div>Error loading board: {boardError.message || boardError.toString()}</div>;
+  }
+  if (!columns || !columns.length) {
+    return <div>Loading columns...</div>;
+  }
+  if (!tasks) {
+    return <div>Board data unavailable.</div>;
+  }
+
+  const columnStatusMap: Record<string, "todo" | "in-progress" | "done"> = {
+    [columns[0].id]: "todo",
+    [columns[1].id]: "in-progress",
+    [columns[2].id]: "done",
+  };
 
   const addTestResult = (
     message: string,
@@ -84,7 +125,7 @@ export const KanbanUserTester= () => {
     setTestResults((prev) => [newResult, ...prev.slice(0, 19)]); // Keep last 20 results
   };
 
-  const moveTask = () => {
+  const moveTestTask = () => {
     try {
       if (!selectedTask || !selectedColumn || !selectedPosition) {
         throw new Error("Please select task, column, and position");
@@ -98,25 +139,17 @@ export const KanbanUserTester= () => {
           "Please select target task for before/after positioning"
         );
       }
+      const newStatus = columnStatusMap[selectedColumn] || "todo";
 
       const startTime = performance.now();
       const result = KanbanPositionCalculator.calculatePosition({
-        tasks: localTasks,
+        tasks: localTasks as Task[],
         taskId: selectedTask,
         targetColumnId: selectedColumn,
         dropPosition: selectedPosition,
         targetTaskId: selectedTargetTask || undefined,
       });
       const endTime = performance.now();
-
-      const columnStatusMap: Record<string, "todo" | "in-progress" | "done"> = {
-        [columns[0].id]: "todo",
-        [columns[1].id]: "in-progress",
-        [columns[2].id]: "done",
-        // ...add more as needed
-      };
-
-      const newStatus = columnStatusMap[selectedColumn] || "todo";
 
       const updatedTasks = result.updatedTasks.map(task =>
         task.id === selectedTask
@@ -127,9 +160,9 @@ export const KanbanUserTester= () => {
       if (simulationMode) {
         setLocalTasks(updatedTasks);
       } else {
-        const task = updatedTasks.find(t => t.id === selectedTask);
+        const task = updatedTasks.find((t: Task) => t.id === selectedTask);
         if (task) {
-          updateTask(task, () => {
+          updateTask(task as Task, () => {
             addTestResult(`✅ Updated task: ${task.title} (ID: ${task.id}, position: ${task.position.toFixed(3)})`, "success");
           });
         }
@@ -147,7 +180,7 @@ export const KanbanUserTester= () => {
 
   const addTestTask = () => {
     const columnId = selectedColumn || columns[0]?.id || "todo";
-    const taskId = `task_${Math.random().toString().padStart(3, "0")}`; // Database-style ID
+    const taskId = `task_${Math.random().toString().padStart(3, "0")}`;
     const position = KanbanPositionCalculator.getNewTaskPosition(
       tasks,
       columnId
@@ -171,10 +204,9 @@ export const KanbanUserTester= () => {
       "col-1": "todo",
       "col-2": "in-progress",
       "col-3": "done",
-      // ...add more as needed
     };
 
-    const status = columnStatusMap[columnId] || "todo"; // fallback to "todo"
+    const status = columnStatusMap[columnId] || "todo";
     const newTask: Task = {
       id: taskId,
       column_id: columnId,
@@ -188,24 +220,21 @@ export const KanbanUserTester= () => {
         | "Low"
         | "Medium"
         | "High",
-      status, // <-- set status here!
+      status,
     };
 
-     // This line is removed as tasks are now fetched directly
-   if (simulationMode) {
+    if (simulationMode) {
       setLocalTasks((prev) => [...prev, newTask]);
       addTestResult(
         `➕ Added task: ${newTask.title} (ID: ${taskId}, position: ${position.toFixed(3)})`,
         "success"
       );
-   } else {
-    // add task to database
-    addTask(newTask, () => {
-      addTestResult(`➕ Added task: ${newTask.title} (ID: ${newTask.id}, position: ${newTask.position.toFixed(3)})`, "success");
-    });
-   }
+    } else {
+      addTask(newTask as Task, () => {
+        addTestResult(`➕ Added task: ${newTask.title} (ID: ${newTask.id}, position: ${newTask.position.toFixed(3)})`, "success");
+      });
+    }
   };
-
 
   const stressTest = () => {
     addTestResult("🏃‍♂️ Running stress test...", "info");
@@ -214,7 +243,6 @@ export const KanbanUserTester= () => {
     let operations = 0;
     let currentTasks = [...tasks];
 
-    // Perform 100 random moves
     for (let i = 0; i < 100; i++) {
       const taskId =
         currentTasks[Math.floor(Math.random() * currentTasks.length)].id;
@@ -234,12 +262,10 @@ export const KanbanUserTester= () => {
         operations++;
       } catch (error) {
         console.error("Stress test error:", error);
-        // Skip invalid operations
       }
     }
 
     const endTime = performance.now();
-    // setTasks(currentTasks); // This line is removed as tasks are now fetched directly
 
     addTestResult(
       `🎯 Stress test completed: ${operations} operations, Total: ${(endTime - startTime).toFixed(2)}ms, Avg: ${((endTime - startTime) / operations).toFixed(3)}ms per operation`,
@@ -343,27 +369,12 @@ export const KanbanUserTester= () => {
     );
   };
 
-  // Get target tasks for selected column
   const getTargetTasks = () => {
     if (!selectedColumn) return tasks;
     return tasks.filter(
       (t) => t.column_id === selectedColumn && t.id !== selectedTask
     );
   };
-
-  useEffect(() => {
-    // Run automated tests on component mount
-    setTimeout(() => runAutomatedTests(), 1000);
-  }, []);
-
-
-
-  if (isLoading) {
-    return <div>Loading Kanban board...</div>;
-  }
-  if (error) {
-    return <div>Error loading Kanban board: {error.message}</div>;
-  }
 
   return (
     <div className="max-w-7xl mx-auto p-6 bg-gray-50 min-h-screen text-black">
@@ -374,7 +385,7 @@ export const KanbanUserTester= () => {
         {token && (
           <button
             className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors"
-            onClick={copyToken}
+            onClick={() => navigator.clipboard.writeText(token)}
           >
             Copy user token
           </button>
@@ -397,7 +408,7 @@ export const KanbanUserTester= () => {
               className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="">Select Task</option>
-              {localTasks.map((task) => (
+              {localTasks.map((task: Task) => (
                 <option key={task.id} value={task.id}>
                   {task.title} ({task.column_id})
                 </option>
@@ -458,7 +469,7 @@ export const KanbanUserTester= () => {
               className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
             >
               <option value="">Select Target</option>
-              {getTargetTasks().map((task) => (
+              {getTargetTasks().map((task: Task) => (
                 <option key={task.id} value={task.id}>
                   {task.title}
                 </option>
@@ -469,7 +480,7 @@ export const KanbanUserTester= () => {
 
         <div className="flex flex-wrap gap-2">
           <button
-            onClick={moveTask}
+            onClick={moveTestTask}
             className="flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors"
           >
             <Play size={16} />
@@ -515,8 +526,8 @@ export const KanbanUserTester= () => {
         <div className="flex gap-6 overflow-x-auto pb-4">
           {columns.map((column) => {
             const columnTasks = localTasks
-              .filter((task) => task.column_id === column.id)
-              .sort((a, b) => a.position - b.position);
+              .filter((task: Task) => task.column_id === column.id)
+              .sort((a: Task, b: Task) => a.position - b.position);
 
             return (
               <div
@@ -530,7 +541,7 @@ export const KanbanUserTester= () => {
                   </span>
                 </h3>
                 <div className="space-y-2">
-                  {columnTasks.map((task, index) => (
+                  {columnTasks.map((task: Task, index: number) => (
                     <div
                       key={task.id}
                       className={`bg-white rounded-lg shadow-sm p-3 border-l-4 transition-all duration-200 ${

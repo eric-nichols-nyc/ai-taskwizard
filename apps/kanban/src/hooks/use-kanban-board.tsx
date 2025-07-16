@@ -1,6 +1,7 @@
 import {useState, useEffect} from "react";
 import { useDefaultKanban, useAddTask, useUpdateTask } from "@turbo-with-tailwind-v4/database/use-tasks";
 import {  KanbanBoardData, Task } from "@turbo-with-tailwind-v4/database/types";
+import { KanbanPositionCalculator } from "../lib/kanban-position-calculator";
 
 // Accept kanbanData as an argument
 export function useKanbanBoardState() {
@@ -11,6 +12,7 @@ export function useKanbanBoardState() {
 
   useEffect(() => {
     if (data) {
+        console.log('useKanbanBoardState - data', data);
       setKanbanBoard(data);
     }
   }, [data]);
@@ -42,6 +44,34 @@ export function useKanbanBoardState() {
     });
   };
 
+  const deleteTask = (taskId: string, onSuccess?: () => void) => {
+    console.log('deleteTask', taskId);
+    if(onSuccess) {
+        onSuccess();
+    }
+  }
+
+  const moveTask = (
+    taskId: string,
+    newColumnId: string,
+    onSuccess?: () => void) => {
+        const result = KanbanPositionCalculator.calculatePosition({
+            tasks: kanbanBoard?.tasks ?? [],
+            taskId,
+            targetColumnId: newColumnId,
+            dropPosition: 'last',
+            targetTaskId: undefined,
+        });
+
+        console.log('moveTask result', result);
+
+        if(onSuccess) {
+            onSuccess();
+        }
+        return result;
+
+  }
+
   return {
     board: kanbanBoard?.board ?? null,
     columns: kanbanBoard?.columns ?? [],
@@ -52,5 +82,7 @@ export function useKanbanBoardState() {
     updateTaskMutation,
     addTask,
     updateTask,
+    deleteTask,
+    moveTask,
   };
 }

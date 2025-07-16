@@ -136,7 +136,7 @@ export function useKanbanBoard(boardId: string | undefined) {
 export function useDefaultKanban(): UseQueryResult<KanbanBoardData | null, Error> {
   const { user } = useAuth();
   const userId = user?.id;
-
+  console.log('useDefaultKanban - userId', userId);
   return useQuery({
     queryKey: ['kanban', { userId }],
     queryFn: () => {

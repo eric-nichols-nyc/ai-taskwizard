@@ -4,6 +4,7 @@ import { AuthProvider, QueryProvider } from "@turbo-with-tailwind-v4/database";
 import { ComingSoon } from "@turbo-with-tailwind-v4/design-system/components/coming-soon";
 import { ErrorBoundary } from "@turbo-with-tailwind-v4/design-system";
 import {Toaster} from "react-hot-toast"
+import { User } from "./components/user";
 
 const USE_KANBAN_TESTER = true; // Toggle this for dev
 
@@ -12,6 +13,7 @@ export function App() {
     <QueryProvider>
       <AuthProvider isHost={false}>
         <ErrorBoundary>
+          <User />
           {import.meta.env.VITE_NEW_KANBAN_ENABLED === "false" ? <ComingSoon /> : (USE_KANBAN_TESTER ? <KanbanUserTester /> : <KanbanBoard />)}
           <Toaster />
         </ErrorBoundary>
