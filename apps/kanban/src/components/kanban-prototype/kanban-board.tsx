@@ -12,10 +12,9 @@ import {
 } from '@dnd-kit/core';
 import {
   SortableContext,
-  arrayMove,
   horizontalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import { useKanbanStore } from './kanban-state';
+import { useKanbanBoardState } from "../../hooks/use-kanban-board";
 import { TaskCard } from './task-card';
 import { ColumnComponent } from './column-component';
 
@@ -23,23 +22,23 @@ export const KanbanBoard = () => {
   const [activeId, setActiveId] = useState<string | null>(null);
 
   const {
+    board,
     columns,
     tasks,
-    activeBoard,
-    updateColumnPositions,
-    updateTaskPositions,
-  } = useKanbanStore();
+    isLoading,
+    error,
+    moveTask,
+  } = useKanbanBoardState();
 
   // Debug: Log all column and task IDs
   console.log('[Kanban Render] Column IDs:', columns.map(c => c.id));
   console.log('[Kanban Render] Task IDs:', tasks.map(t => t.id));
 
   const activeColumns = columns
-    .filter(col => col.board_id === activeBoard)
     .sort((a, b) => a.position - b.position);
 
   // Debug: Log items passed to SortableContext for columns
-  console.log('[Kanban Render] SortableContext (columns) items:', activeColumns.map(c => c.id));
+ // console.log('[Kanban Render] SortableContext (columns) items:', activeColumns.map(c => c.id));
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -71,13 +70,7 @@ export const KanbanBoard = () => {
         if (activeTask.id === overTask.id) return;
         // If moving to a different column
         if (activeTask.column_id !== overTask.column_id) {
-          const newTasks = tasks.map(task => {
-            if (task.id === activeTask.id) {
-              return { ...task, column_id: overTask.column_id };
-            }
-            return task;
-          });
-          updateTaskPositions(newTasks);
+          moveTask(activeTask.id, overTask.column_id);
         }
       }
       // Dropped over a column
@@ -85,13 +78,7 @@ export const KanbanBoard = () => {
         const activeTask = activeData.task;
         const overColumn = overData.column;
         if (activeTask.column_id !== overColumn.id) {
-          const newTasks = tasks.map(task => {
-            if (task.id === activeTask.id) {
-              return { ...task, column_id: overColumn.id };
-            }
-            return task;
-          });
-          updateTaskPositions(newTasks);
+          moveTask(activeTask.id, overColumn.id);
         }
       }
     }
@@ -106,90 +93,33 @@ export const KanbanBoard = () => {
     const overData = over.data.current;
     if (!activeData || !overData) return;
 
-    // Column reordering
+    // Column reordering - not implemented in hook yet
     if (activeData.type === 'Column' && overData.type === 'Column') {
       if (active.id === over.id) return;
-      const oldIndex = activeColumns.findIndex(c => c.id === active.id);
-      const newIndex = activeColumns.findIndex(c => c.id === over.id);
-      const newColumns = arrayMove(activeColumns, oldIndex, newIndex).map((col, index) => ({
-        ...col,
-        position: index,
-      }));
-      const updatedColumns = columns.map(col => {
-        const newCol = newColumns.find(nc => nc.id === col.id);
-        return newCol || col;
-      });
-      updateColumnPositions(updatedColumns);
+      console.log('[Kanban Render] Column reordering not implemented in hook');
       return;
     }
 
     // Task reordering or moving between columns
     if (activeData.type === 'Task') {
+      console.log('[Kanban Render] Task reordering or moving between columns');
       const activeTask = activeData.task;
       // Dropped on a task
       if (overData.type === 'Task') {
         const overTask = overData.task;
         if (activeTask.id === overTask.id) return;
-        const columnTasks = tasks.filter(t => t.column_id === overTask.column_id);
-        const oldIndex = columnTasks.findIndex(t => t.id === activeTask.id);
-        const newIndex = columnTasks.findIndex(t => t.id === overTask.id);
-        let reorderedTasks = arrayMove(columnTasks, oldIndex, newIndex).map((task, index) => ({
-          ...task,
-          position: index,
-        }));
-        // If moving to a new column, update column_id
+
+        // If moving to a different column
         if (activeTask.column_id !== overTask.column_id) {
-          reorderedTasks = reorderedTasks.map(task =>
-            task.id === activeTask.id ? { ...task, column_id: overTask.column_id } : task
-          );
+          moveTask(activeTask.id, overTask.column_id);
         }
-        const updatedTasks = [
-          ...tasks.filter(task => task.column_id !== overTask.column_id),
-          ...reorderedTasks,
-        ];
-        updateTaskPositions(updatedTasks);
         return;
       }
       // Dropped on a column
       if (overData.type === 'Column') {
         const overColumn = overData.column;
         if (activeTask.column_id !== overColumn.id) {
-          const destColumnTasks = tasks
-            .filter(t => t.column_id === overColumn.id)
-            .sort((a, b) => a.position - b.position);
-          const updatedActiveTask = {
-            ...activeTask,
-            column_id: overColumn.id,
-            position: destColumnTasks.length,
-          };
-          const newTasks = tasks
-            .filter(t => t.id !== activeTask.id)
-            .concat(updatedActiveTask)
-            .map(task => {
-              // Re-index positions in both columns
-              if (task.column_id === activeTask.column_id && task.id !== activeTask.id) {
-                // Old column: re-index
-                return {
-                  ...task,
-                  position: tasks
-                    .filter(t => t.column_id === activeTask.column_id && t.id !== activeTask.id)
-                    .sort((a, b) => a.position - b.position)
-                    .findIndex(t => t.id === task.id),
-                };
-              }
-              if (task.column_id === overColumn.id && task.id !== activeTask.id) {
-                // New column: re-index
-                return {
-                  ...task,
-                  position: tasks
-                    .filter(t => t.column_id === overColumn.id && t.id !== activeTask.id)
-                    .sort((a, b) => a.position - b.position)
-                    .findIndex(t => t.id === task.id),
-                };
-              }
-              return task;
-            });
-          updateTaskPositions(newTasks);
+          moveTask(activeTask.id, overColumn.id);
         }
         return;
       }
@@ -199,11 +129,38 @@ export const KanbanBoard = () => {
   const activeTask = activeId ? tasks.find(t => t.id === activeId) : null;
   const activeColumn = activeId ? columns.find(c => c.id === activeId) : null;
 
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="h-screen p-6 flex flex-col items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading kanban board...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="h-screen p-6 flex flex-col items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-600">Error loading kanban board: {error.message}</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="h-screen p-6 flex flex-col items-center">
       <div className="mb-6 w-full max-w-screen-lg mx-auto">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2 text-left">My Project Board</h1>
-        <p className="text-gray-600 text-left">Manage your tasks with this Kanban board</p>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2 text-left">
+          {board?.name || 'My Project Board'}
+        </h1>
+        <p className="text-gray-600 text-left">
+          {board?.description || 'Manage your tasks with this Kanban board'}
+        </p>
       </div>
 
       <DndContext
@@ -217,15 +174,36 @@ export const KanbanBoard = () => {
           <div className="flex gap-6 min-w-fit pb-6">
             <SortableContext items={activeColumns.map(c => c.id)} strategy={horizontalListSortingStrategy}>
               {activeColumns.map(column => (
-                <ColumnComponent key={column.id} column={column} />
+                <ColumnComponent key={column.id} column={{
+                  id: column.id,
+                  column_id: column.id,
+                  title: column.name,
+                  description: '',
+                  position: column.position,
+                  board_id: column.board_id,
+                }} />
               ))}
             </SortableContext>
           </div>
         </div>
 
         <DragOverlay>
-          {activeTask && <TaskCard task={activeTask} />}
-          {activeColumn && <ColumnComponent column={activeColumn} />}
+          {activeTask && <TaskCard task={{
+            id: activeTask.id,
+            title: activeTask.title,
+            description: activeTask.description || '',
+            column_id: activeTask.column_id,
+            position: activeTask.position,
+            status: activeTask.status || '',
+          }} />}
+          {activeColumn && <ColumnComponent column={{
+            id: activeColumn.id,
+            column_id: activeColumn.id,
+            title: activeColumn.name,
+            description: '',
+            position: activeColumn.position,
+            board_id: activeColumn.board_id,
+          }} />}
         </DragOverlay>
       </DndContext>
     </div>

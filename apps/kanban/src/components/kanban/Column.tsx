@@ -20,7 +20,7 @@ export function Column({ id, name, children }: ColumnProps) {
     transition,
     isDragging,
   } = useSortable({
-    id: `${id}-header`,
+    id: id,
     data: {
       type: 'Column',
       column: { id, name },

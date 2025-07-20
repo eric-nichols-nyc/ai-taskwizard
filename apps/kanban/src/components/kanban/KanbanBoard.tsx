@@ -36,6 +36,8 @@ export function KanbanBoard({ data, onTaskMove }: KanbanBoardProps) {
 
     if (active && over && active.id !== over.id) {
       const taskId = active.id;
+      const targetTaskId = over.id;
+      console.log('KanbanBoard - targetTaskId:', targetTaskId);
       const targetColumnId = transformedData.tasks?.find(t => t.id === over.id)?.column_id;
       if (!targetColumnId) {
         console.error('KanbanBoard - targetColumnId not found for task:', over.id);

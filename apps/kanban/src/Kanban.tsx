@@ -7,11 +7,11 @@ export const Kanban = () => {
   const { board, columns, tasks, isLoading, error, moveTask } = useKanbanBoardState();
   const [localTasks, setLocalTasks] = useState(tasks);
 
-  console.log('Kanban - board', board);
-  console.log('Kanban - columns', columns);
-  console.log('Kanban - tasks', tasks);
-  console.log('Kanban - isLoading', isLoading);
-  console.log('Kanban - error', error);
+  // console.log('Kanban - board', board);
+  // console.log('Kanban - columns', columns);
+  // console.log('Kanban - tasks', tasks);
+  // console.log('Kanban - isLoading', isLoading);
+  // console.log('Kanban - error', error);
 
   // Update local tasks when tasks change from the hook
   React.useEffect(() => {
