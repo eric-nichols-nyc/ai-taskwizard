@@ -3,7 +3,11 @@ import { SpinLoader } from "@turbo-with-tailwind-v4/design-system/components/spi
 import { useKanbanBoardState } from "./hooks/use-kanban-board";
 
 export const Kanban = () => {
-  const { isLoading, error } = useKanbanBoardState();
+  const { columns, tasks, isLoading, error } = useKanbanBoardState();
+  console.log('Kanban - columns', columns);
+  console.log('Kanban - tasks', tasks);
+  console.log('Kanban - isLoading', isLoading);
+  console.log('Kanban - error', error);
 
   // Show loading state
   if (isLoading) {
