@@ -6,6 +6,8 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
+  DragStartEvent,
+  DragEndEvent,
 } from "@dnd-kit/core";
 import { SortableContext, horizontalListSortingStrategy } from "@dnd-kit/sortable";
 
@@ -14,9 +16,9 @@ import { SortableContext, horizontalListSortingStrategy } from "@dnd-kit/sortabl
 
 export type BoardProps = {
   columns: React.ReactNode[];
-  onDragStart?: (event: unknown) => void;
+  onDragStart?: (event: DragStartEvent) => void;
   onDragOver?: (event: unknown) => void;
-  onDragEnd?: (event: unknown) => void;
+  onDragEnd?: (event: DragEndEvent) => void;
   activeTask?: React.ReactNode;
   activeColumn?: React.ReactNode;
 };
@@ -69,4 +71,4 @@ export function Board({
 }
 
 // Export default if you want default import
-// export default Board; 
+// export default Board;
