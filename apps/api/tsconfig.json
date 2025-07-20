@@ -16,10 +16,9 @@
       "moduleResolution": "nodenext",
       "baseUrl": ".",
       "paths": {
-        "@turbo-with-tailwind-v4/database": ["../../packages/database"]
+        "@turbo-with-tailwind-v4/supabase": ["../../packages/supabase/src"]
       }
     },
     "include": ["src/**/*"],
     "exclude": ["node_modules", "dist"]
   }
-  

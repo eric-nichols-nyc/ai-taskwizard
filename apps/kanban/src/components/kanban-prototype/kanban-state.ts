@@ -1,41 +1,5 @@
 import { create } from 'zustand';
-
-export interface Task {
-  id: string;
-  column_id: string;
-  title: string;
-  description: string;
-  position: number;
-  status: string;
-}
-
-export interface Column {
-  id: string;
-  board_id: string;
-  column_id: string;
-  name: string;
-  position: number;
-}
-
-export interface Board {
-  id: string;
-  user_id: string;
-  title: string;
-  description: string;
-}
-
-export interface KanbanState {
-  boards: Board[];
-  columns: Column[];
-  tasks: Task[];
-  activeBoard: string | null;
-  setActiveBoard: (boardId: string) => void;
-  addColumn: (boardId: string, title: string, description: string) => void;
-  addTask: (columnId: string, title: string, description: string) => void;
-  updateColumnPositions: (columns: Column[]) => void;
-  updateTaskPositions: (tasks: Task[]) => void;
-  moveTask: (taskId: string, newColumnId: string, newPosition: number) => void;
-}
+import type { KanbanState, Column, Task } from './task-types';
 
 export const useKanbanStore = create<KanbanState>((set, get) => ({
   boards: [
@@ -51,7 +15,7 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
       id: 'col-1',
       board_id: 'board-1',
       column_id: 'col-1',
-      name: 'To Do',
+      title: 'To Do',
       description: 'Tasks to be started',
       position: 0,
     },
@@ -59,7 +23,7 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
       id: 'col-2',
       board_id: 'board-1',
       column_id: 'col-2',
-      name: 'In Progress',
+      title: 'In Progress',
       description: 'Currently working on',
       position: 1,
     },
@@ -67,7 +31,7 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
       id: 'col-3',
       board_id: 'board-1',
       column_id: 'col-3',
-      name: 'Done',
+      title: 'Done',
       description: 'Completed tasks',
       position: 2,
     },
@@ -108,14 +72,15 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
   ],
   activeBoard: 'board-1',
   setActiveBoard: (boardId) => set({ activeBoard: boardId }),
-  addColumn: (boardId, title) => {
+  addColumn: (boardId, title, description) => {
     const { columns } = get();
     const boardColumns = columns.filter(col => col.board_id === boardId);
     const newColumn: Column = {
       id: `col-${Date.now()}`,
       board_id: boardId,
       column_id: `col-${Date.now()}`,
-      name: title,
+      title,
+      description,
       position: boardColumns.length,
     };
     set(state => ({ columns: [...state.columns, newColumn] }));

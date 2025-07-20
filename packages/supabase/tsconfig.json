@@ -1,18 +1,19 @@
 {
-    "extends": "@turbo-with-tailwind-v4/typescript-config/react-library.json",
-    "include": ["src"],
-    "exclude": ["dist", "build", "node_modules"],
+    "extends": "@turbo-with-tailwind-v4/typescript-config/base.json",
     "compilerOptions": {
       "outDir": "./dist",
+      "rootDir": "./src",
       "declaration": true,
-      "emitDeclarationOnly": false,
-      "module": "ESNext",
-      "target": "ESNext",
-      "jsx": "react-jsx",
-      "esModuleInterop": true,
+      "declarationMap": true,
+      "sourceMap": true,
+      "strict": true,
       "moduleResolution": "bundler",
-      "allowSyntheticDefaultImports": true,
-      "skipLibCheck": true,
-      "strict": true
-    }
+      "allowImportingTsExtensions": false,
+      "noEmit": false,
+      "lib": ["ES2022"],
+      "target": "ES2022",
+      "module": "ESNext"
+    },
+    "include": ["src/**/*"],
+    "exclude": ["dist", "node_modules", "**/*.test.ts", "**/*.spec.ts"]
   }

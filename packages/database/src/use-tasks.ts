@@ -2,9 +2,10 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   createTaskService,
   useAuth, // Import from the correct package
-  type Task,
   type CreateTaskPayload,
 } from '@turbo-with-tailwind-v4/database';
+import { type KanbanBoardData, type Task } from './types';
+import type { UseQueryResult, UseMutationResult } from '@tanstack/react-query';
 
 // Initialize the task service
 const taskService = createTaskService();
@@ -19,7 +20,7 @@ export const taskKeys = {
 /**
  * Hook to fetch tasks for the current user.
  */
-export function useGetTasks() {
+export function useGetTasks(): UseQueryResult<Task[], Error> {
   const { user } = useAuth();
   const userId = user?.id;
 
@@ -36,7 +37,22 @@ export function useGetTasks() {
 /**
  * Hook to add a new task.
  */
-export function useAddTask() {
+export function useAddTask(): UseMutationResult<Task, Error, CreateTaskPayload> {
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
+
+  return useMutation({
+    mutationFn: (newTask: CreateTaskPayload) => {
+        return taskService.createTaskWithDefaults(newTask);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: taskKeys.list(user?.id) }); // updates the dashboard task list
+      queryClient.invalidateQueries({ queryKey: ['kanban', { userId: user?.id }] }); // updates the Kanban board
+    },
+  });
+}
+
+export function useAddDefaultTask() {
   const queryClient = useQueryClient();
   const { user } = useAuth();
 
@@ -46,6 +62,27 @@ export function useAddTask() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: taskKeys.list(user?.id) });
+    },
+  });
+}
+
+export function useAddKanbanTask() {
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
+
+  return useMutation({
+      mutationFn: (newTask: Partial<Task> & { title: string; column_id: string; status: string; description?: string; position: number }) => {
+          return taskService.createTask({
+            ...newTask,
+            user_id: user?.id ?? '',
+          });
+        },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: taskKeys.list(user?.id) });
+      queryClient.invalidateQueries({ queryKey: ['kanban'] });
+    },
+    onError: (error) => {
+      console.error('Error adding kanban task:', error);
     },
   });
 }
@@ -62,6 +99,7 @@ export function useUpdateTask() {
       taskService.updateTask(id, updates),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: taskKeys.list(user?.id) });
+      queryClient.invalidateQueries({ queryKey: ['kanban', { userId: user?.id }] });
     },
   });
 }
@@ -94,45 +132,17 @@ export function useKanbanBoard(boardId: string | undefined) {
     enabled: !!boardId && !!userId,
   });
 }
-
-export function useFirstBoardKanban() {
+// returns the default board columns and tasks for the user
+export function useDefaultKanban(): UseQueryResult<KanbanBoardData | null, Error> {
   const { user } = useAuth();
   const userId = user?.id;
-
-  // Get the user's first board
-  const {
-    data: board,
-    isLoading: boardLoading,
-    error: boardError,
-  } = useQuery({
-    queryKey: ['firstBoard', { userId }],
+  return useQuery({
+    queryKey: ['kanban', { userId }],
     queryFn: () => {
       if (!userId) throw new Error('No userId');
-      return taskService.getFirstBoardByUser(userId);
+      return taskService.getUserDefaultBoard(userId);
     },
     enabled: !!userId,
   });
 
-  // Get the kanban data for that board
-  const {
-    data: kanban,
-    isLoading: kanbanLoading,
-    error: kanbanError,
-  } = useQuery({
-    queryKey: ['kanban', { boardId: board?.id, userId }],
-    queryFn: () => {
-      if (!board?.id || !userId) throw new Error('No boardId or userId');
-      return taskService.getKanbanBoard(board.id, userId);
-    },
-    enabled: !!board?.id && !!userId,
-  });
-
-  return {
-    board,
-    boardLoading,
-    boardError,
-    kanban,
-    kanbanLoading,
-    kanbanError,
-  };
 }

@@ -18,6 +18,33 @@ export interface AuthGuardProps {
   redirectTo?: string
 }
 
+export interface KanbanBoardData {
+  board: Board;
+  columns: KanbanColumn[] | null;
+  tasks: Task[] | null;
+}
+
+
+export interface Board {
+  id: string;
+  name: string;
+  description?: string | null;
+  user_id?: string | null;
+  created_at?: string; // ISO timestamp
+  updated_at?: string; // ISO timestamp
+}
+
+export interface KanbanColumn {
+  id: string;
+  board_id: string;
+  name: string;
+  position: number;
+  color?: string | null;
+  created_at?: string;
+  tasks: Task[];
+}
+
+
 export interface Task {
   id: string; // UUID
   column_id: string; // UUID
@@ -28,9 +55,10 @@ export interface Task {
   priority?: 'Low' | 'Medium' | 'High' | null;
   due_date?: string | null; // ISO date string
   user_id?: string | null;
-  created_at: string; // ISO timestamp
-  updated_at: string; // ISO timestamp
+  created_at?: string; // ISO timestamp
+  updated_at?: string; // ISO timestamp
 }
+
 
 // Card type inferred from Zod schema (see schemas.ts)
 // export type Card = z.infer<typeof CardSchema>;

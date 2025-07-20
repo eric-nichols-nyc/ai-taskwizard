@@ -15,6 +15,6 @@ export async function signInWithGoogle() {
     console.error('Google sign-in failed:', error.message);
     return null;
   }
-  
+
   return null;
-} 
+}

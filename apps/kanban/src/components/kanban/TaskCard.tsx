@@ -1,15 +1,8 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { Task } from "@turbo-with-tailwind-v4/database";
 
-export type TaskCardProps = {
-  id: string;
-  title: string;
-  dueDate?: string;
-  priority?: "low" | "medium" | "high";
-  // Add more props as needed (e.g., onEdit, onDelete, etc.)
-};
-
-export function TaskCard({ id, title, dueDate, priority }: TaskCardProps) {
+export function TaskCard({ id, title, due_date, priority, position }: Task) {
   const {
     attributes,
     listeners,
@@ -32,11 +25,12 @@ export function TaskCard({ id, title, dueDate, priority }: TaskCardProps) {
       style={style}
       {...attributes}
       {...listeners}
-      className="bg-blue-50 border border-blue-200 shadow-sm rounded-md p-3 mb-2 transition-colors hover:bg-blue-100 hover:border-blue-400 text-blue-900"
+      className="w-70 overflow-hidden bg-blue-50 border border-blue-200 shadow-sm rounded-md p-3 mb-2 transition-colors hover:bg-blue-100 hover:border-blue-400 text-blue-900"
     >
       <div className="font-medium text-sm mb-1">{title}</div>
-      {dueDate && <div className="text-xs text-blue-700">Due: {dueDate}</div>}
+      {due_date && <div className="text-xs text-blue-700">Due: {due_date}</div>}
       {priority && <div className="text-xs text-blue-700">Priority: {priority}</div>}
+      <div className="text-xs text-blue-700">Position: {position}</div>
     </div>
   );
 }

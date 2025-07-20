@@ -1,50 +1,62 @@
 {
   "name": "@turbo-with-tailwind-v4/supabase",
   "version": "1.0.0",
-  "private": true,
+  "description": "",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "exports": {
-    "./schemas": {
-      "import": "./dist/schemas.js",
-      "types": "./dist/schemas.d.ts"
-    },
-    "./types": {
-      "import": "./dist/types.js",
-      "types": "./dist/types.d.ts"
-    },
-    "./task-service": {
-      "import": "./dist/task-service.js",
-      "types": "./dist/task-service.d.ts"
-    },
     ".": {
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
+    },
+    "./clients": {
+      "import": "./dist/clients/index.js",
+      "types": "./dist/clients/index.d.ts"
+    },
+    "./schemas": {
+      "import": "./dist/schemas/index.js",
+      "types": "./dist/schemas/index.d.ts"
+    },
+    "./services": {
+      "import": "./dist/services/index.js",
+      "types": "./dist/services/index.d.ts"
+    },
+    "./types": {
+      "import": "./dist/types/index.js",
+      "types": "./dist/types/index.d.ts"
+    },
+    "./utils": {
+      "import": "./dist/utils/index.js",
+      "types": "./dist/utils/index.d.ts"
     }
   },
   "scripts": {
-    "build": "tsc --declaration --emitDeclarationOnly false",
+    "build": "tsc",
     "dev": "tsc --watch",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist"
   },
   "peerDependencies": {
     "react": "^19.1.0"
   },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "dependencies": {
     "@prisma/client": "^6.9.0",
-    "@supabase/supabase-js": "^2.39.3",
-    "@turbo-with-tailwind-v4/design-system": "workspace:*",
-    "lucide-react": "^0.475.0",
-    "tailwindcss": "^4.1.9",
-    "zod": "^3.25.63"
+    "@supabase/supabase-js": "^2.50.3",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
-    "@prisma/extension-accelerate": "^2.0.1",
     "@turbo-with-tailwind-v4/eslint-config": "workspace:*",
     "@turbo-with-tailwind-v4/typescript-config": "workspace:*",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
+    "@types/node": "^24.0.3",
     "@vitejs/plugin-react": "^4.3.4",
     "prisma": "^6.9.0",
-    "typescript": "^5.8.2",
+    "typescript": "~5.8.3",
     "vite": "^6.3.1",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^1.4.0"

@@ -1,156 +1,163 @@
-# @turbo-with-tailwind-v4/supabase
+# @turbo-with-tailwind-v4/database-core
 
-A React authentication package for Supabase, designed for seamless integration in monorepos and micro-frontends (Module Federation). It provides context, hooks, and guards for managing authentication state, with special support for host/child app auth state sharing.
+A pure Node.js/TypeScript package that provides database clients, schemas, services, and utilities for your monorepo. This package contains no React dependencies and can be safely imported by both server-side applications (like your Express API) and client-side applications.
 
 ## Features
-- **AuthProvider**: Context provider for Supabase auth state and actions
-- **useAuth**: Hook to access auth state and methods
-- **AuthGuard**: Component to protect routes/pages
-- **useHostAuth**: Hook for child apps to sync auth state from a host (Module Federation)
-- **TypeScript**: Fully typed API
-- **Module Federation Ready**: Broadcasts auth state between host and child apps via `postMessage`
+
+- 🔧 **Database Clients**: Pre-configured Supabase and Prisma clients
+- 📋 **Schemas**: Zod schemas for validation and type safety
+- 🛠️ **Services**: Business logic layer with error handling
+- 🔍 **Types**: Comprehensive TypeScript types
+- 🚀 **Utilities**: Helper functions for common operations
 
 ## Installation
 
-```bash
-npm install @turbo-with-tailwind-v4/supabase @supabase/supabase-js react
+This package is part of your monorepo workspace. To use it in other packages:
+
+```json
+{
+  "dependencies": {
+    "@turbo-with-tailwind-v4/database-core": "workspace:*"
+  }
+}
 ```
-
-## Environment Setup
-
-Set your Supabase credentials in your environment variables:
-
-- `NEXT_PUBLIC_SUPABASE_URL` or `VITE_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY` or `VITE_SUPABASE_ANON_KEY`
 
 ## Usage
 
-### 1. Create a Supabase Client
+### In Your API (Express/Node.js)
 
-```ts
-// supabaseClient.ts
-import { createClient } from '@supabase/supabase-js';
+```typescript
+import { taskService, TaskSchema } from '@turbo-with-tailwind-v4/database-core';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY;
+// Create a new task
+const newTask = await taskService.createTask({
+  column_id: 'uuid-here',
+  title: 'New Task',
+  description: 'Task description',
+  position: 1,
+  priority: 'High'
+});
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables');
-}
-
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    autoRefreshToken: true,
-    persistSession: true,
-    detectSessionInUrl: true,
-  },
+// Get tasks with filtering and pagination
+const result = await taskService.getTasks({
+  column_id: 'uuid-here',
+  page: 1,
+  limit: 10,
+  sort_by: 'created_at',
+  sort_order: 'desc'
 });
 ```
 
-### 2. Wrap Your App with `AuthProvider`
+### Schema Validation
 
-```tsx
-import { AuthProvider } from '@turbo-with-tailwind-v4/supabase';
-import { supabase } from './supabaseClient';
+```typescript
+import { CreateTaskSchema, TaskSchema } from '@turbo-with-tailwind-v4/database-core/schemas';
 
-export const Root = () => (
-  <AuthProvider isHost={true} supabase={supabase}>
-    {/* your app components */}
-  </AuthProvider>
-);
-```
-- `isHost={true}`: Set to `true` in the host app (for Module Federation scenarios).
-- `supabase`: Pass your Supabase client instance.
-
-### 3. Access Auth State and Actions with `useAuth`
-
-```tsx
-import { useAuth } from '@turbo-with-tailwind-v4/database';
-
-function MyComponent() {
-  const { user, signIn, signOut, loading } = useAuth();
-
-  if (loading) return <div>Loading...</div>;
-  if (!user) return <button onClick={() => signIn('email', 'password')}>Sign In</button>;
-  return <button onClick={signOut}>Sign Out ({user.email})</button>;
+// Validate input data
+const result = CreateTaskSchema.safeParse(requestBody);
+if (!result.success) {
+  // Handle validation errors
+  console.error(result.error);
 }
 ```
 
-#### Real Example (from host app):
-```tsx
-import { useAuth } from '@turbo-with-tailwind-v4/database';
+### Custom Service Usage
 
-export function Landing() {
-  const { user } = useAuth();
-  // ...
-}
+```typescript
+import { TaskService } from '@turbo-with-tailwind-v4/database-core/services';
+import { createServiceClient } from '@turbo-with-tailwind-v4/database-core/clients';
+
+// Create a custom service instance with your own Supabase client
+const customSupabase = createServiceClient();
+const taskService = new TaskService(customSupabase);
 ```
 
-### 4. Protect Routes with `AuthGuard`
+## Package Structure
 
-```tsx
-import { AuthGuard } from '@turbo-with-tailwind-v4/supabase';
-
-function ProtectedPage() {
-  return (
-    <AuthGuard fallback={<div>Please sign in</div>} redirectTo="/login">
-      <div>Secret content</div>
-    </AuthGuard>
-  );
-}
+```
+src/
+├── clients/           # Database client configurations
+│   ├── supabase.ts   # Supabase client setup
+│   ├── prisma.ts     # Prisma client setup
+│   └── index.ts
+├── schemas/          # Zod validation schemas
+│   ├── task.ts       # Task-related schemas
+│   ├── user.ts       # User-related schemas
+│   ├── common.ts     # Common/shared schemas
+│   └── index.ts
+├── services/         # Business logic layer
+│   ├── base-service.ts    # Base service class
+│   ├── task-service.ts    # Task operations
+│   ├── user-service.ts    # User operations
+│   └── index.ts
+├── types/            # TypeScript type definitions
+│   └── index.ts
+├── utils/            # Utility functions
+│   └── index.ts
+└── index.ts          # Main package exports
 ```
 
-### 5. Child App Auth Sync with `useHostAuth` (Module Federation)
+## Environment Variables
 
-For child apps loaded via Module Federation, use `useHostAuth` to sync auth state from the host:
+Make sure these environment variables are set:
 
-```tsx
-import { useHostAuth } from '@turbo-with-tailwind-v4/supabase/dist/client/useHostAuth';
+```bash
+# Required
+SUPABASE_URL=your_supabase_url
+SUPABASE_ANON_KEY=your_anon_key
 
-function ChildApp() {
-  const { user, session, loading } = useHostAuth();
-  // ...
-}
+# Required for server-side operations
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+
+# Optional (if using Prisma)
+DATABASE_URL=your_database_url
 ```
 
-## API Reference
+## Available Services
 
-### `<AuthProvider>`
-Props:
-- `supabase`: Supabase client instance (required)
-- `isHost`: boolean (default: false) — set to true in the host app
-- `children`: ReactNode
+### TaskService
 
-### `useAuth()`
-Returns:
-- `user`: Supabase user or null
-- `session`: Supabase session or null
-- `loading`: boolean
-- `signIn(email, password)`
-- `signUp(email, password)`
-- `signOut()`
-- `signInWithProvider(provider)`
-- `resetPassword(email)`
-- `updateProfile(updates)`
+- `createTask(data)` - Create a new task
+- `getTaskById(id)` - Get task by ID
+- `getTasks(query)` - Get tasks with filtering/pagination
+- `updateTask(id, data)` - Update a task
+- `deleteTask(id)` - Delete a task
+- `updateTaskPositions(updates)` - Bulk update positions
+- `getTasksByColumn(columnId)` - Get tasks for a column
 
-### `<AuthGuard>`
-Props:
-- `children`: ReactNode
-- `fallback`: ReactNode (optional)
-- `redirectTo`: string (optional)
+### UserService
 
-### `useHostAuth()`
-Returns:
-- `user`: Supabase user or null
-- `session`: Supabase session or null
-- `loading`: boolean
+- `createUser(data)` - Create a new user
+- `getUserById(id)` - Get user by ID
+- `getUserByEmail(email)` - Get user by email
+- `updateUser(id, data)` - Update a user
+- `getUserProfile(id)` - Get public user profile
+- `deleteUser(id)` - Delete a user
 
-## Module Federation Support
-- When `isHost` is true, `AuthProvider` broadcasts auth state to child apps via `postMessage`.
-- Child apps use `useHostAuth` to receive and sync auth state from the host.
+## Type Safety
 
-## Types
-See `src/types.ts` for full type definitions.
+All services return properly typed data based on Zod schemas:
 
-## License
-MIT
+```typescript
+import type { Task, CreateTask, User } from '@turbo-with-tailwind-v4/database-core';
+
+const task: Task = await taskService.getTaskById('uuid');
+const newTask: CreateTask = {
+  column_id: 'uuid',
+  title: 'New Task',
+  position: 1
+};
+```
+
+## Error Handling
+
+Services include built-in error handling and will throw descriptive errors:
+
+```typescript
+try {
+  const task = await taskService.createTask(invalidData);
+} catch (error) {
+  // Handle validation or database errors
+  console.error(error.message);
+}
+```
