@@ -101,8 +101,8 @@ export const KanbanBoard = () => {
     }
 
     // Task reordering or moving between columns
-    if (activeData.type === 'Task') {
-      console.log('[Kanban Render] Task reordering or moving between columns');
+    if (activeData.type === 'Task' && overData.type === 'Column') {
+      console.log('[Kanban Render] ========Task reordering or moving between columns');
       const activeTask = activeData.task;
       // Dropped on a task
       if (overData.type === 'Task') {
@@ -118,6 +118,7 @@ export const KanbanBoard = () => {
       // Dropped on a column
       if (overData.type === 'Column') {
         const overColumn = overData.column;
+        console.log('[Kanban Render] ========Dropped on a column', overColumn);
         if (activeTask.column_id !== overColumn.id) {
           moveTask(activeTask.id, overColumn.id);
         }
@@ -181,7 +182,9 @@ export const KanbanBoard = () => {
                   description: '',
                   position: column.position,
                   board_id: column.board_id,
-                }} />
+                }}
+                tasks={tasks.filter(t => t.column_id === column.id)}
+                />
               ))}
             </SortableContext>
           </div>
@@ -203,7 +206,7 @@ export const KanbanBoard = () => {
             description: '',
             position: activeColumn.position,
             board_id: activeColumn.board_id,
-          }} />}
+          }} tasks={tasks.filter(t => t.column_id === activeColumn.id)} />}
         </DragOverlay>
       </DndContext>
     </div>

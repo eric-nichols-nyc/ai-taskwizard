@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSortable } from '@dnd-kit/sortable';
-import type { Task } from './task-types';
+import { Task } from '@turbo-with-tailwind-v4/database/types';
 
 export const TaskCard: React.FC<{ task: Task }> = ({ task }) => {
   const {

@@ -4,16 +4,14 @@ import { useSortable } from '@dnd-kit/sortable';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { Plus, MoreHorizontal } from 'lucide-react';
 import type { Column } from './task-types';
-import { useKanbanStore } from './kanban-state';
+//import { useKanbanStore } from './kanban-state';
 import { TaskCard } from './task-card';
 import { AddTaskForm } from './add-task-form';
+import { Task } from '@turbo-with-tailwind-v4/database/types';
 
-export const ColumnComponent: React.FC<{ column: Column }> = ({ column }) => {
+export const ColumnComponent: React.FC<{ column: Column, tasks: Task[] }> = ({ column, tasks }) => {
   const [showAddTask, setShowAddTask] = useState(false);
-  const allTasks = useKanbanStore(state => state.tasks);
-  const tasks = allTasks
-    .filter(task => task.column_id === column.id)
-    .sort((a, b) => a.position - b.position);
+  //const allTasks = useKanbanStore(state => state.tasks);
 
   // Make column a droppable area for tasks
   const { setNodeRef: setDroppableNodeRef } = useDroppable({ id: column.id });

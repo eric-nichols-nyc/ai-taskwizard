@@ -65,6 +65,14 @@ export function useKanbanBoardState() {
 
         console.log('moveTask result', result);
 
+        // Update the local state with the new task positions
+        if (kanbanBoard && result) {
+          setKanbanBoard({
+            ...kanbanBoard,
+            tasks: result.updatedTasks,
+          });
+        }
+
         if(onSuccess) {
             onSuccess();
         }
