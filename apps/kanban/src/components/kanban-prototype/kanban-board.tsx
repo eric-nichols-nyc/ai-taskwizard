@@ -183,7 +183,7 @@ export const KanbanBoard = () => {
                   position: column.position,
                   board_id: column.board_id,
                 }}
-                tasks={tasks.filter(t => t.column_id === column.id)}
+                tasks={tasks.filter(t => t.column_id === column.id).sort((a, b) => a.position - b.position)}
                 />
               ))}
             </SortableContext>
@@ -206,7 +206,7 @@ export const KanbanBoard = () => {
             description: '',
             position: activeColumn.position,
             board_id: activeColumn.board_id,
-          }} tasks={tasks.filter(t => t.column_id === activeColumn.id)} />}
+          }} tasks={tasks.filter(t => t.column_id === activeColumn.id).sort((a, b) => a.position - b.position)} />}
         </DragOverlay>
       </DndContext>
     </div>
