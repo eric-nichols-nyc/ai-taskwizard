@@ -138,11 +138,42 @@ export function useDefaultKanban(): UseQueryResult<KanbanBoardData | null, Error
   const userId = user?.id;
   return useQuery({
     queryKey: ['kanban', { userId }],
-    queryFn: () => {
+    queryFn: async () => {
       if (!userId) throw new Error('No userId');
-      return taskService.getUserDefaultBoard(userId);
+
+      // TEMPORARY: Force an error for testing - remove this line after testing
+      //throw new Error('TEST ERROR: This is a test error to verify error handling');
+
+      try {
+        const board = await taskService.getUserDefaultBoard(userId);
+
+        // Validate the returned data
+        if (!board) {
+          throw new Error('No board data received from server');
+        }
+
+        if (!board.columns || board.columns.length === 0) {
+          throw new Error('Board has no columns configured');
+        }
+
+        return board;
+      } catch (error) {
+        // Handle different types of errors
+        if (error instanceof Error) {
+          if (error.message.includes('network') || error.message.includes('fetch')) {
+            throw new Error('Network error: Unable to connect to server');
+          }
+          if (error.message.includes('401') || error.message.includes('403')) {
+            throw new Error('Access denied: Please log in again');
+          }
+          if (error.message.includes('404')) {
+            throw new Error('Board not found: Please check your permissions');
+          }
+          throw new Error(`Board loading error: ${error.message}`);
+        }
+        throw new Error('An unexpected error occurred while loading the board');
+      }
     },
     enabled: !!userId,
   });
-
 }
