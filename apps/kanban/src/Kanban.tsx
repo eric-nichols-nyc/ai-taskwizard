@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { SpinLoader } from "@turbo-with-tailwind-v4/design-system/components/spin-loader";
 import { useKanbanBoardState } from "./hooks/use-kanban-board";
-import KanbanBoard from "./components/kanban/KanbanBoard";
+import { KanbanBoard } from "./components/kanban/KanbanBoard";
 
 export const Kanban = () => {
   const { board, columns, tasks, isLoading, error, moveTask } = useKanbanBoardState();

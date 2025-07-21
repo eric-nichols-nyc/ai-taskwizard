@@ -10,7 +10,7 @@ interface KanbanBoardProps {
   onTaskMove?: (taskId: string, newColumnId: string, newPosition: number) => void;
 }
 
-function KanbanBoard({ data, onTaskMove }: KanbanBoardProps) {
+export function KanbanBoard({ data, onTaskMove }: KanbanBoardProps) {
   const [activeTask, setActiveTask] = useState<Task | null>(null);
 
   // Transform data once for efficient rendering
@@ -102,5 +102,3 @@ function KanbanBoard({ data, onTaskMove }: KanbanBoardProps) {
     </div>
   );
 }
-
-export default KanbanBoard;
