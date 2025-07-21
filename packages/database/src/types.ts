@@ -34,6 +34,15 @@ export interface Board {
   updated_at?: string; // ISO timestamp
 }
 
+export interface Column {
+  id: string;
+  board_id: string;
+  name: string;
+  position: number;
+  color?: string | null;
+  created_at?: string;
+}
+
 export interface KanbanColumn {
   id: string;
   board_id: string;

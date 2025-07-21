@@ -53,7 +53,7 @@ export const CalendarApp = () => {
             return (
               <Card
                 key={idx}
-                className={`border rounded-md p-3 text-center bg-white dark:bg-gray-900 transition-all duration-150
+                className={`border rounded-md p-3 text-center dark:bg-gray-900 transition-all duration-150
                   ${isToday ?
                     "border-blue-600 bg-blue-100 dark:bg-blue-900 shadow-lg" : ""
                   }`
