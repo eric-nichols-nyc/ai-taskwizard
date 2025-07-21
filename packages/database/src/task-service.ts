@@ -1,6 +1,7 @@
 import { supabase } from './supabaseClient';
 import type { Task, Board, KanbanColumn, KanbanBoardData } from './types';
 import { TaskCreateSchema } from './schemas';
+import { getTodayString } from './utils/date-helpers';
 
 export type CreateTaskPayload = Partial<Omit<Task, 'id' | 'created_at' | 'updated_at' | 'position' | 'user_id'>> & { title: string };
 
@@ -111,7 +112,7 @@ export function createTaskService(): TaskService {
       // 4. Set defaults
       const status = rest.status ?? 'todo';
       const priority = rest.priority ?? 'Medium';
-      const due_date = rest.due_date ?? new Date().toISOString().split('T')[0];
+      const due_date = rest.due_date ?? getTodayString();
 
       // 5. Construct task
       const task = {

@@ -26,7 +26,7 @@ export const AddTaskForm: React.FC<{ columnId: string; onClose: () => void, addT
   };
 
   return (
-    <div className="bg-white rounded-lg p-3 shadow-sm border border-gray-200">
+    <div className="bg-white rounded-lg p-3 shadow-sm border border-gray-200 text-black">
       <input
         type="text"
         placeholder="Task title"

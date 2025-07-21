@@ -45,9 +45,18 @@ export function useAddTask(): UseMutationResult<Task, Error, CreateTaskPayload> 
     mutationFn: (newTask: CreateTaskPayload) => {
         return taskService.createTaskWithDefaults(newTask);
     },
-    onSuccess: () => {
+    onSuccess: (createdTask) => {
+      // You can access the created task data here
+      console.log('Task created successfully:', createdTask);
+
+      // Invalidate queries to refresh the UI
       queryClient.invalidateQueries({ queryKey: taskKeys.list(user?.id) }); // updates the dashboard task list
       queryClient.invalidateQueries({ queryKey: ['kanban', { userId: user?.id }] }); // updates the Kanban board
+
+      // You can also update the cache optimistically if needed
+      // queryClient.setQueryData(taskKeys.list(user?.id), (oldData: Task[] | undefined) => {
+      //   return oldData ? [...oldData, createdTask] : [createdTask];
+      // });
     },
   });
 }
@@ -60,7 +69,8 @@ export function useAddDefaultTask() {
     mutationFn: (newTask: CreateTaskPayload) => {
         return taskService.createTaskWithDefaults(newTask);
     },
-    onSuccess: () => {
+    onSuccess: (createdTask) => {
+      console.log('Default task created successfully:', createdTask);
       queryClient.invalidateQueries({ queryKey: taskKeys.list(user?.id) });
     },
   });
@@ -77,7 +87,8 @@ export function useAddKanbanTask() {
             user_id: user?.id ?? '',
           });
         },
-    onSuccess: () => {
+    onSuccess: (createdTask) => {
+      console.log('Kanban task created successfully:', createdTask);
       queryClient.invalidateQueries({ queryKey: taskKeys.list(user?.id) });
       queryClient.invalidateQueries({ queryKey: ['kanban'] });
     },

@@ -1,11 +1,12 @@
 import path from "path"
 import react from "@vitejs/plugin-react"
 import federation from "@originjs/vite-plugin-federation"
+import removeConsole from 'vite-plugin-remove-console'
 import { defineConfig } from "vite"
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), federation({
+  plugins: [react(), removeConsole(), federation({
     name: "dashboard",
     filename: 'remoteEntry.js',
     exposes: {

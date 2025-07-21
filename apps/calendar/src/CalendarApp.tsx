@@ -20,6 +20,14 @@ interface Task {
   // ...other fields as needed
 }
 
+// Utility function to create date strings in local timezone
+function toLocalDateString(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 export const CalendarApp: React.FC = () => {
 
   const auth = useAuth();
@@ -71,10 +79,14 @@ export const CalendarApp: React.FC = () => {
   const fetchTasksForMonth = async (): Promise<void> => {
     console.log('** Fetching tasks for month', userId);
     if (!supabase) return;
+
+    // Create date range in local timezone
     const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
     const endOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
-    const startDateStr = startOfMonth.toISOString().split('T')[0];
-    const endDateStr = endOfMonth.toISOString().split('T')[0];
+
+    const startDateStr = toLocalDateString(startOfMonth);
+    const endDateStr = toLocalDateString(endOfMonth);
+
     console.log('[Calendar] Fetching tasks for', { userId, startDateStr, endDateStr });
     try {
       const { data, error } = await supabase
@@ -123,7 +135,10 @@ export const CalendarApp: React.FC = () => {
 
   const getTasksForDate = (date: Date | null): Task[] => {
     if (!date) return [];
-    const dateString = date.toISOString().split('T')[0];
+
+    // Create date string in local timezone to match database format
+    const dateString = toLocalDateString(date);
+
     return tasks.filter(task => task.due_date === dateString);
   };
 

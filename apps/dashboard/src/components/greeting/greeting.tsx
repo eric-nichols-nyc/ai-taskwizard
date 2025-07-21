@@ -9,7 +9,7 @@ import { useAuth } from "@turbo-with-tailwind-v4/database"
 
 export const Greeting = () => {
   const { simpleUser } = useAuth()
-  console.log("simpleUser", simpleUser)
+
   const randomQuote = React.useMemo(() => {
     const arr = quotes as { quote: string; author: string }[]
     const idx = Math.floor(Math.random() * arr.length)

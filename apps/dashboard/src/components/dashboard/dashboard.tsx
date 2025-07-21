@@ -41,19 +41,17 @@ export function Dashboard() {
 
   // Filter tasks to only those that are 'todo' and due today
   const filteredTasks = tasks?.filter((task) => {
-    if (task.status !== "todo") {
+    if (task.status === "done") {
       return false;
     }
-    if (!task.due_date) {
-      return false;
-    }
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, "0");
-    const day = String(today.getDate()).padStart(2, "0");
-    const todayString = `${year}-${month}-${day}`;
 
-    return task.due_date === todayString;
+    // const today = new Date();
+    // const year = today.getFullYear();
+    // const month = String(today.getMonth() + 1).padStart(2, "0");
+    // const day = String(today.getDate()).padStart(2, "0");
+    // const todayString = `${year}-${month}-${day}`;
+
+    return task;
   });
 
   console.log("Filtered tasks (due today and todo):", filteredTasks);

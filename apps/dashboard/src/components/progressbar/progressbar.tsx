@@ -4,20 +4,12 @@ import {
   CardContent,
 } from "@turbo-with-tailwind-v4/design-system/card";
 import { AnimatedProgressBar } from "@turbo-with-tailwind-v4/design-system/animated-progress-bar";
-import { useGetTasksByDate } from "../../hooks/use-tasks";
+import { useGetTasks } from "../../hooks/use-tasks";
 
 export const ProgressBar = () => {
   // Get today's date in YYYY-MM-DD format
-  const today = useMemo(() => {
-    const d = new Date();
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, "0");
-    const day = String(d.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  }, []);
-
   // Fetch today's tasks for the current user
-  const { data: tasks, isLoading } = useGetTasksByDate(today);
+  const { data: tasks, isLoading } =useGetTasks();
 
   // Calculate progress: done/(done+todo)
   const { percent, doneCount, totalCount } = useMemo(() => {

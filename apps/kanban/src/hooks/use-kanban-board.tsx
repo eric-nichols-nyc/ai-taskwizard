@@ -45,7 +45,8 @@ export function useKanbanBoardState() {
 
   // send the new task to the server
     addTaskMutation.mutate(newTask, {
-      onSuccess: () => {
+      onSuccess: (createdTask) => {
+        console.log('Task created successfully:', createdTask);
         setKanbanBoard(prev => prev ? { ...prev, tasks: [...(prev.tasks ?? []), task] } : prev);
         if (onSuccess) {
           onSuccess();
@@ -90,6 +91,9 @@ export function useKanbanBoardState() {
         console.log('moveTask result', result);
         const updatedTask = result.updatedTasks.find(t => t.id === taskId);
         if(updatedTask) {
+          // get the status of the task
+          const status = getColumnStatus(newColumnId);
+          updatedTask.status = status;
            updateTask(updatedTask);
         }
 

@@ -87,10 +87,10 @@ export const TaskItem = ({ task }: TaskItemProps) => {
   return (
     <div
       className={
-        `flex items-center gap-4 rounded-2xl p-4 transition-colors relative ` +
+        `flex items-center gap-4 rounded-2xl p-4 transition-colors relative cursor-pointer ` +
         `bg-slate-900/90 border-l-4 ` +
         `${task.priority === 'High' ? 'border-red-500' : task.priority === 'Medium' ? 'border-orange-400' : 'border-green-500'} ` +
-        `shadow-2xl hover:shadow-[0_8px_32px_0_rgba(0,0,0,0.45)] hover:scale-[1.025] hover:bg-slate-900`
+        `shadow-2xl hover:shadow-[0_8px_32px_0_rgba(0,0,0,0.45)] hover:bg-slate-800`
       }
       data-pending={updateTaskMutation.isPending || deleteTaskMutation.isPending}
       style={{ minHeight: '64px' }}
