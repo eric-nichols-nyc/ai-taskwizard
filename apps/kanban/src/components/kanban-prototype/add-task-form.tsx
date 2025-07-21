@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
-import { useKanbanStore } from './kanban-state';
+import { Task } from '@turbo-with-tailwind-v4/database/types';
 
-export const AddTaskForm: React.FC<{ columnId: string; onClose: () => void }> = ({ columnId, onClose }) => {
+export const AddTaskForm: React.FC<{ columnId: string; onClose: () => void, addTask: (task: Partial<Task>) => void }> = ({ columnId, onClose, addTask }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const addTask = useKanbanStore(state => state.addTask);
 
   const handleSubmit = () => {
     if (title.trim()) {
-      addTask(columnId, title, description);
+      addTask({
+        column_id: columnId,
+        title: title,
+        description: description,
+      });
       setTitle('');
       setDescription('');
       onClose();

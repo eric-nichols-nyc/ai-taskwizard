@@ -2,7 +2,7 @@ import { supabase } from './supabaseClient';
 import type { Task, Board, KanbanColumn, KanbanBoardData } from './types';
 import { TaskCreateSchema } from './schemas';
 
-export type CreateTaskPayload = Partial<Omit<Task, 'id' | 'created_at' | 'updated_at' | 'column_id' | 'position' | 'user_id'>> & { title: string };
+export type CreateTaskPayload = Partial<Omit<Task, 'id' | 'created_at' | 'updated_at' | 'position' | 'user_id'>> & { title: string };
 
 export interface TaskService {
   getTasks(): Promise<Task[]>;

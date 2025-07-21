@@ -15,7 +15,7 @@ export function App() {
     <QueryProvider>
       <AuthProvider isHost={false}>
         <ErrorBoundary>
-          {import.meta.env.ENV === "development" && <User />}
+          {import.meta.env.MODE === "development" && <User />}
           {import.meta.env.VITE_NEW_KANBAN_ENABLED === "false"
             ? <ComingSoon />
             : (USE_KANBAN_TESTER

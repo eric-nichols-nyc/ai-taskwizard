@@ -1,7 +1,6 @@
-import React from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Task } from "@turbo-with-tailwind-v4/database";
+import { Task } from "@turbo-with-tailwind-v4/database/types";
 
 export function TaskCard({ id, title, due_date, priority, position }: Task) {
   const {
@@ -37,7 +36,7 @@ export function TaskCard({ id, title, due_date, priority, position }: Task) {
       <div className="text-xs text-blue-700">ID: {id}</div>
       {due_date && <div className="text-xs text-blue-700">Due: {due_date}</div>}
       {priority && <div className="text-xs text-blue-700">Priority: {priority}</div>}
-      <div className="text-xs text-blue-700">Position: {position}</div>
+      {import.meta.env.MODE === 'development' && <div className="text-xs text-blue-700">Position: {position}</div>}
     </div>
   );
 }

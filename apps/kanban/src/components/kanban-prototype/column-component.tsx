@@ -4,12 +4,11 @@ import { useSortable } from '@dnd-kit/sortable';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { Plus, MoreHorizontal } from 'lucide-react';
 import type { Column } from './task-types';
-//import { useKanbanStore } from './kanban-state';
 import { TaskCard } from './task-card';
 import { AddTaskForm } from './add-task-form';
 import { Task } from '@turbo-with-tailwind-v4/database/types';
 
-export const ColumnComponent: React.FC<{ column: Column, tasks: Task[] }> = ({ column, tasks }) => {
+export const ColumnComponent: React.FC<{ column: Column, tasks: Task[], addTask: (task: Partial<Task>) => void }> = ({ column, tasks, addTask }) => {
   const [showAddTask, setShowAddTask] = useState(false);
   //const allTasks = useKanbanStore(state => state.tasks);
 
@@ -70,7 +69,7 @@ export const ColumnComponent: React.FC<{ column: Column, tasks: Task[] }> = ({ c
       </div>
 
       {showAddTask ? (
-        <AddTaskForm columnId={column.id} onClose={() => setShowAddTask(false)} />
+        <AddTaskForm columnId={column.id} onClose={() => setShowAddTask(false)} addTask={addTask} />
       ) : (
         <button
           onClick={() => setShowAddTask(true)}

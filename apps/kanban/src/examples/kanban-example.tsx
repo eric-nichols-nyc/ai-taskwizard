@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { KanbanBoard } from "../components/kanban/KanbanBoard";
 import { KanbanDataTransformer, RawKanbanData } from "../lib/kanban-data-transformer";
 

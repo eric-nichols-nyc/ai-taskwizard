@@ -32,7 +32,9 @@ export const TaskCard: React.FC<{ task: Task }> = ({ task }) => {
       }`}
     >
       <h4 className="font-medium text-gray-900 mb-1">{task.title}</h4>
-      <p className="text-sm text-gray-600">{task.description} {task.position}</p>
+
+      <p className="text-sm text-gray-600">{task.description}</p>
+      {import.meta.env.MODE === 'development' && <p className="text-xs text-gray-600">Position: {task.position}</p>}
     </div>
   );
 };

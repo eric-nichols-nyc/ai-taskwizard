@@ -17,10 +17,34 @@ export function useKanbanBoardState() {
     }
   }, [data]);
 
+  // get the column name from the column id and return a status of done, todo or in-progress
+  const getColumnStatus = (columnId: string) => {
+    const column = kanbanBoard?.columns?.find(c => c.id === columnId);
+    if(column) {
+      return column.name.toLowerCase().replace(/ /g, '_');// return the colum name to loweer case and replace spaces with underscores
+    }
+    return 'todo';
+  }
   const addTask = (task: Task, onSuccess?: () => void) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // get the position of the new task
+    const position = KanbanPositionCalculator.calculatePosition({
+      tasks: kanbanBoard?.tasks ?? [],
+      taskId: task.id,
+      targetColumnId: task.column_id,
+      dropPosition: 'last',
+      targetTaskId: undefined,
+    });
     const {id, ...rest} = task;
-    addTaskMutation.mutate(rest, {
+    console.log('removed id', id);
+    const newTask = {
+      ...rest,
+      position: position.newPosition,
+      status: getColumnStatus(task.column_id),
+    }
+
+
+  // send the new task to the server
+    addTaskMutation.mutate(newTask, {
       onSuccess: () => {
         setKanbanBoard(prev => prev ? { ...prev, tasks: [...(prev.tasks ?? []), task] } : prev);
         if (onSuccess) {
@@ -64,14 +88,18 @@ export function useKanbanBoardState() {
         });
 
         console.log('moveTask result', result);
+        const updatedTask = result.updatedTasks.find(t => t.id === taskId);
+        if(updatedTask) {
+           updateTask(updatedTask);
+        }
 
         // Update the local state with the new task positions
-        if (kanbanBoard && result) {
-          setKanbanBoard({
-            ...kanbanBoard,
-            tasks: result.updatedTasks,
-          });
-        }
+        // if (kanbanBoard && result) {
+        //   setKanbanBoard({
+        //     ...kanbanBoard,
+        //     tasks: result.updatedTasks,
+        //   });
+        // }
 
         if(onSuccess) {
             onSuccess();
