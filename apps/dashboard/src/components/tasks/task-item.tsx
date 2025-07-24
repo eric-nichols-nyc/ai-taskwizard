@@ -18,9 +18,10 @@ type Priority = 'Low' | 'Medium' | 'High';
 
 type TaskItemProps = {
   task: Task;
+  onDelete?: (taskId: string) => void;
 };
 
-export const TaskItem = ({ task }: TaskItemProps) => {
+export const TaskItem = ({ task, onDelete }: TaskItemProps) => {
   const [isEditing, setIsEditing] = React.useState(false);
   const [editedTitle, setEditedTitle] = React.useState(task.title);
   const [editedPriority, setEditedPriority] = React.useState<Priority>(task.priority ?? 'Medium');
@@ -33,7 +34,11 @@ export const TaskItem = ({ task }: TaskItemProps) => {
   };
 
   const handleDelete = () => {
-    deleteTaskMutation.mutate(task.id);
+    if (onDelete) {
+      onDelete(task.id);
+    } else {
+      deleteTaskMutation.mutate(task.id);
+    }
   };
 
   const handleSave = () => {

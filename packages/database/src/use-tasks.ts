@@ -127,6 +127,10 @@ export function useDeleteTask() {
     mutationFn: (id: string) => taskService.deleteTask(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: taskKeys.list(user?.id) });
+      queryClient.invalidateQueries({ queryKey: ['kanban', { userId: user?.id }] });
+    },
+    onError: (error) => {
+      console.error('Error deleting task:', error);
     },
   });
 }

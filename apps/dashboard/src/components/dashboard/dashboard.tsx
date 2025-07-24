@@ -8,17 +8,18 @@ import { supabase, useAuth } from "@turbo-with-tailwind-v4/database";
 import { Greeting } from "../greeting/greeting";
 import type { Session } from "@supabase/supabase-js";
 import { Tasks } from "../tasks";
-import { useDefaultKanban, useAddTask } from "@turbo-with-tailwind-v4/database/use-tasks";
+import { useDefaultKanban, useAddTask, useDeleteTask } from "@turbo-with-tailwind-v4/database/use-tasks";
 import { Card } from "@turbo-with-tailwind-v4/design-system/card";
 import { Clock } from "../clock";
 import { Weather } from "../weather";
 import { ProgressBar } from "../progressbar/progressbar";
 import { Calendar } from "../calendar";
+import toast from "react-hot-toast";
 
 // Check if the app is running in isolated mode (for local development/testing)
-const IS_ISOLATED = window.location.href.includes(
-  import.meta.env.VITE_ISOLATED_HOST
-);
+// const IS_ISOLATED = window.location.href.includes(
+//   import.meta.env.VITE_ISOLATED_HOST
+// );
 
 /**
  * Dashboard component
@@ -31,9 +32,11 @@ export function Dashboard() {
   const { user: hostUser } = useAuth();
   // Fetch all tasks using a custom hook
   const { data: kanbanBoard, isLoading: isLoadingKanbanBoard } = useDefaultKanban();
+  console.log("Kanban board:", kanbanBoard);
   const tasks = kanbanBoard?.tasks;
 
   const addTaskMutation = useAddTask();
+  const deleteTaskMutation = useDeleteTask();
   // Local state for user and session
   const [user, setUser] = useState(hostUser);
   const [session, setSession] = useState<Session | null>(null);
@@ -69,36 +72,6 @@ export function Dashboard() {
     console.log("DashboardApp - session:", session);
   }, [hostUser, session]);
 
-  // Handle sign-in with Google if running in isolated mode
-  useEffect(() => {
-    async function maybeSignInWithGoogle() {
-      if (IS_ISOLATED) {
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
-        console.log("Dashboard app - Isolated Session:", session);
-        if (session) {
-          // If no hostUser, but session user exists, set local user from session
-          if (!hostUser && session.user) {
-            setUser(session.user);
-          }
-        } else {
-          const { error } = await supabase.auth.signInWithOAuth({
-            provider: "google",
-            options: {
-              redirectTo: window.location.origin,
-            },
-          });
-          if (error) {
-            console.error("Google sign-in failed:", error.message);
-          }
-        }
-      }
-    }
-    maybeSignInWithGoogle();
-    // Add hostUser as a dependency so we can set user if session is found after hostUser is null
-  }, [hostUser]);
-
   // On mount, get the current session and set user/session state
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -112,8 +85,12 @@ export function Dashboard() {
     if (!kanbanBoard) return;
 
     // 1. Find the Todo column
-    const todoColumn = kanbanBoard.columns?.find(col => col.name === 'Todo');
-    if (!todoColumn) return;
+    const todoColumn = kanbanBoard.columns?.find(col => col.name === 'todo');
+    console.log("Todo column:", todoColumn);
+    if (!todoColumn) {
+      toast.error("No todo column found");
+      return;
+    }
 
     // 2. Calculate position (last task + 1000)
     const todoTasks = tasks?.filter(task => task.column_id === todoColumn.id) ?? [];
@@ -135,6 +112,18 @@ export function Dashboard() {
     addTaskMutation.mutate(completeTaskData);
   }
 
+  const handleDeleteTask = (taskId: string) => {
+    deleteTaskMutation.mutate(taskId, {
+      onSuccess: () => {
+        toast.success("Task deleted successfully");
+      },
+      onError: (error) => {
+        toast.error(`Failed to delete task: ${error.message}`);
+      }
+    });
+  }
+
+
   // Main dashboard UI rendering
   return (
     <div className="dark flex flex-col items-center justify-center gap-4 w-full mx-auto p-3">
@@ -145,6 +134,8 @@ export function Dashboard() {
           <div className="w-full flex flex-col gap-4">
             {/* Greeting, Clock, and Weather widgets */}
             <Greeting />
+            <Calendar />
+
             <div className="flex sm:flex-col md:flex-row w-full gap-4 items-stretch min-h-[100px]">
               <div className="w-full sm:w-full md:w-1/2">
                 <Clock />
@@ -165,7 +156,7 @@ export function Dashboard() {
                 <Tasks.Input addTask={handleAddTask} />
                 {filteredTasks && filteredTasks.length > 0 ? (
                   <Tasks.List tasks={filteredTasks}>
-                    {(task) => <Tasks.Item key={task.id} task={task} />}
+                    {(task) => <Tasks.Item key={task.id} task={task} onDelete={handleDeleteTask} />}
                   </Tasks.List>
                 ) : (
                   <p className="text-center text-slate-500 mt-4">
@@ -175,7 +166,6 @@ export function Dashboard() {
               </Tasks>
             )}
           </Card>
-          <Calendar />
         </div>
       ) : (
         <div>Dashboard - No user found</div>

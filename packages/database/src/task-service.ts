@@ -73,8 +73,53 @@ export function createTaskService(): TaskService {
     },
 
     async deleteTask(id) {
-      const { error } = await supabase.from('tasks').delete().eq('id', id);
-      if (error) throw error;
+      console.log('Attempting to delete task with ID:', id);
+
+            // First check if the task exists
+      console.log('Checking if task exists with ID:', id);
+      const { data: existingTask, error: checkError } = await supabase
+        .from('tasks')
+        .select('id, user_id')
+        .eq('id', id)
+        .single();
+
+      if (checkError) {
+        console.error('Error checking if task exists:', checkError);
+        throw new Error(`Task not found: ${checkError.message}`);
+      }
+
+      if (!existingTask) {
+        throw new Error('Task not found');
+      }
+
+      console.log('Found existing task:', existingTask);
+
+      // Get current user to verify ownership
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      if (userError || !user?.id) {
+        throw new Error('User not authenticated');
+      }
+
+      // Check if user owns the task
+      if (existingTask.user_id !== user.id) {
+        throw new Error('You can only delete your own tasks');
+      }
+
+            // Delete the task
+      console.log('Executing delete query for task ID:', id);
+      const { data, error } = await supabase.from('tasks').delete().eq('id', id).select();
+      if (error) {
+        console.error('Error deleting task:', error);
+        throw error;
+      }
+
+      console.log('Task deletion result:', data);
+      console.log('Number of rows affected:', data?.length || 0);
+
+      if (!data || data.length === 0) {
+        throw new Error('No task was deleted. This might be due to RLS policies or the task not existing.');
+      }
+
       return true;
     },
 
