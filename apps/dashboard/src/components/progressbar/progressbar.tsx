@@ -4,7 +4,7 @@ import {
   CardContent,
 } from "@turbo-with-tailwind-v4/design-system/card";
 import { AnimatedProgressBar } from "@turbo-with-tailwind-v4/design-system/animated-progress-bar";
-import { useGetTasks } from "../../hooks/use-tasks";
+import { useGetTasks } from "@turbo-with-tailwind-v4/database/use-tasks";
 
 export const ProgressBar = () => {
   // Get today's date in YYYY-MM-DD format

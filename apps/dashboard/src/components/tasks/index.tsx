@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { TaskItem } from './task-item';
 import type { Task } from '@turbo-with-tailwind-v4/database';
-import { useAddTask } from '../../hooks/use-tasks';
+import { useAddTask } from '@turbo-with-tailwind-v4/database/use-tasks';
 import { Button } from '@turbo-with-tailwind-v4/design-system/button';
 import { Input } from '@turbo-with-tailwind-v4/design-system/input';
 import { Plus } from 'lucide-react';

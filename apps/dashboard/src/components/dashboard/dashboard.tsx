@@ -8,7 +8,7 @@ import { supabase, useAuth } from "@turbo-with-tailwind-v4/database";
 import { Greeting } from "../greeting/greeting";
 import type { Session } from "@supabase/supabase-js";
 import { Tasks } from "../tasks";
-import { useGetTasks } from "../../hooks/use-tasks";
+import { useGetTasks } from "@turbo-with-tailwind-v4/database/use-tasks";
 import { Card } from "@turbo-with-tailwind-v4/design-system/card";
 import { Clock } from "../clock";
 import { Weather } from "../weather";

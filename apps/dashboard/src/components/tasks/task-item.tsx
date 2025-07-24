@@ -1,6 +1,6 @@
 import * as React from 'react';
 import type { Task } from '@turbo-with-tailwind-v4/database';
-import { useUpdateTask, useDeleteTask } from '../../hooks/use-tasks';
+import { useUpdateTask, useDeleteTask } from '@turbo-with-tailwind-v4/database/use-tasks';
 import { Button } from '@turbo-with-tailwind-v4/design-system/button';
 import { Checkbox } from '@turbo-with-tailwind-v4/design-system/checkbox';
 import { Flag, Trash2, Pencil } from 'lucide-react'; // Using icons for actions
