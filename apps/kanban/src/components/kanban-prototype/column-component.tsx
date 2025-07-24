@@ -7,6 +7,7 @@ import type { Column } from './task-types';
 import { TaskCard } from './task-card';
 import { AddTaskForm } from './add-task-form';
 import { Task } from '@turbo-with-tailwind-v4/database/types';
+import { Card } from '@turbo-with-tailwind-v4/design-system/components/ui/card';
 
 export const ColumnComponent: React.FC<{ column: Column, tasks: Task[], addTask: (task: Partial<Task>) => void }> = ({ column, tasks, addTask }) => {
   const [showAddTask, setShowAddTask] = useState(false);
@@ -35,10 +36,10 @@ export const ColumnComponent: React.FC<{ column: Column, tasks: Task[], addTask:
   };
 
   return (
-    <div
+    <Card
       ref={setDroppableNodeRef}
       style={style}
-      className={`bg-gray-100 rounded-lg p-4 min-w-80 max-w-80 ${isDragging ? 'opacity-50' : ''}`}
+      className={`rounded-lg p-4 min-w-80 max-w-80 ${isDragging ? 'opacity-50' : ''}`}
     >
       <div
         className="flex items-center justify-between mb-4 cursor-grab"
@@ -47,7 +48,7 @@ export const ColumnComponent: React.FC<{ column: Column, tasks: Task[], addTask:
         {...listeners}
       >
         <div className="cursor-grab">
-          <h3 className="font-semibold text-gray-900">{column.title}</h3>
+          <h3 className="font-semibold text-gray-200">{column.title}</h3>
           <p className="text-sm text-gray-600">{column.description}</p>
         </div>
         <div className="relative">
@@ -79,6 +80,6 @@ export const ColumnComponent: React.FC<{ column: Column, tasks: Task[], addTask:
           Add a card
         </button>
       )}
-    </div>
+    </Card>
   );
 };
