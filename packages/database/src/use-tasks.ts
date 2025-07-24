@@ -2,10 +2,16 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   createTaskService,
   useAuth, // Import from the correct package
-  type CreateTaskPayload,
 } from '@turbo-with-tailwind-v4/database';
 import { type KanbanBoardData, type Task } from './types';
 import type { UseQueryResult, UseMutationResult } from '@tanstack/react-query';
+
+export type CreateTaskPayload = Partial<Omit<Task, 'id' | 'created_at' | 'updated_at' | 'user_id'>> & {
+  title: string;
+  column_id: string;  // Make required
+  status: string;     // Make required
+  position: number;   // Make required
+};
 
 // Initialize the task service
 const taskService = createTaskService();
@@ -43,20 +49,15 @@ export function useAddTask(): UseMutationResult<Task, Error, CreateTaskPayload> 
 
   return useMutation({
     mutationFn: (newTask: CreateTaskPayload) => {
-        return taskService.createTaskWithDefaults(newTask);
+      return taskService.createTask({
+        ...newTask,
+        user_id: user?.id ?? '',
+      });
     },
     onSuccess: (createdTask) => {
-      // You can access the created task data here
       console.log('Task created successfully:', createdTask);
-
-      // Invalidate queries to refresh the UI
-      queryClient.invalidateQueries({ queryKey: taskKeys.list(user?.id) }); // updates the dashboard task list
-      queryClient.invalidateQueries({ queryKey: ['kanban', { userId: user?.id }] }); // updates the Kanban board
-
-      // You can also update the cache optimistically if needed
-      // queryClient.setQueryData(taskKeys.list(user?.id), (oldData: Task[] | undefined) => {
-      //   return oldData ? [...oldData, createdTask] : [createdTask];
-      // });
+      queryClient.invalidateQueries({ queryKey: taskKeys.list(user?.id) });
+      queryClient.invalidateQueries({ queryKey: ['kanban', { userId: user?.id }] });
     },
   });
 }

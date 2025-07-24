@@ -35,6 +35,7 @@
     "tailwind-merge": "^3.0.2",
     "task-master-ai": "latest",
     "tw-animate-css": "^1.2.8",
+    "zod": "^4.0.8",
     "zustand": "^5.0.4"
   },
   "devDependencies": {

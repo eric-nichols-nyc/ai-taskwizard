@@ -8,7 +8,7 @@ import { supabase, useAuth } from "@turbo-with-tailwind-v4/database";
 import { Greeting } from "../greeting/greeting";
 import type { Session } from "@supabase/supabase-js";
 import { Tasks } from "../tasks";
-import { useGetTasks } from "@turbo-with-tailwind-v4/database/use-tasks";
+import { useDefaultKanban, useAddTask } from "@turbo-with-tailwind-v4/database/use-tasks";
 import { Card } from "@turbo-with-tailwind-v4/design-system/card";
 import { Clock } from "../clock";
 import { Weather } from "../weather";
@@ -30,7 +30,10 @@ export function Dashboard() {
   // Get the authenticated user from the host (if available)
   const { user: hostUser } = useAuth();
   // Fetch all tasks using a custom hook
-  const { data: tasks, isLoading: isLoadingTasks } = useGetTasks();
+  const { data: kanbanBoard, isLoading: isLoadingKanbanBoard } = useDefaultKanban();
+  const tasks = kanbanBoard?.tasks;
+
+  const addTaskMutation = useAddTask();
   // Local state for user and session
   const [user, setUser] = useState(hostUser);
   const [session, setSession] = useState<Session | null>(null);
@@ -105,6 +108,33 @@ export function Dashboard() {
     });
   }, []);
 
+  const handleAddTask = (title: string) => {
+    if (!kanbanBoard) return;
+
+    // 1. Find the Todo column
+    const todoColumn = kanbanBoard.columns?.find(col => col.name === 'Todo');
+    if (!todoColumn) return;
+
+    // 2. Calculate position (last task + 1000)
+    const todoTasks = tasks?.filter(task => task.column_id === todoColumn.id) ?? [];
+    const maxPosition = todoTasks.length > 0
+      ? Math.max(...todoTasks.map(t => t.position))
+      : 0;
+    const position = maxPosition + 1000;
+
+    // 3. Create complete task data
+    const completeTaskData = {
+      title,
+      column_id: todoColumn.id,
+      status: 'todo',
+      position,
+      // ... any other fields you want
+    };
+
+    // 4. Send to the hook
+    addTaskMutation.mutate(completeTaskData);
+  }
+
   // Main dashboard UI rendering
   return (
     <div className="dark flex flex-col items-center justify-center gap-4 w-full mx-auto p-3">
@@ -128,11 +158,11 @@ export function Dashboard() {
           <ProgressBar />
           {/* Task list card */}
           <Card className="w-full min-h-[300px]">
-            {isLoadingTasks ? (
+            {isLoadingKanbanBoard ? (
               <p>Loading tasks...</p>
             ) : (
               <Tasks>
-                <Tasks.Input />
+                <Tasks.Input addTask={handleAddTask} />
                 {filteredTasks && filteredTasks.length > 0 ? (
                   <Tasks.List tasks={filteredTasks}>
                     {(task) => <Tasks.Item key={task.id} task={task} />}
