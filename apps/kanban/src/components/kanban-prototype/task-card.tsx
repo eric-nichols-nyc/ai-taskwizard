@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { Task } from '@turbo-with-tailwind-v4/database/types';
+import { Card } from '@turbo-with-tailwind-v4/design-system/components/ui/card';
 
 export const TaskCard: React.FC<{ task: Task }> = ({ task }) => {
   const {
@@ -22,7 +23,7 @@ export const TaskCard: React.FC<{ task: Task }> = ({ task }) => {
   };
 
   return (
-    <div
+    <Card
       ref={setNodeRef}
       style={style}
       {...attributes}
@@ -35,6 +36,6 @@ export const TaskCard: React.FC<{ task: Task }> = ({ task }) => {
 
       <p className="text-sm text-gray-600">{task.description}</p>
       {import.meta.env.MODE === 'development' && <p className="text-xs text-gray-600">Position: {task.position} {task.status}</p>}
-    </div>
+    </Card>
   );
 };

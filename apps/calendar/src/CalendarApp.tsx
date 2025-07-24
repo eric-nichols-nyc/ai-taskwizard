@@ -85,7 +85,7 @@ export const CalendarApp: React.FC = () => {
       }
 
             // Find the Todo column
-      const todoColumn = kanbanData.columns?.find(col => col.name === 'Todo');
+      const todoColumn = kanbanData.columns?.find(col => col.name === 'todo');
       if (!todoColumn) {
         throw new Error('Todo column not found');
       }

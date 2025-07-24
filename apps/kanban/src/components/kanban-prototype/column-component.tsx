@@ -39,10 +39,11 @@ export const ColumnComponent: React.FC<{ column: Column, tasks: Task[], addTask:
     <Card
       ref={setDroppableNodeRef}
       style={style}
-      className={`rounded-lg p-4 min-w-80 max-w-80 ${isDragging ? 'opacity-50' : ''}`}
+      className={`rounded-lg p-4 min-w-80 max-w-80 h-[600px] flex flex-col ${isDragging ? 'opacity-50' : ''}`}
     >
+      {/* Fixed Header */}
       <div
-        className="flex items-center justify-between mb-4 cursor-grab"
+        className="flex items-center justify-between mb-4 cursor-grab flex-shrink-0"
         ref={setSortableNodeRef}
         {...attributes}
         {...listeners}
@@ -61,7 +62,8 @@ export const ColumnComponent: React.FC<{ column: Column, tasks: Task[], addTask:
         </div>
       </div>
 
-      <div className="space-y-2 mb-4">
+      {/* Scrollable Tasks Area */}
+      <div className="flex-1 overflow-y-auto space-y-2 mb-4">
         <SortableContext items={tasks.map(t => t.id)} strategy={verticalListSortingStrategy}>
           {tasks.map(task => (
             <TaskCard key={task.id} task={task} />
@@ -69,17 +71,20 @@ export const ColumnComponent: React.FC<{ column: Column, tasks: Task[], addTask:
         </SortableContext>
       </div>
 
-      {showAddTask ? (
-        <AddTaskForm columnId={column.id} onClose={() => setShowAddTask(false)} addTask={addTask} />
-      ) : (
-        <button
-          onClick={() => setShowAddTask(true)}
-          className="w-full p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-200 rounded-lg border-2 border-dashed border-gray-300 hover:border-gray-400 transition-colors flex items-center justify-center gap-2"
-        >
-          <Plus size={16} />
-          Add a card
-        </button>
-      )}
+      {/* Fixed Add Button */}
+      <div className="flex-shrink-0">
+        {showAddTask ? (
+          <AddTaskForm columnId={column.id} onClose={() => setShowAddTask(false)} addTask={addTask} />
+        ) : (
+          <button
+            onClick={() => setShowAddTask(true)}
+            className="w-full p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-200 rounded-lg border-2 border-dashed border-gray-300 hover:border-gray-400 transition-colors flex items-center justify-center gap-2"
+          >
+            <Plus size={16} />
+            Add a card
+          </button>
+        )}
+      </div>
     </Card>
   );
 };
