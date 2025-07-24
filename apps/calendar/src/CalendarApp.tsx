@@ -4,7 +4,7 @@ import { Button } from '@turbo-with-tailwind-v4/design-system/button';
 import { AddTaskSheet } from './components/add-task-sheet';
 import { supabase, useAuth, signInWithEmail } from '@turbo-with-tailwind-v4/database';
 import type { User } from '@supabase/supabase-js';
-import { useAddTask } from '@turbo-with-tailwind-v4/database/use-tasks';
+import { useAddTask, useDefaultKanban } from '@turbo-with-tailwind-v4/database/use-tasks';
 import { ErrorBoundary } from '@turbo-with-tailwind-v4/design-system';
 import { Card } from '@turbo-with-tailwind-v4/design-system';
 
@@ -40,6 +40,7 @@ export const CalendarApp: React.FC = () => {
   const[userId, setUserId] = useState<string | undefined>(undefined);
   const [isAddTaskDialogOpen, setIsAddTaskDialogOpen] = useState(false);
   const addTaskMutation = useAddTask();
+  const { data: kanbanData } = useDefaultKanban();
   const [view, setView] = useState<'month' | 'week'>('week');
   const [addTaskError, setAddTaskError] = useState<string | null>(null);
 
@@ -74,6 +75,51 @@ export const CalendarApp: React.FC = () => {
     }
   }, []);
 
+  // Handle task creation with proper column assignment and position calculation
+  const handleAddTask = async (task: { title: string; description: string; priority: "Low" | "Medium" | "High" }) => {
+    try {
+      setAddTaskError(null);
+
+      if (!kanbanData) {
+        throw new Error('Kanban data not available');
+      }
+
+            // Find the Todo column
+      const todoColumn = kanbanData.columns?.find(col => col.name === 'Todo');
+      if (!todoColumn) {
+        throw new Error('Todo column not found');
+      }
+
+      // Calculate position (last task + 1000)
+      const todoTasks = kanbanData.tasks?.filter(task => task.column_id === todoColumn.id) || [];
+      const maxPosition = todoTasks.length > 0
+        ? Math.max(...todoTasks.map(t => t.position))
+        : 0;
+      const position = maxPosition + 1000;
+
+      // Create complete task data
+      const completeTaskData = {
+        title: task.title,
+        description: task.description,
+        priority: task.priority,
+        due_date: currentDate.toISOString().split('T')[0],
+        column_id: todoColumn.id,
+        status: 'todo',
+        position,
+      };
+
+      await addTaskMutation.mutateAsync(completeTaskData);
+      setIsAddTaskDialogOpen(false);
+      fetchTasksForMonth();
+    } catch (err) {
+      if (err && typeof err === 'object' && 'message' in err) {
+        setAddTaskError((err as { message?: string }).message || 'Failed to add task');
+      } else {
+        setAddTaskError('Failed to add task');
+      }
+      throw err; // propagate to AddTaskSheet for local error display
+    }
+  };
 
   // Fetch all tasks for the current month
   const fetchTasksForMonth = async (): Promise<void> => {
@@ -361,26 +407,7 @@ export const CalendarApp: React.FC = () => {
         )}
       </ErrorBoundary>
       <AddTaskSheet
-        onAddTask={async (task) => {
-          try {
-            setAddTaskError(null);
-
-            await addTaskMutation.mutateAsync({
-              ...task,
-              priority: task.priority,
-              due_date: currentDate.toISOString().split('T')[0],
-            });
-            setIsAddTaskDialogOpen(false);
-            fetchTasksForMonth();
-          } catch (err) {
-            if (err && typeof err === 'object' && 'message' in err) {
-              setAddTaskError((err as { message?: string }).message || 'Failed to add task');
-            } else {
-              setAddTaskError('Failed to add task');
-            }
-            throw err; // propagate to AddTaskSheet for local error display
-          }
-        }}
+        onAddTask={handleAddTask}
         open={isAddTaskDialogOpen}
         onOpenChange={(open) => {
           setIsAddTaskDialogOpen(open);
