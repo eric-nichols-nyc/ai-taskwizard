@@ -7,7 +7,7 @@ import { Card } from '../ui/card';
 import { KanbanTask } from './kanban-task';
 import type { KanbanColumnProps, KanbanTask as KanbanTaskType } from '../../types/kanban';
 
-export const KanbanColumn: React.FC<KanbanColumnProps> = ({
+export const KanbanColumn = ({
   column,
   tasks,
   onTaskAdd,
@@ -16,7 +16,7 @@ export const KanbanColumn: React.FC<KanbanColumnProps> = ({
   className = '',
   taskRenderer,
   headerRenderer,
-}) => {
+}: KanbanColumnProps) => {
   const [showAddTask, setShowAddTask] = useState(false);
 
   // Make column a droppable area for tasks

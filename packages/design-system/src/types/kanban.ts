@@ -22,20 +22,6 @@ export interface KanbanBoardData {
   tasks: KanbanTask[];
 }
 
-export interface KanbanBoardProps {
-  tasks: KanbanTask[];
-  columns: KanbanColumn[];
-  onTaskAdd?: (task: Partial<KanbanTask>) => void;
-  onTaskUpdate?: (taskId: string, updates: Partial<KanbanTask>) => void;
-  onTaskDelete?: (taskId: string) => void;
-  onColumnAdd?: (column: Partial<KanbanColumn>) => void;
-  onColumnUpdate?: (columnId: string, updates: Partial<KanbanColumn>) => void;
-  onColumnDelete?: (columnId: string) => void;
-  className?: string;
-  taskRenderer?: (task: KanbanTask) => React.ReactNode;
-  columnHeaderRenderer?: (column: KanbanColumn) => React.ReactNode;
-}
-
 export interface KanbanColumnProps {
   column: KanbanColumn;
   tasks: KanbanTask[];

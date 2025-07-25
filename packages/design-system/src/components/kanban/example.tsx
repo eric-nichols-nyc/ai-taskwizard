@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { KanbanBoard } from './kanban-board';
-import type { KanbanTask, KanbanColumn } from '../../types/kanban';
+import { KanbanColumn } from './kanban-column';
+import type { KanbanTask, KanbanColumn as KanbanColumnType } from '../../types/kanban';
 
 // Example data
-const initialColumns: KanbanColumn[] = [
+const initialColumns: KanbanColumnType[] = [
   { id: 'todo', title: 'To Do', description: 'Tasks to be done', position: 0 },
   { id: 'in-progress', title: 'In Progress', description: 'Tasks being worked on', position: 1 },
   { id: 'done', title: 'Done', description: 'Completed tasks', position: 2 },
@@ -15,9 +16,9 @@ const initialTasks: KanbanTask[] = [
   { id: '3', title: 'Add Features', description: 'Implement additional functionality', status: 'done', column_id: 'done', position: 0 },
 ];
 
-export const KanbanExample: React.FC = () => {
+export const KanbanExample = () => {
   const [tasks, setTasks] = useState<KanbanTask[]>(initialTasks);
-  const [columns, setColumns] = useState<KanbanColumn[]>(initialColumns);
+  const [columns, setColumns] = useState<KanbanColumnType[]>(initialColumns);
 
   const handleTaskAdd = (newTask: Partial<KanbanTask>) => {
     const task: KanbanTask = {
@@ -41,7 +42,7 @@ export const KanbanExample: React.FC = () => {
     setTasks(prev => prev.filter(task => task.id !== taskId));
   };
 
-  const handleColumnUpdate = (columnId: string, updates: Partial<KanbanColumn>) => {
+  const handleColumnUpdate = (columnId: string, updates: Partial<KanbanColumnType>) => {
     setColumns(prev => prev.map(column =>
       column.id === columnId ? { ...column, ...updates } : column
     ));
@@ -52,13 +53,26 @@ export const KanbanExample: React.FC = () => {
       <h1 className="text-2xl font-bold mb-4">Kanban Board Example</h1>
       <KanbanBoard
         tasks={tasks}
-        columns={columns}
         onTaskAdd={handleTaskAdd}
         onTaskUpdate={handleTaskUpdate}
         onTaskDelete={handleTaskDelete}
         onColumnUpdate={handleColumnUpdate}
         className="min-h-screen"
-      />
+      >
+        {columns.map(column => {
+          const columnTasks = tasks.filter(task => task.column_id === column.id);
+          return (
+            <KanbanColumn
+              key={column.id}
+              column={column}
+              tasks={columnTasks}
+              onTaskAdd={handleTaskAdd}
+              onTaskUpdate={handleTaskUpdate}
+              onTaskDelete={handleTaskDelete}
+            />
+          );
+        })}
+      </KanbanBoard>
     </div>
   );
 };

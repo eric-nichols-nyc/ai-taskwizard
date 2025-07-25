@@ -4,13 +4,13 @@ import { CSS } from '@dnd-kit/utilities';
 import { Card } from '../ui/card';
 import type { KanbanTaskProps } from '../../types/kanban';
 
-export const KanbanTask: React.FC<KanbanTaskProps> = ({
+export const KanbanTask = ({
   task,
   onUpdate,
   onDelete,
   className = '',
   children
-}) => {
+}: KanbanTaskProps) => {
   const {
     attributes,
     listeners,
