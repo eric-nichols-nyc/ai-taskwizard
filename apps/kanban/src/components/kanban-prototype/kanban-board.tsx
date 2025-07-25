@@ -14,23 +14,22 @@ import {
   SortableContext,
   horizontalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import { useKanbanBoardState } from "../../hooks/use-kanban-board";
 import { TaskCard } from './task-card';
 import { ColumnComponent } from './column-component';
-import { Task } from '@turbo-with-tailwind-v4/database/types';
+import { Board, Column, Task } from '@turbo-with-tailwind-v4/database/types';
 
-export const KanbanBoard = () => {
+interface KanbanBoardProps {
+  board: Board | null;
+  columns: Column[];
+  tasks: Task[];
+  isLoading: boolean | null;
+  error: Error | null;
+  moveTask: (taskId: string, columnId: string) => void;
+  addTask: (task: Task, onSuccess?: () => void) => void;
+}
+export const KanbanBoard = ({ board, columns, tasks, isLoading, error, moveTask, addTask: addTaskFromHook }: KanbanBoardProps) => {
   const [activeId, setActiveId] = useState<string | null>(null);
 
-  const {
-    board,
-    columns,
-    tasks,
-    isLoading,
-    error,
-    moveTask,
-    addTask: addTaskFromHook,
-  } = useKanbanBoardState();
 
   // Debug: Log all column and task IDs
   // console.log('[Kanban Render] Column IDs:', columns.map(c => c.id));

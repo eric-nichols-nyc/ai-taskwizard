@@ -31,6 +31,7 @@ export interface KanbanColumnProps {
   className?: string;
   taskRenderer?: (task: KanbanTask) => React.ReactNode;
   headerRenderer?: (column: KanbanColumn) => React.ReactNode;
+  onAddTaskToColumn?: (task: Partial<KanbanTask>) => void;
 }
 
 export interface KanbanTaskProps {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { KanbanBoard } from './kanban-board';
 import { KanbanColumn } from './kanban-column';
 import type { KanbanTask, KanbanColumn as KanbanColumnType } from '../../types/kanban';
@@ -52,7 +52,7 @@ export const KanbanExample = () => {
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Kanban Board Example</h1>
       <KanbanBoard
-        tasks={tasks}
+        columns={columns}
         onTaskAdd={handleTaskAdd}
         onTaskUpdate={handleTaskUpdate}
         onTaskDelete={handleTaskDelete}

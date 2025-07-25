@@ -15,7 +15,7 @@ import type { KanbanTask as KanbanTaskType, KanbanColumn as KanbanColumnType } f
 
 export interface KanbanBoardProps {
   children: React.ReactNode;
-  tasks: KanbanTaskType[];
+  columns: KanbanColumnType[]; // Add columns back for proper drag handling
   onTaskAdd?: (task: Partial<KanbanTaskType>) => void;
   onTaskUpdate?: (taskId: string, updates: Partial<KanbanTaskType>) => void;
   onTaskDelete?: (taskId: string) => void;
@@ -26,7 +26,7 @@ export interface KanbanBoardProps {
 
 export const KanbanBoard = ({
   children,
-  tasks,
+  columns,
   onTaskAdd,
   onTaskUpdate,
   onTaskDelete,
@@ -58,6 +58,8 @@ export const KanbanBoard = ({
 
   const handleDragOver = (event: DragOverEvent) => {
     const { active, over } = event;
+    console.log("DragOver - Active:", active);
+    console.log("DragOver - Over:", over);
 
     if (!over) return;
 
@@ -68,6 +70,8 @@ export const KanbanBoard = ({
 
     const activeData = active.data.current;
     const overData = over.data.current;
+    console.log("DragOver - ActiveData:", activeData);
+    console.log("DragOver - OverData:", overData);
 
     // Handle task dropping
     if (activeData?.type === 'Task' && overData?.type === 'Column') {
@@ -82,13 +86,16 @@ export const KanbanBoard = ({
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
+    // log active and over
+    console.log("Active:", active);
+    console.log("Over:", over);
 
     if (!over) {
       setActiveTask(null);
       setActiveColumn(null);
       return;
     }
-
+    console.log("Test:", active);
     const activeId = active.id;
     const overId = over.id;
 
@@ -108,18 +115,18 @@ export const KanbanBoard = ({
 
       if (activeTask.column_id === overTask.column_id) {
         // Reorder within same column
-        const activeIndex = tasks.findIndex(t => t.id === activeTask.id);
-        const overIndex = tasks.findIndex(t => t.id === overTask.id);
+        const activeIndex = columns.findIndex(c => c.id === activeTask.id);
+        const overIndex = columns.findIndex(c => c.id === overTask.id);
 
         if (activeIndex !== -1 && overIndex !== -1) {
-          const newTasks = [...tasks];
-          const [removed] = newTasks.splice(activeIndex, 1);
+          const newColumns = [...columns];
+          const [removed] = newColumns.splice(activeIndex, 1);
           if (removed) {
-            newTasks.splice(overIndex, 0, removed);
+            newColumns.splice(overIndex, 0, removed);
 
             // Update positions
-            newTasks.forEach((task, index) => {
-              onTaskUpdate?.(task.id, { position: index });
+            newColumns.forEach((column, index) => {
+              onColumnUpdate?.(column.id, { position: index });
             });
           }
         }
@@ -131,10 +138,21 @@ export const KanbanBoard = ({
       const activeColumn = activeData.column;
       const overColumn = overData.column;
 
-      // For column reordering, we'll need to get columns from children
-      // This is a simplified approach - in a real implementation you might want
-      // to pass columns as a separate prop or use React.Children to extract column data
-      onColumnUpdate?.(activeColumn.id, { position: 0 }); // Placeholder
+      const activeIndex = columns.findIndex(c => c.id === activeColumn.id);
+      const overIndex = columns.findIndex(c => c.id === overColumn.id);
+
+      if (activeIndex !== -1 && overIndex !== -1) {
+        const newColumns = [...columns];
+        const [removed] = newColumns.splice(activeIndex, 1);
+        if (removed) {
+          newColumns.splice(overIndex, 0, removed);
+
+          // Update positions
+          newColumns.forEach((column, index) => {
+            onColumnUpdate?.(column.id, { position: index });
+          });
+        }
+      }
     }
 
     setActiveTask(null);
@@ -149,7 +167,7 @@ export const KanbanBoard = ({
       onDragEnd={handleDragEnd}
     >
       <div className={`flex gap-4 overflow-x-auto p-4 ${className}`}>
-        <SortableContext items={React.Children.map(children, (child, index) => index) || []} strategy={horizontalListSortingStrategy}>
+        <SortableContext items={columns.map(c => c.id)} strategy={horizontalListSortingStrategy}>
           {children}
         </SortableContext>
       </div>
