@@ -20,3 +20,6 @@ export * from './components/coming-soon';
 export * from './components/animated-progress-bar';
 export * from './components/ui/sheet';
 export * from './components/ui/textarea';
+
+// Kanban components
+export * from './components/kanban';
