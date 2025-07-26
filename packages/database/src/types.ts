@@ -20,7 +20,7 @@ export interface AuthGuardProps {
 
 export interface KanbanBoardData {
   board: Board;
-  columns: KanbanColumn[] | null;
+  columns: Column[] | null;
   tasks: Task[] | null;
 }
 

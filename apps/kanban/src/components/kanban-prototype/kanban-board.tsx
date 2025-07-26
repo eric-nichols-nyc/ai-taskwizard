@@ -1,4 +1,4 @@
-import { useState } from 'react';
+//import { useState } from 'react';
 import {
   DndContext,
   DragEndEvent,
@@ -19,24 +19,28 @@ import { ColumnComponent } from './column-component';
 import { Board, Column, Task } from '@turbo-with-tailwind-v4/database/types';
 
 interface KanbanBoardProps {
+  children: React.ReactNode;
+  columnIds: string[];
   board: Board | null;
-  columns: Column[];
   tasks: Task[];
   isLoading: boolean | null;
   error: Error | null;
   moveTask: (taskId: string, columnId: string) => void;
   addTask: (task: Task, onSuccess?: () => void) => void;
+  handleDragStart: (event: DragStartEvent) => void;
+  activeColumn: Column | null;
+  handleDragOver: (event: DragOverEvent) => void;
+  handleDragEnd: (event: DragEndEvent) => void;
+  activeId: string | null;
+  activeTask: Task | null;
 }
-export const KanbanBoard = ({ board, columns, tasks, isLoading, error, moveTask, addTask: addTaskFromHook }: KanbanBoardProps) => {
-  const [activeId, setActiveId] = useState<string | null>(null);
+export const KanbanBoard = ({ children, board, tasks, isLoading, error, columnIds, addTask: addTaskFromHook, handleDragStart, activeColumn,handleDragOver,handleDragEnd,activeTask }: KanbanBoardProps) => {
+  //const [activeId, setActiveId] = useState<string | null>(null);
 
 
   // Debug: Log all column and task IDs
   // console.log('[Kanban Render] Column IDs:', columns.map(c => c.id));
   // console.log('[Kanban Render] Task IDs:', tasks.map(t => t.id));
-
-  const activeColumns = columns
-    .sort((a, b) => a.position - b.position);
 
   // Debug: Log items passed to SortableContext for columns
  // console.log('[Kanban Render] SortableContext (columns) items:', activeColumns.map(c => c.id));
@@ -49,91 +53,91 @@ export const KanbanBoard = ({ board, columns, tasks, isLoading, error, moveTask,
     })
   );
 
-  const handleDragStart = (event: DragStartEvent) => {
-    setActiveId(event.active.id as string);
-    // console.log('[DragStart]', { activeId: event.active.id });
-  };
+  // const handleDragStart = (event: DragStartEvent) => {
+  //   setActiveId(event.active.id as string);
+  //   // console.log('[DragStart]', { activeId: event.active.id });
+  // };
 
-  const handleDragOver = (event: DragOverEvent) => {
-    const { active, over, delta } = event;
-    console.log('[Kanban Render] ========handleDragOver', delta, active, over);
-    if (!over) return;
+  // const handleDragOver = (event: DragOverEvent) => {
+  //   const { active, over, delta } = event;
+  //   console.log('[Kanban Render] ========handleDragOver', delta, active, over);
+  //   if (!over) return;
 
-    const activeData = active.data.current;
-    const overData = over.data.current;
-    if (!activeData || !overData) return;
+  //   const activeData = active.data.current;
+  //   const overData = over.data.current;
+  //   if (!activeData || !overData) return;
 
-    // Dragging a task
-    if (activeData.type === 'Task') {
-      // Dropped over a task
-      if (overData.type === 'Task') {
-        const activeTask = activeData.task;
-        const overTask = overData.task;
-        if (activeTask.id === overTask.id) return;
-        // If moving to a different column
-        if (activeTask.column_id !== overTask.column_id) {
-          moveTask(activeTask.id, overTask.column_id);
-        }
-      }
-      // Dropped over a column
-      if (overData.type === 'Column') {
-        const activeTask = activeData.task;
-        const overColumn = overData.column;
-        if (activeTask.column_id !== overColumn.id) {
-          moveTask(activeTask.id, overColumn.id);
-        }
-      }
-    }
-  };
+  //   // Dragging a task
+  //   if (activeData.type === 'Task') {
+  //     // Dropped over a task
+  //     if (overData.type === 'Task') {
+  //       const activeTask = activeData.task;
+  //       const overTask = overData.task;
+  //       if (activeTask.id === overTask.id) return;
+  //       // If moving to a different column
+  //       if (activeTask.column_id !== overTask.column_id) {
+  //         moveTask(activeTask.id, overTask.column_id);
+  //       }
+  //     }
+  //     // Dropped over a column
+  //     if (overData.type === 'Column') {
+  //       const activeTask = activeData.task;
+  //       const overColumn = overData.column;
+  //       if (activeTask.column_id !== overColumn.id) {
+  //         moveTask(activeTask.id, overColumn.id);
+  //       }
+  //     }
+  //   }
+  // };
 
-  const handleDragEnd = (event: DragEndEvent) => {
-    console.log('[Kanban Render] ========DragEnd');
-    const { active, over } = event;
-    setActiveId(null);
-    if (!over) return;
+  // const handleDragEnd = (event: DragEndEvent) => {
+  //   console.log('[Kanban Render] ========DragEnd');
+  //   const { active, over } = event;
+  //   setActiveId(null);
+  //   if (!over) return;
 
-    const activeData = active.data.current;
-    const overData = over.data.current;
-    console.log('[Kanban Render] ========activeData', activeData);
-    console.log('[Kanban Render] ========overData', overData);
-    if (!activeData || !overData) return;
+  //   const activeData = active.data.current;
+  //   const overData = over.data.current;
+  //   console.log('[Kanban Render] ========activeData', activeData);
+  //   console.log('[Kanban Render] ========overData', overData);
+  //   if (!activeData || !overData) return;
 
-    // Column reordering - not implemented in hook yet
-    if (activeData.type === 'Column' && overData.type === 'Column') {
-      if (active.id === over.id) return;
-      console.log('[Kanban Render] Column reordering not implemented in hook');
-      return;
-    }
+  //   // Column reordering - not implemented in hook yet
+  //   if (activeData.type === 'Column' && overData.type === 'Column') {
+  //     if (active.id === over.id) return;
+  //     console.log('[Kanban Render] Column reordering not implemented in hook');
+  //     return;
+  //   }
 
-    // Task reordering or moving between columns
-    if (activeData.type === 'Task' && overData.type === 'Column') {
-      console.log('[Kanban Render] ========Task reordering or moving between columns');
-      const activeTask = activeData.task;
-      // Dropped on a task
-      if (overData.type === 'Task') {
-        const overTask = overData.task;
-        if (activeTask.id === overTask.id) return;
+  //   // Task reordering or moving between columns
+  //   if (activeData.type === 'Task' && overData.type === 'Column') {
+  //     console.log('[Kanban Render] ========Task reordering or moving between columns');
+  //     const activeTask = activeData.task;
+  //     // Dropped on a task
+  //     if (overData.type === 'Task') {
+  //       const overTask = overData.task;
+  //       if (activeTask.id === overTask.id) return;
 
-        // If moving to a different column
-        if (activeTask.column_id !== overTask.column_id) {
-          moveTask(activeTask.id, overTask.column_id);
-        }
-        return;
-      }
-      // Dropped on a column
-      if (overData.type === 'Column') {
-        const overColumn = overData.column;
-        console.log('[Kanban Render] ========Dropped on a column', overColumn);
-        if (activeTask.column_id !== overColumn.id) {
-          moveTask(activeTask.id, overColumn.id);
-        }
-        return;
-      }
-    }
-  };
+  //       // If moving to a different column
+  //       if (activeTask.column_id !== overTask.column_id) {
+  //         moveTask(activeTask.id, overTask.column_id);
+  //       }
+  //       return;
+  //     }
+  //     // Dropped on a column
+  //     if (overData.type === 'Column') {
+  //       const overColumn = overData.column;
+  //       console.log('[Kanban Render] ========Dropped on a column', overColumn);
+  //       if (activeTask.column_id !== overColumn.id) {
+  //         moveTask(activeTask.id, overColumn.id);
+  //       }
+  //       return;
+  //     }
+  //   }
+  // };
 
-  const activeTask = activeId ? tasks.find(t => t.id === activeId) : null;
-  const activeColumn = activeId ? columns.find(c => c.id === activeId) : null;
+  // const activeTask = activeId ? tasks.find(t => t.id === activeId) : null;
+  // const activeColumn = activeId ? columnIds.find(c => c === activeId) : null;
 
   // Show loading state
   if (isLoading) {
@@ -178,8 +182,8 @@ export const KanbanBoard = ({ board, columns, tasks, isLoading, error, moveTask,
       >
         <div className="w-full overflow-x-auto">
           <div className="flex gap-6 min-w-fit pb-6">
-            <SortableContext items={activeColumns.map(c => c.id)} strategy={horizontalListSortingStrategy}>
-              {activeColumns.map(column => (
+            <SortableContext items={columnIds} strategy={horizontalListSortingStrategy}>
+              {/* {activeColumns.map(column => (
                 <ColumnComponent
                   key={column.id}
                   column={{
@@ -207,7 +211,8 @@ export const KanbanBoard = ({ board, columns, tasks, isLoading, error, moveTask,
                     });
                   }}
                 />
-              ))}
+              ))} */}
+              {children}
             </SortableContext>
           </div>
         </div>
