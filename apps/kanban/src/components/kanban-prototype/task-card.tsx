@@ -32,9 +32,7 @@ export const TaskCard: React.FC<{ task: Task }> = ({ task }) => {
         isDragging ? 'opacity-50' : ''
       }`}
     >
-      <h4 className="font-medium text-gray-900 mb-1">{task.title}</h4>
-
-      <p className="text-sm text-gray-600">{task.description}</p>
+      <h4 className="font-medium text-gray-900 mb-1 text-md">{task.title}</h4>
       {import.meta.env.MODE === 'development' && <p className="text-xs text-gray-600">Position: {task.position} {task.status}</p>}
     </Card>
   );

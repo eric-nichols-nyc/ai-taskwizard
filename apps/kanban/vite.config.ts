@@ -10,7 +10,6 @@ export default defineConfig({
     filename: 'remoteEntry.js',
     exposes: {
       "./App": "./src/App.tsx",
-      "./Kanban": "./src/Kanban.tsx",
     },
     shared: ['react', 'react-dom']
   })],

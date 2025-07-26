@@ -31,7 +31,6 @@ export function MyKanban() {
   };
   const columnIds = columns.map(c => c.id);
   const [activeId, setActiveId] = useState<string | null>(null);
-  console.log('[MyKanban] columnIds', columnIds);
   const activeTask = activeId ? tasks.find(t => t.id === activeId) : null;
   const activeColumn = activeId ? columns.find(c => c.id === activeId) : null;
 
@@ -39,8 +38,10 @@ export function MyKanban() {
     setActiveId(event.active.id as string);
   };
   const handleDragOver = (event: DragOverEvent) => {
-    const { active, over, delta } = event;
-    console.log('[Kanban Render] ========handleDragOver', delta, active, over);
+    const { active, over } = event;
+    //console.log('[Kanban Render] ========handleDragOver', event);
+    console.log('[Kanban Render] ========active', active);
+    console.log('[Kanban Render] ========over', over);
     if (!over) return;
 
     const activeData = active.data.current;
@@ -52,6 +53,7 @@ export function MyKanban() {
       // Dropped over a task
       if (overData.type === 'Task') {
         const activeTask = activeData.task;
+        console.log('[Kanban Render] ========activeTask', activeTask);
         const overTask = overData.task;
         if (activeTask.id === overTask.id) return;
         // If moving to a different column
@@ -72,68 +74,75 @@ export function MyKanban() {
 
   const handleDragEnd = (event: DragEndEvent) => {
     console.log('[Kanban Render] ========DragEnd');
-    const { active, over } = event;
+    const { over } = event;
     setActiveId(null);
     if (!over) return;
+    console.log('[Kanban Render TEST] ========over', over);
 
-    const activeData = active.data.current;
-    const overData = over.data.current;
-    console.log('[Kanban Render] ========activeData', activeData);
-    console.log('[Kanban Render] ========overData', overData);
-    if (!activeData || !overData) return;
+    // const activeData = active.data.current;
+    // const overData = over.data.current;
+    // console.log('[Kanban Render] ========activeData', activeData);
+    // console.log('[Kanban Render] ========overData', overData);
+    // if (!activeData || !overData) return;
 
-    // Column reordering - not implemented in hook yet
-    if (activeData.type === 'Column' && overData.type === 'Column') {
-      if (active.id === over.id) return;
-      console.log('[Kanban Render] Column reordering not implemented in hook');
-      return;
-    }
+    // // Column reordering - not implemented in hook yet
+    // if (activeData.type === 'Column' && overData.type === 'Column') {
+    //   if (active.id === over.id) return;
+    //   console.log('[Kanban Render] Column reordering not implemented in hook');
+    //   return;
+    // }
 
-    // Task reordering or moving between columns
-    if (activeData.type === 'Task' && overData.type === 'Column') {
-      console.log('[Kanban Render] ========Task reordering or moving between columns');
-      const activeTask = activeData.task;
-      // Dropped on a task
-      if (overData.type === 'Task') {
-        const overTask = overData.task;
-        if (activeTask.id === overTask.id) return;
+    // // Task reordering or moving between columns
+    // if (activeData.type === 'Task' && overData.type === 'Column') {
+    //   console.log('[Kanban Render] ========Task reordering or moving between columns');
+    //   const activeTask = activeData.task;
+    //   // Dropped on a task
+    //   if (overData.type === 'Task') {
+    //     const overTask = overData.task;
+    //     if (activeTask.id === overTask.id) return;
 
-        // If moving to a different column
-        if (activeTask.column_id !== overTask.column_id) {
-          moveTask(activeTask.id, overTask.column_id);
-        }
-        return;
-      }
-      // Dropped on a column
-      if (overData.type === 'Column') {
-        const overColumn = overData.column;
-        console.log('[Kanban Render] ========Dropped on a column', overColumn);
-        if (activeTask.column_id !== overColumn.id) {
-          moveTask(activeTask.id, overColumn.id);
-        }
-        return;
-      }
-    }
+    //     // If moving to a different column
+    //     if (activeTask.column_id !== overTask.column_id) {
+    //       moveTask(activeTask.id, overTask.column_id);
+    //     }
+    //     return;
+    //   }
+    //   // Dropped on a column
+    //   if (overData.type === 'Column') {
+    //     const overColumn = overData.column;
+    //     console.log('[Kanban Render] ========Dropped on a column', overColumn);
+    //     if (activeTask.column_id !== overColumn.id) {
+    //       moveTask(activeTask.id, overColumn.id);
+    //     }
+    //     return;
+    //   }
+    // }
   };
 
-  return <KanbanBoard
-    board={board}
-    columnIds={columnIds}
-    tasks={tasks}
-    isLoading={isLoading}
-    error={error} moveTask={moveTask}
-    addTask={addTaskFromHook}
-    handleDragStart={handleDragStart}
-    activeColumn={activeColumn as Column | null}
-    handleDragOver={handleDragOver}
-    handleDragEnd={handleDragEnd}
-    activeId={activeId}
-    activeTask={activeTask as Task | null}
-    ActiveTaskComponent={<MyActiveTask task={activeTask as Task} />}
-    ActiveColumnComponent={activeColumn ? <MyActiveColumn column={activeColumn} tasks={[]} addTaskFromHook={handleAddTask} /> : null}
-  >
-    {columns.map(column => (
-      <ColumnComponent key={column.id} column={column} tasks={tasks.filter(t => t.column_id === column.id)} addTask={handleAddTask} />
-    ))}
-  </KanbanBoard>;
+  return (
+    <KanbanBoard
+      board={board}
+      columnIds={columnIds}
+      tasks={tasks}
+      isLoading={isLoading}
+      error={error} moveTask={moveTask}
+      addTask={addTaskFromHook}
+      handleDragStart={handleDragStart}
+      activeColumn={activeColumn as Column | null}
+      handleDragOver={handleDragOver}
+      handleDragEnd={handleDragEnd}
+      activeId={activeId}
+      activeTask={activeTask as Task | null}
+      ActiveTaskComponent={<MyActiveTask task={activeTask as Task} />}
+      ActiveColumnComponent={activeColumn ? <MyActiveColumn column={activeColumn} tasks={[]} addTaskFromHook={handleAddTask} /> : null}
+    >
+      {columns.map(column => (
+          <ColumnComponent
+            column={column}
+            tasks={tasks.filter(t => t.column_id === column.id)}
+            addTask={handleAddTask}
+          />
+      ))}
+    </KanbanBoard>
+  );
 }

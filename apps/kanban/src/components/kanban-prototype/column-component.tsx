@@ -3,7 +3,6 @@ import { useDroppable } from '@dnd-kit/core';
 import { useSortable } from '@dnd-kit/sortable';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { Plus, MoreHorizontal } from 'lucide-react';
-//import type { Column } from './task-types';
 import { TaskCard } from './task-card';
 import { AddTaskForm } from './add-task-form';
 import { Column, Task } from '@turbo-with-tailwind-v4/database/types';
@@ -50,6 +49,9 @@ export const ColumnComponent: React.FC<{ column: Column, tasks: Task[], addTask:
       >
         <div className="cursor-grab">
           <h3 className="font-semibold text-gray-200">{column.name}</h3>
+          {
+            import.meta.env.MODE === 'development' && <p className="text-xs text-gray-200">ID: {column.id}</p>
+          }
         </div>
         <div className="relative">
           <button
