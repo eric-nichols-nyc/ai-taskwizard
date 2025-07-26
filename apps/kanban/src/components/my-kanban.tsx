@@ -14,9 +14,7 @@ const MyActiveTask = ({ task }: { task: Task }) => {
 const MyActiveColumn = ({ column, tasks, addTaskFromHook }: { column: Column, tasks: Task[], addTaskFromHook: (task: Partial<Task>) => void }) => {
   return <ColumnComponent column={{
     id: column.id,
-    column_id: column.id,
-    title: column.name,
-    description: '',
+    name: column.name,
     position: column.position,
     board_id: column.board_id,
   }} tasks={tasks.filter(t => t.column_id === column.id)} addTask={addTaskFromHook} />;
@@ -32,11 +30,10 @@ export function MyKanban() {
     }
   };
   const columnIds = columns.map(c => c.id);
-  //const [activeColumn, setActiveColumn] = useState<Column | null>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
   console.log('[MyKanban] columnIds', columnIds);
   const activeTask = activeId ? tasks.find(t => t.id === activeId) : null;
-  const activeColumn = activeId ? columns.find(c => c === activeId) : null;
+  const activeColumn = activeId ? columns.find(c => c.id === activeId) : null;
 
   const handleDragStart = (event: DragStartEvent) => {
     setActiveId(event.active.id as string);
