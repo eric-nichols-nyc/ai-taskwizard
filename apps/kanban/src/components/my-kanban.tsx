@@ -6,14 +6,37 @@ import { ColumnComponent } from './kanban-prototype/column-component';
 import { DragOverEvent, DragStartEvent, DragEndEvent } from '@dnd-kit/core';
 import { Column, Task } from '@turbo-with-tailwind-v4/database/types';
 
+
+const MyActiveTask = ({ task }: { task: Task }) => {
+  return <TaskCard task={task} />;
+};
+
+const MyActiveColumn = ({ column, tasks, addTaskFromHook }: { column: Column, tasks: Task[], addTaskFromHook: (task: Partial<Task>) => void }) => {
+  return <ColumnComponent column={{
+    id: column.id,
+    column_id: column.id,
+    title: column.name,
+    description: '',
+    position: column.position,
+    board_id: column.board_id,
+  }} tasks={tasks.filter(t => t.column_id === column.id)} addTask={addTaskFromHook} />;
+};
+
 export function MyKanban() {
   const { board, columns, tasks, isLoading, error, moveTask, addTask: addTaskFromHook } = useKanbanBoardState();
+
+  // Wrapper function to handle Partial<Task> to Task conversion
+  const handleAddTask = (partialTask: Partial<Task>) => {
+    if (partialTask.id) {
+      addTaskFromHook(partialTask as Task);
+    }
+  };
   const columnIds = columns.map(c => c.id);
   //const [activeColumn, setActiveColumn] = useState<Column | null>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
   console.log('[MyKanban] columnIds', columnIds);
   const activeTask = activeId ? tasks.find(t => t.id === activeId) : null;
-  const activeColumn = activeId ? columnIds.find(c => c === activeId) : null;
+  const activeColumn = activeId ? columns.find(c => c === activeId) : null;
 
   const handleDragStart = (event: DragStartEvent) => {
     setActiveId(event.active.id as string);
@@ -109,9 +132,11 @@ export function MyKanban() {
     handleDragEnd={handleDragEnd}
     activeId={activeId}
     activeTask={activeTask as Task | null}
+    ActiveTaskComponent={<MyActiveTask task={activeTask as Task} />}
+    ActiveColumnComponent={activeColumn ? <MyActiveColumn column={activeColumn} tasks={[]} addTaskFromHook={handleAddTask} /> : null}
   >
     {columns.map(column => (
-      <ColumnComponent key={column.id} column={column} tasks={tasks.filter(t => t.column_id === column.id)} addTask={addTaskFromHook} />
+      <ColumnComponent key={column.id} column={column} tasks={tasks.filter(t => t.column_id === column.id)} addTask={handleAddTask} />
     ))}
   </KanbanBoard>;
 }
