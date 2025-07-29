@@ -142,14 +142,13 @@ export function MyKanban() {
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over, delta } = event;
+    const { active, over } = event;
     console.log('[Kanban Render] ========DragEnd active', active.id);
     console.log('[Kanban Render] ========DragEnd over', over?.id);
     console.log('[Kanban Render] ========DragEnd active.id', active.id);
     console.log('[Kanban Render] ========DragEnd over?.id', over?.id);
     console.log('[Kanban Render] ========DragEnd active.data.current', active.data.current);
     console.log('[Kanban Render] ========DragEnd over.data.current', over?.data.current);
-    console.log('[Kanban Render] ========DragEnd delta', delta);
 
     if (!over) {
       console.log('No drop target - drag cancelled');

@@ -47,7 +47,10 @@ export function useKanbanBoardState() {
     addTaskMutation.mutate(newTask, {
       onSuccess: (createdTask) => {
         console.log('Task created successfully:', createdTask);
-        setKanbanBoard(prev => prev ? { ...prev, tasks: [...(prev.tasks ?? []), task] } : prev);
+        setKanbanBoard(prev => prev ? {
+          ...prev,
+          tasks: [...(prev.tasks ?? []), createdTask]
+        } : prev);
         if (onSuccess) {
           onSuccess();
         }
@@ -61,7 +64,10 @@ export function useKanbanBoardState() {
   const updateTask = (task: Task, onSuccess?: () => void) => {
     updateTaskMutation.mutate({id: task.id, updates: task}, {
       onSuccess: () => {
-        setKanbanBoard(prev => prev ? { ...prev, tasks: [...(prev.tasks ?? []), task] } : prev);
+        setKanbanBoard(prev => prev ? {
+          ...prev,
+          tasks: prev.tasks?.map(t => t.id === task.id ? task : t) ?? []
+        } : prev);
         if (onSuccess) {
           onSuccess();
         }

@@ -7,7 +7,9 @@ import { ErrorBoundary } from "@turbo-with-tailwind-v4/design-system";
 import {Toaster} from "react-hot-toast"
 import { User } from "@turbo-with-tailwind-v4/database";
 //import { KanbanExample } from "@turbo-with-tailwind-v4/design-system/components/kanban/example";
-import { MyKanban } from "./components/my-kanban";
+//import { MyKanban } from "./components/my-kanban";
+//import { MultipleContainers } from "./example/MultipleContainers";
+import  KanbanViewPage  from "./example/components/kanban-view-page";
   //import {Kanban} from "./Kanban";
 
 const USE_KANBAN_TESTER = false; // Toggle this for dev
@@ -22,7 +24,7 @@ export function App() {
             ? <ComingSoon />
             : (USE_KANBAN_TESTER
               ? <KanbanUserTester />
-              : <MyKanban />
+              : <KanbanViewPage />
             )}
           <Toaster />
         </ErrorBoundary>
