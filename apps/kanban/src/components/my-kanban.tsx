@@ -63,6 +63,7 @@ export function MyKanban() {
         if (activeTask.column_id !== overTask.column_id) {
           //const targetTaskIndex = overData.sortable.index;
           console.log('Move task to different column');
+          moveTaskToDifferentColumn(activeTask.id, overTask.column_id);
 
         }else if (activeTask.column_id === overTask.column_id) {
             console.log('[Kanban Render is over a task in the same column] ========activeTask', activeTask);
@@ -76,20 +77,11 @@ export function MyKanban() {
                 }
             }
         }
-
-      // Dropped over a column
-    //   if (overData.type === 'Column') {
-    //     console.log('[Kanban Render is over a column] ========overData', overData);
-    //     const activeTask = activeData.task;
-    //     const overColumn = overData.column;
-    //     if (activeTask.column_id !== overColumn.id) {
-    //       // Check if column has tasks to determine first or last
-    //       const columnTasks = tasks.filter(t => t.column_id === overColumn.id);
-    //       const dropPosition = columnTasks.length === 0 ? 'first' : 'last';
-    //       moveTask(activeTask.id, overColumn.id, dropPosition);
-    //     }
-    //   }
     }
+  };
+
+  const moveTaskToDifferentColumn = (taskId: string, columnId: string) => {
+    moveTask(taskId, columnId, 'last');
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -98,17 +90,13 @@ export function MyKanban() {
 
   };
 
-  const moveTaskWrapper = (taskId: string, columnId: string) => {
-    moveTask(taskId, columnId, 'first'); // Default to first position
-  };
-
   return (
     <KanbanBoard
       board={board}
       columnIds={columnIds}
       tasks={tasks}
       isLoading={isLoading}
-      error={error} moveTask={moveTaskWrapper}
+      error={error} moveTask={moveTask}
       addTask={addTaskFromHook}
       handleDragStart={handleDragStart}
       activeColumn={activeColumn as Column | null}
