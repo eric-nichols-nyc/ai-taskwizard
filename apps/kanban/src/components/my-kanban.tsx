@@ -67,15 +67,16 @@ export function MyKanban() {
         }else if (activeTask.column_id === overTask.column_id) {
             console.log('[Kanban Render is over a task in the same column] ========activeTask', activeTask);
         // if moving up or down
-            //     if (activeData.sortable.index < overData.sortable.index) {
-            //     moveTask(activeTask.id, overTask.column_id, 'before', overTask.id);
-            //     } else {
-            //     moveTask(activeTask.id, overTask.column_id, 'after', overTask.id);
-            //     }
-            // }
+                if (activeData.sortable.index < overData.sortable.index) {
+                    console.log('Move task down');
+                // moveTask(activeTask.id, overTask.column_id, 'before', overTask.id);
+                } else {
+                    console.log('Move task up');
+                // moveTask(activeTask.id, overTask.column_id, 'after', overTask.id);
+                }
+            }
         }
 
-      }
       // Dropped over a column
     //   if (overData.type === 'Column') {
     //     console.log('[Kanban Render is over a column] ========overData', overData);
