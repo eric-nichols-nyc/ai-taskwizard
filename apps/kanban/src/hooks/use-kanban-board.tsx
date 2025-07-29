@@ -79,22 +79,25 @@ export function useKanbanBoardState() {
   const moveTask = (
     taskId: string,
     newColumnId: string,
+    targetPosition: 'first' | 'last' | 'before' | 'after',
+    targetTaskId?: string,
     onSuccess?: () => void) => {
         const result = KanbanPositionCalculator.calculatePosition({
             tasks: kanbanBoard?.tasks ?? [],
             taskId,
             targetColumnId: newColumnId,
-            dropPosition: 'last',
-            targetTaskId: undefined,
+            dropPosition: targetPosition,
+            targetTaskId: targetTaskId,
         });
 
         console.log('moveTask result', result);
+
         const updatedTask = result.updatedTasks.find(t => t.id === taskId);
         if(updatedTask) {
           // get the status of the task
           const status = getColumnStatus(newColumnId);
           updatedTask.status = status;
-           updateTask(updatedTask);
+          updateTask(updatedTask);
         }
 
         // Update the local state with the new task positions
@@ -109,7 +112,6 @@ export function useKanbanBoardState() {
             onSuccess();
         }
         return result;
-
   }
 
   return {
