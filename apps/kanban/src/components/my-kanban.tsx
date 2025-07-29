@@ -73,50 +73,9 @@ export function MyKanban() {
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
-    console.log('[Kanban Render] ========DragEnd');
-    const { over } = event;
+    console.log('[Kanban Render] ========DragEnd', event.active.id);
     setActiveId(null);
-    if (!over) return;
-    console.log('[Kanban Render TEST] ========over', over);
 
-    // const activeData = active.data.current;
-    // const overData = over.data.current;
-    // console.log('[Kanban Render] ========activeData', activeData);
-    // console.log('[Kanban Render] ========overData', overData);
-    // if (!activeData || !overData) return;
-
-    // // Column reordering - not implemented in hook yet
-    // if (activeData.type === 'Column' && overData.type === 'Column') {
-    //   if (active.id === over.id) return;
-    //   console.log('[Kanban Render] Column reordering not implemented in hook');
-    //   return;
-    // }
-
-    // // Task reordering or moving between columns
-    // if (activeData.type === 'Task' && overData.type === 'Column') {
-    //   console.log('[Kanban Render] ========Task reordering or moving between columns');
-    //   const activeTask = activeData.task;
-    //   // Dropped on a task
-    //   if (overData.type === 'Task') {
-    //     const overTask = overData.task;
-    //     if (activeTask.id === overTask.id) return;
-
-    //     // If moving to a different column
-    //     if (activeTask.column_id !== overTask.column_id) {
-    //       moveTask(activeTask.id, overTask.column_id);
-    //     }
-    //     return;
-    //   }
-    //   // Dropped on a column
-    //   if (overData.type === 'Column') {
-    //     const overColumn = overData.column;
-    //     console.log('[Kanban Render] ========Dropped on a column', overColumn);
-    //     if (activeTask.column_id !== overColumn.id) {
-    //       moveTask(activeTask.id, overColumn.id);
-    //     }
-    //     return;
-    //   }
-    // }
   };
 
   return (
