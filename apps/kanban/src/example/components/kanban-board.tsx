@@ -315,14 +315,12 @@ export function KanbanBoard() {
   }
 
   function onDragEnd(event: DragEndEvent) {
-
-
     const { active, over } = event;
     if (!over) return;
 
     const activeId = active.id;
     const overId = over.id;
-
+    console.log('===============================================onDragEnd');
     if (!hasDraggableData(active)) return;
 
     const activeData = active.data.current;
@@ -355,7 +353,7 @@ export function KanbanBoard() {
     if (isOverATask) {
       const overIndex = tasks.findIndex((t) => t.id === overId);
       const overTask = tasks[overIndex];
-
+      console.log('===============================================overTask', overTask);
       if (!overTask) return;
 
       // Log the move operation
@@ -370,6 +368,7 @@ export function KanbanBoard() {
 
       // If moving to a different column
       if (activeTask.column_id !== overTask.column_id) {
+        console.log('===============================================Moving to a different column');
         activeTask.status = overTask.status;
         activeTask.column_id = overTask.column_id;
 
