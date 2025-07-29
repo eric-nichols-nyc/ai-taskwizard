@@ -73,11 +73,17 @@ export function TaskCard({ task, isOverlay }: TaskCardProps) {
           {...listeners}
           className='text-secondary-foreground/50 -ml-2 h-auto cursor-grab p-1'
         >
+          <IconGripVertical size={16} />
           <span className='sr-only'>Move task</span>
         </Button>
-        <Badge variant={'outline'} className='ml-auto font-semibold'>
-          Task
-        </Badge>
+        <div className='ml-auto flex items-center gap-2'>
+          <Badge variant={'outline'} className='font-semibold'>
+            #{task.position + 1}
+          </Badge>
+          <Badge variant={'outline'} className='font-semibold'>
+            Task
+          </Badge>
+        </div>
       </CardHeader>
       <CardContent className='px-3 pt-3 pb-6 text-left whitespace-pre-wrap'>
         {task.title}

@@ -4,19 +4,19 @@ import { persist } from 'zustand/middleware';
 import { UniqueIdentifier } from '@dnd-kit/core';
 import { Column } from '../components/board-column';
 
-export type Status = 'TODO' | 'IN_PROGRESS' | 'DONE';
+export type Status = (typeof defaultCols)[number]['id'];
 
 const defaultCols = [
   {
-    id: 'TODO' as const,
+    id: uuid(),
     title: 'Todo'
   },
   {
-    id: 'IN_PROGRESS' as const,
+    id: uuid(),
     title: 'In Progress'
   },
   {
-    id: 'DONE' as const,
+    id: uuid(),
     title: 'Done'
   }
 ] satisfies Column[];
@@ -28,6 +28,8 @@ export type Task = {
   title: string;
   description?: string;
   status: Status;
+  position: number;
+  column_id: UniqueIdentifier;
 };
 
 export type State = {
@@ -36,28 +38,46 @@ export type State = {
   draggedTask: string | null;
 };
 
-const initialTasks: Task[] = [
-  {
-    id: 'task1',
-    status: 'TODO',
-    title: 'Project initiation and planning'
-  },
-  {
-    id: 'task2',
-    status: 'TODO',
-    title: 'Gather requirements from stakeholders'
-  },
-  {
-    id: 'task3',
-    status: 'IN_PROGRESS',
-    title: 'Design system architecture'
-  },
-  {
-    id: 'task4',
-    status: 'DONE',
-    title: 'Set up development environment'
-  }
-];
+// We need to create the initial tasks after the columns are defined
+// so we can use the actual column IDs
+const createInitialTasks = (): Task[] => {
+  const todoCol = defaultCols[0];
+  const inProgressCol = defaultCols[1];
+  const doneCol = defaultCols[2];
+
+  return [
+    {
+      id: 'task1',
+      status: todoCol.id,
+      title: 'Project initiation and planning',
+      position: 0,
+      column_id: todoCol.id
+    },
+    {
+      id: 'task2',
+      status: todoCol.id,
+      title: 'Gather requirements from stakeholders',
+      position: 1,
+      column_id: todoCol.id
+    },
+    {
+      id: 'task3',
+      status: inProgressCol.id,
+      title: 'Design system architecture',
+      position: 0,
+      column_id: inProgressCol.id
+    },
+    {
+      id: 'task4',
+      status: doneCol.id,
+      title: 'Set up development environment',
+      position: 0,
+      column_id: doneCol.id
+    }
+  ];
+};
+
+const initialTasks = createInitialTasks();
 
 export type Actions = {
   addTask: (title: string, description?: string) => void;
@@ -68,6 +88,7 @@ export type Actions = {
   setTasks: (updatedTask: Task[]) => void;
   setCols: (cols: Column[]) => void;
   updateCol: (id: UniqueIdentifier, newName: string) => void;
+  resetStore: () => void;
 };
 
 export const useTaskStore = create<State & Actions>()(
@@ -77,12 +98,23 @@ export const useTaskStore = create<State & Actions>()(
       columns: defaultCols,
       draggedTask: null,
       addTask: (title: string, description?: string) =>
-        set((state) => ({
-          tasks: [
-            ...state.tasks,
-            { id: uuid(), title, description, status: 'TODO' }
-          ]
-        })),
+        set((state) => {
+          // Find the highest position in the first column and add 1
+          const firstColumnId = state.columns[0]?.id;
+          if (!firstColumnId) return state;
+
+          const tasksInFirstColumn = state.tasks.filter(task => task.status === firstColumnId);
+          const nextPosition = tasksInFirstColumn.length > 0
+            ? Math.max(...tasksInFirstColumn.map(task => task.position)) + 1
+            : 0;
+
+          return {
+            tasks: [
+              ...state.tasks,
+              { id: uuid(), title, description, status: firstColumnId, position: nextPosition, column_id: firstColumnId }
+            ]
+          };
+        }),
       updateCol: (id: UniqueIdentifier, newName: string) =>
         set((state) => ({
           columns: state.columns.map((col) =>
@@ -93,7 +125,7 @@ export const useTaskStore = create<State & Actions>()(
         set((state) => ({
           columns: [
             ...state.columns,
-            { title, id: state.columns.length ? title.toUpperCase() : 'TODO' }
+            { title, id: uuid() }
           ]
         })),
       dragTask: (id: string | null) => set({ draggedTask: id }),
@@ -106,8 +138,9 @@ export const useTaskStore = create<State & Actions>()(
           columns: state.columns.filter((col) => col.id !== id)
         })),
       setTasks: (newTasks: Task[]) => set({ tasks: newTasks }),
-      setCols: (newCols: Column[]) => set({ columns: newCols })
+      setCols: (newCols: Column[]) => set({ columns: newCols }),
+      resetStore: () => set({ tasks: initialTasks, columns: defaultCols, draggedTask: null })
     }),
-    { name: 'task-store', skipHydration: true }
+    { name: 'task-store', skipHydration: false }
   )
 );
