@@ -82,6 +82,7 @@ export function useKanbanBoardState() {
     targetPosition: 'first' | 'last' | 'before' | 'after',
     targetTaskId?: string,
     onSuccess?: () => void) => {
+        console.log('moveTask', taskId, newColumnId, targetPosition, targetTaskId);
         const result = KanbanPositionCalculator.calculatePosition({
             tasks: kanbanBoard?.tasks ?? [],
             taskId,

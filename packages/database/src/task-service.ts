@@ -223,40 +223,104 @@ export function createTaskService(): TaskService {
 // return the default board for the user (Personal)
     async getUserDefaultBoard(userId: string): Promise<KanbanBoardData | null> {
       const boardName = 'Personal';
-      const { data, error } = await supabase
+
+      // 1. Get the board
+      const { data: board, error: boardError } = await supabase
         .from('boards')
-        .select(`
-          id,
-          name,
-          description,
-          columns!inner (
-            id,
-            name,
-            position,
-            board_id,
-            tasks (
-              id,
-              title,
-              description,
-              position,
-              status,
-              priority,
-              due_date,
-              column_id
-            )
-          )
-        `)
+        .select('*')
         .eq('user_id', userId)
         .eq('name', boardName)
-        .order('position', { referencedTable: 'columns', ascending: true })
-        .order('position', { referencedTable: 'columns.tasks', ascending: true });
+        .single();
 
-      console.log('getUserDefaultBoard - data:', data, 'error:', error);
+      console.log('getUserDefaultBoard - board:', board, 'boardError:', boardError);
 
-      if (error) {
-        throw new Error(error.message);
+      if (boardError) {
+        throw new Error(boardError.message);
       }
-      return transformNestedToFlat(data[0]);
+
+      if (!board) {
+        throw new Error(`Board '${boardName}' not found for user`);
+      }
+
+      // 2. Get columns for the board
+      const { data: columns, error: columnsError } = await supabase
+        .from('columns')
+        .select('*')
+        .eq('board_id', board.id)
+        .order('position', { ascending: true });
+
+      console.log('getUserDefaultBoard - columns:', columns, 'columnsError:', columnsError);
+
+      if (columnsError) {
+        throw new Error(columnsError.message);
+      }
+
+      if (!columns || columns.length === 0) {
+        // Return board with empty columns
+        return {
+          board: {
+            id: board.id,
+            name: board.name,
+            description: board.description,
+            user_id: board.user_id
+          },
+          columns: [],
+          tasks: []
+        };
+      }
+
+      // 3. Get tasks for all columns
+      const columnIds = columns.map(col => col.id);
+      const { data: tasks, error: tasksError } = await supabase
+        .from('tasks')
+        .select('*')
+        .in('column_id', columnIds)
+        .eq('user_id', userId)
+        .order('position', { ascending: true });
+
+      console.log('getUserDefaultBoard - tasks:', tasks, 'tasksError:', tasksError);
+
+      if (tasksError) {
+        throw new Error(tasksError.message);
+      }
+
+      // 4. Transform to the expected format
+      const transformedBoard: Board = {
+        id: board.id,
+        name: board.name,
+        description: board.description,
+        user_id: board.user_id
+      };
+
+      const transformedColumns: KanbanColumn[] = columns.map(col => ({
+        id: col.id,
+        board_id: col.board_id,
+        name: col.name,
+        position: col.position,
+        color: col.color,
+        created_at: col.created_at,
+        tasks: (tasks ?? []).filter(task => task.column_id === col.id)
+      }));
+
+      const transformedTasks: Task[] = (tasks ?? []).map(task => ({
+        id: task.id,
+        column_id: task.column_id,
+        title: task.title,
+        description: task.description,
+        position: task.position,
+        status: task.status,
+        priority: task.priority,
+        due_date: task.due_date,
+        user_id: task.user_id,
+        created_at: task.created_at,
+        updated_at: task.updated_at
+      }));
+
+      return {
+        board: transformedBoard,
+        columns: transformedColumns,
+        tasks: transformedTasks
+      };
     },
 // return all boards for the user
     async getBoardsByUser(userId: string): Promise<Board[]> {

@@ -23,18 +23,18 @@ interface PositionResult {
 
 /**
  * Calculates optimal positions for kanban tasks during drag and drop operations.
- * Uses fractional positioning to minimize database writes and avoid cascading updates.
+ * Uses integer positioning with large gaps to minimize database writes and avoid cascading updates.
  *
  * Position Strategy:
- * - Uses decimal positions (e.g., 1000, 1500, 2000) for easy insertion
- * - Inserts between tasks using midpoint calculation
+ * - Uses large integer positions (e.g., 1000, 2000, 3000) for easy insertion
+ * - Inserts between tasks using integer arithmetic
  * - Triggers rebalancing when gaps become too small
  * - Maintains proper ordering while minimizing position updates
  */
 export class KanbanPositionCalculator {
     /** Minimum gap between positions to prevent precision issues */
     /** When position gaps get smaller than this, trigger rebalancing */
-    private static readonly REBALANCE_THRESHOLD = 0.001;
+    private static readonly REBALANCE_THRESHOLD = 10;
 
     /** Default gap between positions for new tasks and rebalancing */
     private static readonly INITIAL_POSITION_GAP = 1000;
@@ -131,7 +131,7 @@ export class KanbanPositionCalculator {
 
       // Place before the first task by using half its position
       // Example: first task at 1000 → new task at 500
-      return columnTasks[0].position / 2;
+      return Math.floor(columnTasks[0].position / 2);
     }
 
     /**
@@ -172,7 +172,7 @@ export class KanbanPositionCalculator {
 
       // If inserting before the first task, use half of its position
       if (targetIndex === 0) {
-        return { position: targetTask.position / 2, needsRebalancing: false };
+        return { position: Math.floor(targetTask.position / 2), needsRebalancing: false };
       }
 
       // Calculate the gap between the previous task and target task
@@ -186,7 +186,7 @@ export class KanbanPositionCalculator {
 
       // Use the midpoint between previous and target tasks
       // Example: prevTask at 1000, targetTask at 2000 → new position at 1500
-      return { position: prevTask.position + (gap / 2), needsRebalancing: false };
+      return { position: Math.floor(prevTask.position + (gap / 2)), needsRebalancing: false };
     }
 
     /**
@@ -224,7 +224,7 @@ export class KanbanPositionCalculator {
 
       // Use the midpoint between target and next tasks
       // Example: targetTask at 2000, nextTask at 3000 → new position at 2500
-      return { position: targetTask.position + (gap / 2), needsRebalancing: false };
+      return { position: Math.floor(targetTask.position + (gap / 2)), needsRebalancing: false };
     }
 
     /**
