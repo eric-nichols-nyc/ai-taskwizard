@@ -1,89 +1,104 @@
-  import { Button } from '@turbo-with-tailwind-v4/design-system/components/ui/button';
-  import { Card, CardContent } from '@turbo-with-tailwind-v4/design-system/components/ui/card';
-  import { Task } from '../utils/store';
-  import { useSortable } from '@dnd-kit/sortable';
-  import { CSS } from '@dnd-kit/utilities';
-  import { cva } from 'class-variance-authority';
-  import { IconGripVertical } from '@tabler/icons-react';
-  import { Badge } from '@turbo-with-tailwind-v4/design-system/components/ui/badge';
+import { Button } from '@turbo-with-tailwind-v4/design-system/components/ui/button';
+import { Card, CardContent } from '@turbo-with-tailwind-v4/design-system/components/ui/card';
+import { Task } from '../utils/store';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { cva } from 'class-variance-authority';
+import { IconGripVertical } from '@tabler/icons-react';
+import { Badge } from '@turbo-with-tailwind-v4/design-system/components/ui/badge';
 
-  // export interface Task {
-  //   id: UniqueIdentifier;
-  //   columnId: ColumnId;
-  //   content: string;
-  // }
+// export interface Task {
+//   id: UniqueIdentifier;
+//   columnId: ColumnId;
+//   content: string;
+// }
 
-  interface TaskCardProps {
-    task: Task;
-    isOverlay?: boolean;
-  }
+interface TaskCardProps {
+  task: Task;
+  isOverlay?: boolean;
+}
 
-  export type TaskType = 'Task';
+export type TaskType = 'Task';
 
-  export interface TaskDragData {
-    type: TaskType;
-    task: Task;
-  }
+export interface TaskDragData {
+  type: TaskType;
+  task: Task;
+}
 
-  export function TaskCard({ task, isOverlay }: TaskCardProps) {
-    const {
-      setNodeRef,
-      attributes,
-      listeners,
-      transform,
-      transition,
-      isDragging
-    } = useSortable({
-      id: task.id,
-      data: {
-        type: 'Task',
-        task
-      } satisfies TaskDragData,
-      attributes: {
-        roleDescription: 'Task'
+export function TaskCard({ task, isOverlay }: TaskCardProps) {
+  const {
+    setNodeRef,
+    attributes,
+    listeners,
+    transform,
+    transition,
+    isDragging
+  } = useSortable({
+    id: task.id,
+    data: {
+      type: 'Task',
+      task
+    } satisfies TaskDragData,
+    attributes: {
+      roleDescription: 'Task'
+    }
+  });
+
+  const style = {
+    transition,
+    transform: CSS.Translate.toString(transform)
+  };
+
+  const variants = cva('mb-2', {
+    variants: {
+      dragging: {
+        over: 'ring-2 opacity-30',
+        overlay: 'ring-2 ring-primary'
       }
-    });
+    }
+  });
 
-    const style = {
-      transition,
-      transform: CSS.Translate.toString(transform)
-    };
-
-    const variants = cva('mb-2', {
-      variants: {
-        dragging: {
-          over: 'ring-2 opacity-30',
-          overlay: 'ring-2 ring-primary'
-        }
-      }
-    });
-
-    return (
-      <Card
-        ref={setNodeRef}
-        style={style}
-        className={variants({
-          dragging: isOverlay ? 'overlay' : isDragging ? 'over' : undefined
-        })}
-      >
-        <CardContent className='flex px-3 pt-3 pb-6 text-left whitespace-pre-wrap'>
+  return (
+    <Card
+      ref={setNodeRef}
+      style={style}
+      className={variants({
+        dragging: isOverlay ? 'overlay' : isDragging ? 'over' : undefined
+      })}
+    >
+      {/* <CardHeader className='space-between border-secondary relative flex flex-row border-b-2 px-3 py-3'>
         <Button
-            variant={'ghost'}
-            {...attributes}
-            {...listeners}
-            className='text-secondary-foreground/50 -ml-2 h-auto cursor-grab p-1'
-          >
-            <IconGripVertical size={16} />
-            <span className='sr-only'>Move task</span>
-          </Button>
-
-          {task.title}
-          <div className='ml-auto flex items-center gap-2'>
-            <Badge variant={'outline'} className='font-semibold'>
-              {task.position + 1}
-            </Badge>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
+          variant={'ghost'}
+          {...attributes}
+          {...listeners}
+          className='text-secondary-foreground/50 -ml-2 h-auto cursor-grab p-1'
+        >
+          <IconGripVertical size={16} />
+          <span className='sr-only'>Move task</span>
+        </Button>
+        <div className='ml-auto flex items-center gap-2'>
+          <Badge variant={'outline'} className='font-semibold'>
+            {task.position }
+          </Badge>
+        </div>
+      </CardHeader> */}
+      <CardContent className='flex px-3 pt-3 pb-6 text-left whitespace-pre-wrap'>
+      <Button
+          variant={'ghost'}
+          {...attributes}
+          {...listeners}
+          className='text-secondary-foreground/50 -ml-2 h-auto cursor-grab p-1'
+        >
+          <IconGripVertical size={16} />
+          <span className='sr-only'>Move task</span>
+        </Button>
+        <div className='ml-auto flex items-center gap-2'>
+        <p className='text-sm font-medium'>{task.title}</p>
+        <Badge variant={'outline'} className='font-semibold'>
+            {task.position }
+          </Badge>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}

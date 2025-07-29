@@ -86,21 +86,27 @@ export function KanbanBoard() {
       .sort((a, b) => a.position - b.position);
 
     if (targetIndex === 0) {
+      console.log('Moving to the top: position = first item\'s position - 100');
       // Moving to the top: position = first item's position - 100
-      return columnTasks[0]?.position - 100 || 0;
+      return columnTasks[0]?.position/2 || 100;
     }
 
     if (targetIndex >= columnTasks.length) {
+      console.log('Moving to the bottom: position = last item\'s position + 100');
       // Moving to the bottom: position = last item's position + 100
-      return columnTasks[columnTasks.length - 1]?.position + 100 || 100;
+      return columnTasks[columnTasks.length - 1]?.position/2 || 100;
     }
 
     // Moving between items: position = average of surrounding items
     const beforeItem = columnTasks[targetIndex - 1];
     const afterItem = columnTasks[targetIndex];
+    console.log('Moving between items: position = average of surrounding items', beforeItem.position, afterItem.position);
 
     return (beforeItem.position + afterItem.position) / 2;
   };
+
+  // Function to recalculate all gap positions in a column
+
 
   // Function to log gap position calculation
   const logGapPositionCalculation = (
@@ -143,6 +149,9 @@ export function KanbanBoard() {
     const tasksInColumn = tasks.filter((task) => task.column_id === columnId);
     const taskPosition = tasksInColumn.findIndex((task) => task.id === taskId);
     const column = columns.find((col) => col.id === columnId);
+    console.log('Tasks in column:', tasksInColumn);
+    console.log('Task position:', taskPosition);
+    console.log('Column:', column);
     return {
       tasksInColumn,
       taskPosition,
@@ -306,8 +315,7 @@ export function KanbanBoard() {
   }
 
   function onDragEnd(event: DragEndEvent) {
-    setActiveColumn(null);
-    setActiveTask(null);
+
 
     const { active, over } = event;
     if (!over) return;
@@ -321,17 +329,125 @@ export function KanbanBoard() {
 
     if (activeId === overId) return;
 
+    // Handle Column reordering
     const isActiveAColumn = activeData?.type === 'Column';
-    if (!isActiveAColumn) return;
+    if (isActiveAColumn) {
+      const activeColumnIndex = columns.findIndex((col) => col.id === activeId);
+      const overColumnIndex = columns.findIndex((col) => col.id === overId);
+      setColumns(arrayMove(columns, activeColumnIndex, overColumnIndex));
+      return;
+    }
 
-    const activeColumnIndex = columns.findIndex((col) => col.id === activeId);
+    // Handle Task reordering
+    const isActiveATask = activeData?.type === 'Task';
+    if (!isActiveATask) return;
 
-    const overColumnIndex = columns.findIndex((col) => col.id === overId);
+    const overData = over.data.current;
+    const isOverATask = overData?.type === 'Task';
+    const isOverAColumn = overData?.type === 'Column';
 
-    setColumns(arrayMove(columns, activeColumnIndex, overColumnIndex));
+    const activeIndex = tasks.findIndex((t) => t.id === activeId);
+    const activeTask = tasks[activeIndex];
+
+    if (!activeTask) return;
+
+    // Handle dropping Task over another Task
+    if (isOverATask) {
+      const overIndex = tasks.findIndex((t) => t.id === overId);
+      const overTask = tasks[overIndex];
+
+      if (!overTask) return;
+
+      // Log the move operation
+      logMoveOperation({
+        taskId: activeTask.id,
+        fromPosition: activeIndex,
+        toPosition: overIndex,
+        fromColumnId: activeTask.column_id,
+        toColumnId: overTask.column_id,
+        taskTitle: activeTask.title
+      });
+
+      // If moving to a different column
+      if (activeTask.column_id !== overTask.column_id) {
+        activeTask.status = overTask.status;
+        activeTask.column_id = overTask.column_id;
+
+        // Calculate new position in the target column
+        const targetColumnTasks = tasks.filter(t => t.column_id === overTask.column_id);
+        const newPosition = calculateGapPosition(tasks, targetColumnTasks.length, overTask.column_id);
+        activeTask.position = newPosition;
+
+        logGapPositionCalculation(
+          activeTask.id,
+          activeTask.title,
+          activeIndex,
+          targetColumnTasks.length,
+          overTask.column_id,
+          newPosition
+        );
+      } else {
+        // Moving within the same column - calculate gap position
+        const columnTasks = tasks.filter(t => t.column_id === activeTask.column_id);
+        const targetIndex = columnTasks.findIndex(t => t.id === overTask.id);
+        const newPosition = calculateGapPosition(tasks, targetIndex, activeTask.column_id);
+
+        logGapPositionCalculation(
+          activeTask.id,
+          activeTask.title,
+          activeIndex,
+          targetIndex,
+          activeTask.column_id,
+          newPosition
+        );
+
+        activeTask.position = newPosition;
+      }
+
+      // Update the task in the store
+      setTasks([...tasks]);
+      setActiveColumn(null);
+      setActiveTask(null);
+    }
+
+    // Handle dropping Task over a Column
+    if (isOverAColumn) {
+      const newColumnId = overId as ColumnId;
+
+      // Log the move operation
+      logMoveOperation({
+        taskId: activeTask.id,
+        fromPosition: activeIndex,
+        toPosition: activeIndex, // Same position, different column
+        fromColumnId: activeTask.column_id,
+        toColumnId: newColumnId,
+        taskTitle: activeTask.title
+      });
+
+      // Calculate new position in the target column
+      const targetColumnTasks = tasks.filter(t => t.column_id === newColumnId);
+      const newPosition = calculateGapPosition(tasks, targetColumnTasks.length, newColumnId);
+
+      logGapPositionCalculation(
+        activeTask.id,
+        activeTask.title,
+        activeIndex,
+        targetColumnTasks.length,
+        newColumnId,
+        newPosition
+      );
+
+      activeTask.status = newColumnId;
+      activeTask.column_id = newColumnId;
+      activeTask.position = newPosition;
+
+      // Update the task in the store
+      setTasks([...tasks]);
+    }
   }
 
   function onDragOver(event: DragOverEvent) {
+    // Only handle visual feedback during drag, no position updates
     const { active, over } = event;
     if (!over) return;
 
@@ -343,119 +459,12 @@ export function KanbanBoard() {
     if (!hasDraggableData(active) || !hasDraggableData(over)) return;
 
     const activeData = active.data.current;
-    const overData = over.data.current;
 
     const isActiveATask = activeData?.type === 'Task';
-    const isOverATask = overData?.type === 'Task';
 
     if (!isActiveATask) return;
 
-    // Im dropping a Task over another Task
-    if (isActiveATask && isOverATask) {
-      const activeIndex = tasks.findIndex((t) => t.id === activeId);
-      const overIndex = tasks.findIndex((t) => t.id === overId);
-      const activeTask = tasks[activeIndex];
-      const overTask = tasks[overIndex];
-
-      if (activeTask && overTask) {
-        // Log the move operation
-        logMoveOperation({
-          taskId: activeTask.id,
-          fromPosition: activeIndex,
-          toPosition: overIndex,
-          fromColumnId: activeTask.column_id,
-          toColumnId: overTask.column_id,
-          taskTitle: activeTask.title
-        });
-
-        // If moving to a different column
-        if (activeTask.column_id !== overTask.column_id) {
-          activeTask.status = overTask.status;
-          activeTask.column_id = overTask.column_id;
-
-          // Calculate new position in the target column
-          const targetColumnTasks = tasks.filter(t => t.column_id === overTask.column_id);
-          const newPosition = calculateGapPosition(tasks, targetColumnTasks.length, overTask.column_id);
-          activeTask.position = newPosition;
-
-          logGapPositionCalculation(
-            activeTask.id,
-            activeTask.title,
-            activeIndex,
-            targetColumnTasks.length,
-            overTask.column_id,
-            newPosition
-          );
-        } else {
-          // Moving within the same column - calculate gap position
-          const columnTasks = tasks.filter(t => t.column_id === activeTask.column_id);
-          const targetIndex = columnTasks.findIndex(t => t.id === overTask.id);
-          const newPosition = calculateGapPosition(tasks, targetIndex, activeTask.column_id);
-
-          logGapPositionCalculation(
-            activeTask.id,
-            activeTask.title,
-            activeIndex,
-            targetIndex,
-            activeTask.column_id,
-            newPosition
-          );
-
-          activeTask.position = newPosition;
-        }
-
-        // Update the tasks array with the new position
-        const newTasks = tasks.map(task =>
-          task.id === activeTask.id ? activeTask : task
-        );
-
-        setTasks(newTasks);
-      }
-    }
-
-    const isOverAColumn = overData?.type === 'Column';
-
-    // Im dropping a Task over a column
-    if (isActiveATask && isOverAColumn) {
-      const activeIndex = tasks.findIndex((t) => t.id === activeId);
-      const activeTask = tasks[activeIndex];
-      if (activeTask) {
-        const newColumnId = overId as ColumnId;
-
-        // Log the move operation
-        logMoveOperation({
-          taskId: activeTask.id,
-          fromPosition: activeIndex,
-          toPosition: activeIndex, // Same position, different column
-          fromColumnId: activeTask.column_id,
-          toColumnId: newColumnId,
-          taskTitle: activeTask.title
-        });
-
-        // Calculate new position in the target column
-        const targetColumnTasks = tasks.filter(t => t.column_id === newColumnId);
-        const newPosition = calculateGapPosition(tasks, targetColumnTasks.length, newColumnId);
-
-        logGapPositionCalculation(
-          activeTask.id,
-          activeTask.title,
-          activeIndex,
-          targetColumnTasks.length,
-          newColumnId,
-          newPosition
-        );
-
-        activeTask.status = newColumnId;
-        activeTask.column_id = newColumnId;
-        activeTask.position = newPosition;
-
-        // Update the tasks array with the new position
-        const newTasks = tasks.map(task =>
-          task.id === activeTask.id ? activeTask : task
-        );
-
-        setTasks(newTasks);
-      }
-    }
+    // Visual feedback only - no position updates
+    // Position will be calculated and set in onDragEnd
   }
 }

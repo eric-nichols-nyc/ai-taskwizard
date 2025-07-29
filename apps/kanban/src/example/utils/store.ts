@@ -50,28 +50,28 @@ const createInitialTasks = (): Task[] => {
       id: 'task1',
       status: todoCol.id,
       title: 'Project initiation and planning',
-      position: 0,
+      position: 100,
       column_id: todoCol.id
     },
     {
       id: 'task2',
       status: todoCol.id,
       title: 'Gather requirements from stakeholders',
-      position: 1,
+      position: 200,
       column_id: todoCol.id
     },
     {
       id: 'task3',
       status: inProgressCol.id,
       title: 'Design system architecture',
-      position: 0,
+      position: 100,
       column_id: inProgressCol.id
     },
     {
       id: 'task4',
       status: doneCol.id,
       title: 'Set up development environment',
-      position: 0,
+      position: 100,
       column_id: doneCol.id
     }
   ];
@@ -137,7 +137,7 @@ export const useTaskStore = create<State & Actions>()(
         set((state) => ({
           columns: state.columns.filter((col) => col.id !== id)
         })),
-      setTasks: (newTasks: Task[]) => set({ tasks: newTasks }),
+      setTasks: (newTasks: Task[]) => set({ tasks: newTasks.sort((a, b) => a.position - b.position) }),
       setCols: (newCols: Column[]) => set({ columns: newCols }),
       resetStore: () => set({ tasks: initialTasks, columns: defaultCols, draggedTask: null })
     }),
