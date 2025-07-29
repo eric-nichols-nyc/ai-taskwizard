@@ -186,7 +186,7 @@ export function KanbanBoard() {
                 tasks={tasks.filter((task) => task.column_id === col.id)}
               />
               {index === columns?.length - 1 && (
-                <div className='w-[300px]'>
+                <div className='w-[300px] hidden'>
                   <NewSectionDialog />
                 </div>
               )}
