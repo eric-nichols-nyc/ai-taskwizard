@@ -453,17 +453,81 @@ export function KanbanBoard() {
     const activeId = active.id;
     const overId = over.id;
 
-    if (activeId === overId) return;
-
-    if (!hasDraggableData(active) || !hasDraggableData(over)) return;
-
+    // If dragging over the same item, do nothing
+    if (activeId === overId) {
+      console.log('Same item, returning');
+      return;
+    }
+    if (!hasDraggableData(active) || !hasDraggableData(over)) {
+      console.log('No draggable data, returning');
+      return;
+    }
     const activeData = active.data.current;
+    const overData = over.data.current;
+
+    console.log('Active data:', activeData);
+    console.log('Over data:', overData);
 
     const isActiveATask = activeData?.type === 'Task';
+    const isOverATask = overData?.type === 'Task';
 
-    if (!isActiveATask) return;
+    console.log('Is active a task:', isActiveATask);
+    console.log('Is over a task:', isOverATask);
 
-    // Visual feedback only - no position updates
-    // Position will be calculated and set in onDragEnd
+    // Only handle task reordering in onDragOver
+    if (!isActiveATask) {
+      console.log('Active is not a task, returning');
+      return;
+    }
+
+    // Handle dropping a task over another task
+    if (isActiveATask && isOverATask) {
+      const activeIndex = tasks.findIndex((t) => t.id === activeId);
+      const overIndex = tasks.findIndex((t) => t.id === overId);
+      const activeTask = tasks[activeIndex];
+      const overTask = tasks[overIndex];
+
+      console.log('=== TASK OVER TASK ===');
+      console.log('Active task:', activeTask);
+      console.log('Over task:', overTask);
+      console.log('Active index in tasks array:', activeIndex);
+      console.log('Over index in tasks array:', overIndex);
+      console.log('Active task status:', activeTask?.status);
+      console.log('Over task status:', overTask?.status);
+
+      // If tasks are in different columns, update the active task's status
+      if (activeTask && overTask && activeTask.status !== overTask.status) {
+        console.log('Tasks in different columns - updating status');
+        activeTask.status = overTask.status;
+        activeTask.column_id = overTask.column_id;
+      }
+
+      // Reorder tasks for visual feedback during drag
+      // This is crucial for animations to work properly
+      if (activeIndex !== overIndex) {
+        console.log('Reordering tasks - moving from index', activeIndex, 'to index', overIndex);
+        setTasks(arrayMove(tasks, activeIndex, overIndex));
+      }
+    }
+
+    // Handle dropping a task over a column
+    if (isActiveATask && overData?.type === 'Column') {
+      const activeIndex = tasks.findIndex((t) => t.id === activeId);
+      const activeTask = tasks[activeIndex];
+      const newColumnId = overId as ColumnId;
+
+      if (activeTask && activeTask.column_id !== newColumnId) {
+        console.log('Moving task to different column:', newColumnId);
+        activeTask.status = newColumnId;
+        activeTask.column_id = newColumnId;
+
+        // Move the task to the end of the new column for visual feedback
+        const newIndex = tasks.length - 1; // Move to end for now, will be properly positioned in onDragEnd
+
+        if (activeIndex !== newIndex) {
+          setTasks(arrayMove(tasks, activeIndex, newIndex));
+        }
+      }
+    }
   }
 }
